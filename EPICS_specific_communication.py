@@ -1,113 +1,76 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 20 16:10:59 2023
+Created on Wed Oct 25 11:45:18 2023
 
 @author: silas
 """
 
-"""EPICS dedicated script, """
-
-
-
-import epics
+import epics 
 from epics import PV, camonitor
 import threading
-from queue import Queue
-
-from threading import Thread
-#do not work with pyTMCL but try to use the classes directly and adjust them if needed! --> do not send via two different connections anymore...
-
-#import pyTMCL
-
-# from bus import Bus
-# from motor import Motor
-# from commands import Command
-# from reply import Reply
-# from init import connect
+import queue 
 
 import time
-import re
-
-#import pyTMCL
-
-#import motor
 
 from AllpyTMCL_classes import*
 
-#import random #for testing
 
-import GUI_leftright as gui
+#Define a global lock for the serial port such that only one thread at a time can use it
+serial_port_lock = threading.Lock() 
 
-# Server class to send motor control commands to a queue and receive messages
-
-
-class MotorServer: #not even necessary i think...
+class MotorServer:
     def __init__(self, port, baud_rate):
-        
-        threading.Thread.__init__(self)
-        """get a connection to epics here"""
-         #from init, this returns all methods form the Bus class, so we do not need any other method which "sends" directly to the serial port
-        self.epics_port = ...
-        
-        # self.command_queue = Queue()
-        
-        # #self.send_thread = threading.Thread(target=self.send_command)
-        
-        # self.receive_thread = threading.Thread(target=self.receive_messages) #this will run in a separate thread to continuously "listen" to the serial port
-        # self.receive_thread.daemon = True
-        # self.receive_thread.start()
-        # self.running = True #to stop the server
-        
-        # self.reading = threading.Condition()
-        # self.isreading = False
-
-        
-    def send_command(self, command, value): #sends the commands into a queue, or command item if such a structure is provided i guess
-        """this sends the command to the  blocks the port until an answer is received, look at Bus.py"""
-        #self.bus.send(address = 1, command, type =, motorbank = , value) 
        
-            #print(response)
+     
+        self.serial_port = serial.Serial(port, baud_rate)
+        self.bus = connect(self.serial_port) #from AllpyTMCL_classes; init, this returns all methods form the Bus class, so we do not need any other method which "sends" directly to the serial port
+       
+    def send_command(self, command, value): 
+        """this sends the command to the  blocks the port until an answer is received, look at Bus.py, not necessary for working with TMCL"""
+        #self.bus.send(address = 1, command, type =, motorbank = , value)
+       
     #def send_command_with_response(self,)
-    
-    def doRead(self,ser,term):
-        print("isreading")
-        tout = 0.01
-        matcher = re.compile(term)    #gives you the ability to search for anything
-        tic     = time.time()
-        buff    = ser.read(128)
-        # you can use if not ('\n' in buff) too if you don't like re
-        while ((time.time() - tic) < tout) and (not matcher.search(buff)):
-           buff += ser.read(128)
+   
+    # def doRead(self,ser,term):
+    #     print("isreading")
+    #     tout = 0.01
+    #     matcher = re.compile(term)    #gives you the ability to search for anything
+    #     tic     = time.time()
+    #     buff    = ser.read(128)
+    #     # you can use if not ('\n' in buff) too if you don't like re
+    #     while ((time.time() - tic) < tout) and (not matcher.search(buff)):
+    #        buff += ser.read(128)
 
-        return buff
+    #     return buff
 
-    def receive_messages(self): #does work but not with my commands from TMCL sadly, super unstable somehow...., can't read anything coming from TMCL
-        """function which i can't use while still doing things directly with TMCL port. In principle though 
-        this should work and i can use the isreading parameter to control it"""
-        
-        
-        while True: #check continuously for a response
-            #print(self.serial_port.in_waiting) #always 0 i.e. no response in waiting queue
-            #time.sleep(0.2)
-                if self.epics_port.in_waiting:
-                    self.epics_port.isreading = True
-                    #time.sleep(0.1)
-                    print("message came back!!!") #readline() or readlines()!!!!
-                    received_message = self.doRead(self.epics_port, term='\n') #self.serial_port.readline().decode('utf-8').strip() #this is a problem, can't decode message which is returned
-                    #self.serial_port.readline().decode('utf-8').strip()
-                    #time.sleep(0.01) #make sure there is enough time
-                    #print("Received message:", received_message) 
-                    #print("out")
-                    received_message = "mymessage"
-                    self.isreading = False
-                    gui.window.show_message(received_message) #would send the received message to the messagebox
-                    return
-        return
-    
+    # def receive_messages(self): #does work but not with my commands from TMCL sadly, super unstable somehow...., can't read anything coming from TMCL
+    #     """function which i can't use while still doing things directly with TMCL port. In principle though
+    #     this should work and i can use the isreading parameter to control it"""
+       
+       
+    #     while True: #check continuously for a response
+    #         #print(self.serial_port.in_waiting) #always 0 i.e. no response in waiting queue
+    #         #time.sleep(0.2)
+    #             if self.serial_port.in_waiting:
+    #                 self.isreading = True
+    #                 #time.sleep(0.1)
+    #                 print("message came back!!!") #readline() or readlines()!!!!
+    #                 received_message = self.doRead(self.serial_port, term='\n') #self.serial_port.readline().decode('utf-8').strip() #this is a problem, can't decode message which is returned
+    #                 #self.serial_port.readline().decode('utf-8').strip()
+    #                 #time.sleep(0.01) #make sure there is enough time
+    #                 #print("Received message:", received_message)
+    #                 #print("out")
+    #                 received_message = "mymessage"
+    #                 self.isreading = False
+    #                 gui.window.show_message(received_message) #would send the received message to the messagebox
+    #                 return
+    #     return
+   
     def stop_server(self): #make sure that when running it again the serial port is accessible
         self.running = False
-        self.epics_port.close()
-        
+        self.serial_port.close()
+        print("port closed")
+       
     def start(self): #sends everything that is put into the queue
         try:
             while self.running:
@@ -115,44 +78,83 @@ class MotorServer: #not even necessary i think...
                 if not self.command_queue.empty():# and self.isreading:
                     print("is reading:", self.isreading)
                     command = self.command_queue.get() #command_item = self.command_queue.get()#
-                    
+                   
                     # command = command_item['command'] #extra bit
                     # response_queue = command_item['response_queue']
-                    
+                   
                     self.send_command(command)
-                    
-                    # #extra bit for reading response
-                    # if self.serial_port.in_waiting:
+                   
+                    # #extra bit for reading response, 
+                    # if self.serial_port.in_waiting: 
                     #     response = self.serial_port.readline().decode('utf-8').strip()
-                        
+                       
                     #     print("response", response)
-                        
-                    self.command_queue.task_done()
-        
+                       
+                    # self.command_queue.task_done()
+                    
         except KeyboardInterrupt:
-            self.epics_port.close()
+            self.serial_port.close()
             print("Exiting...")
+    
+    def create_and_start_motor_client(self,server, MODULE_ADRESS, MOTOR_NUMBER, command_queue):
+        motor = MotorClient(server, MODULE_ADRESS, MOTOR_NUMBER, command_queue)
+        motor.start_motor()
+        thread = threading.Thread(target=motor.run)
+        thread.start()
 
-# Client class to control a TMCL stepper motor
-class MotorClient(Thread): #i don't know if Thread is necessary
-    
-    def __init__(self, server, MODULE_ADDRESS):  
-    
-        threading.Thread.__init__(self) #i should initiate each MotorClient in its own thread!!!, don't know if this is right...
-        #print("started a new thread")
+    def issue_motor_command(self,command_queue,command_data, isreturn = 0):
+        result_queue = queue.Queue()
+        command_queue.put((command_data, result_queue))
+        
+        if isreturn == 1: #only look for a return value if isreturn = 1
+            result = result_queue.get()
+        else: result = 1
+        
+        return result 
+
+# Client class to control a TMCL stepper motor (the commands are specific to this device...)
+class MotorClient(): #i don't know if Thread is necessary
+   
+    def __init__(self, server, MODULE_ADDRESS, MOTOR_NUMBER, command_queue):  
+   
+        self.is_running = False  
+        self.command_queue = command_queue
+        
+        #list might be adjusted if necessary
+        self.command_functions = { 
+            "start": self.start_motor,
+            "stop": self.stop_motor,
+            "stop_move": self.stop_move,
+            "move_right": self.start_move_right,
+            "move_left": self.start_move_left,
+            "set_brake": self.set_brake,
+            "release_brake": self.release_brake,
+            "reference_search": self.reference_search,
+            "go_to_position": self.goto_position,
+            "get_position": self.get_position,
+            "right_endstop": self.rightstop_status,
+            "left_endstop": self.leftstop_status,
+            "position_reached": self.position_reached,
+            
+        
+        }
+        
+        
+        self.stop_flag = threading.Event()
+       
         self.server = server
-        print(MODULE_ADDRESS)
-        #self.MODULE_ADDRESS = MODULE_ADDRESS #creates a motor instance for each axis
-        
-        self.motorconn = ... #whatever method it will take
-        
-        #self.axisparameter = AxisParameterInterface(self.motorconn)  #changed from motor... #returns connection to the Axisparameter class 
-        
+       
+        self.MODULE_ADDRESS = MODULE_ADDRESS 
+       
+        self.MOTOR_NUMBER = MOTOR_NUMBER
+        #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
+       
+        #set initial position
         self.position = 0
         
         
         #initialize the pv's i am using here 
-        self.pv_break = PV('XXX:m1.VAL') #change the names of record usw accordingly... prolly specific to the motor which is initialized ?
+        self.pv_brake = PV('XXX:m1.VAL') #change the names of record usw accordingly... prolly specific to the motor which is initialized ?
         self.pv_speed = PV('XXX:m1.VAL')
         self.pv_position = PV('XXX:m1.VAL')
         self.pv_targetposition = PV('XXX:m1.VAL')
@@ -160,132 +162,232 @@ class MotorClient(Thread): #i don't know if Thread is necessary
         self.pv_leftstopstatus = PV('XXX:m1.VAL')
         self.pv_rightstopstatus = PV('XXX:m1.VAL')
         self.pv_reference = PV('XXX:m1.VAL')
+
     
+       
+    def start_motor(self):
+        self.is_running = True
+        #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
+        self.motorconn = ...#self.server.bus.get_motor(self.MODULE_ADDRESS,self.MOTOR_NUMBER) 
+        self.axisparameter = ... #AxisParameterInterface(self.motorconn)   #from allmyTMCLclasse; AxisParameterInterface
+       
+       
+    def stop_motor(self):
+        self.stop_flag.set()
+        self.is_running= False
+       
+    def ex_command(self,command):
+        """excecutes the commands which are sent by addressing the commands from the command list"""
         
+        command_name, *args = command
+       
+        if command_name in self.command_functions:
+            with serial_port_lock: #make sure that commands are only sent through the port if no other thread is using it already
+                func = self.command_functions[command_name]
+                func(*args)
     
-        def Set(self,pv,value):
-            """resets the value of a passed process variable"""
-            pv.put(value)
-    #     command
-    #     self.server.command_queue.put(command)
+    # def motor_functions(self, command):
+    #        """should handle all possible commands and redirect them to the functions we have according to the keywords
+    #            - either by using keywords or by using a numbers code"""
+               
+    #        print("hiiiii")
+    #        command_name, *args = command
+           
+    #        print(command_name)
+    #        print(*args)
+    #        if command_name == "move_right":
+    #            speed = args[0] if args else 1
+    #            self.start_move_right(speed)
+    #            #print(f"Motor {self.motor_id} moving right at speed {speed}")
+    #        elif command_name == "move_left":
+    #            speed = args[0] if args else 1
+    #            #print(f"Motor {self.motor_id} moving left at speed {speed}")
+    #        elif command_name == "stop":
+    #            print("hello")
+    #            self.stop_move()
+    #           # print(f"Motor {self.motor_id} stopped")
+    #        elif command_name == "set_brake":
+    #            self.set_break()
+    #           # print(f"Motor {self.motor_id} set brake")
+    #        elif command_name == "release_brake":
+    #            self.release_break()
+    #        elif command_name == "reference_search":
+    #            self.reference_search()
+    #            #print(f"Motor {self.motor_id} performing reference search")
+    #        elif command_name == "go_to_position":
+    #            position = args[0] if args else self.get_position() #should remain at the same position if nothing is provided!!!
+    #            self.goto_position(position)
+    #        elif command_name == "get_speed":
+    #            speed = self.get_speed()
+    #            #print("momentary speed")
+               
+    def run(self):  
+        """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
+        The commands in the command queue are issued from the """
+        print(f"Motor is running on thread {threading.current_thread().name}")
+        while self.is_running and not self.stop_flag.is_set():
+            try:
+                command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+                if command[0] == "get_position":
+                    with serial_port_lock: #make sure that this function is also blocked
+                        position = self.get_position()
+                        if position is not None:
+                            self.position = position
+                            result_queue.put(position)
+                if command[0] == "position_reached":
+                      with serial_port_lock: #make sure that this function is also blocked
+                          isreached = self.position_reached()
+                          if isreached is not None:
+                              result_queue.put(isreached)
+                else:
+                    #self.motor_functions(command)
+                    self.ex_command(command)
+            except queue.Empty:
+                pass
+            time.sleep(0.1) #just some waiting time here to keep synchronization 
+            
     
-        def Get(self,pv):
-            return pv.get(value)
-    #     self.motorconn.get_axis_parameter(param)
+    def Set(self,pv,value):
+        """resets the value of a passed process variable"""
+        pv.put(value)
+#     command
+#     self.server.command_queue.put(command)
+
+    def Get(self,pv):
+        return pv.get(value)
+       
+
+    def release_brake(self):
+        self.Set(self.pv_brake,1)
+   
+    def set_brake(self):
+        self.Set(self.pv_brake,0)
+       
+    def start_move_left(self, speed):#this is backwards !!!
+        self.Set(self.pv_speed,-speed)
+     
+   
+    def start_move_right(self, speed): #this is forwards !!!
+        self.Set(self.pv_speed,speed)
+       
+ 
+    def stop_move(self):
+        self.Set(self.pv_speed,0)
         
-    # def invalid_command(self):
-    #     self.motorconn.send(234,0,2,1) 
-        
-        
-        def release_break(self):
-           # self.motorconn.send(14,0,2,1)# f"{self.motor_id} move {steps}\n"
-            #self.server.command_queue.put(command)
-            set(self.pv_break,1) #0 or 1        
-        def set_break(self):
-            #self.motorconn.send(14,0,2,0)
-            #pv_break.put(0) #the opposite of the above!
-                Set(self.pv_break,0)
-            
-        def start_move_left(self, speed): #the designated commands in this case for TMCL but could be adjusted 
-                Set(self.pv_speed,speed) #assuming left is positive orientation
-        
-        def start_move_right(self, speed): #the designated commands in this case for TMCL but could be adjusted 
-                self.Set(self.pv_speed,-speed)
-            
-            
-      
-        def stop_move(self):
-                Set(self.pv_speed,0)
-                self.set_break()
-        
-            
-            #self.motorconn.stop()
-            #self.server.command_queue.put(command)
 
 
-        def goto_position(self,position):
-                travellingspeed = 100 #whatever number is adequate
-                if position > self.get_position():
-                        self.Set(self.pv_speed,-travellingspeed)
-                        while(self.pv_targetreached==False):
-                            time.sleep(0.05) #wait until position is reached
-                        self.Set(self.pv_speed, 0) #stop when target is reached
-                        self.set_break()
-                    
-            
-        def get_position(self):
-                position = self.get(self.pv_position)
-                return position
-            
-            #51200 steps ~ 0.5 cm #not accurate...
-                onestep_incm = 0.5/51200
-                numberofsteps = self.axisparameter.actual_position
-                position = numberofsteps * onestep_incm
-            
-                leftend = 0
-                rightend = 38.9 #measured by moving the sled there!!!
-                if position <= leftend: #make sure the sled does not move beyond endstops!!!
-                    self.start_move_right(5000)
-                    time.sleep(1)
-                    self.stop_move()
-                #gui.right_endstop_display() #it's a problem...
-                #gui.MainWindow.show_message("left end reached! reverse now")
-                #print("left end reached! reverse now")
-                #return "left_end"
-                if position >= rightend:
-                    self.start_move_left(5000)
-                    time.sleep(1)
-                    self.stop_move()
-                #gui.MainWindow.show_message("right end reached! reverse now")
-                #gui.window.left_endstop_display() #call a function that will display a sign like on whiteboard
-                #print("right end reached! reverse now")
-                #return "right_end"
-            #else: gui.reset_endstop_display()
-            
-        return position #self.axisparameter.actual_position #random.randint(0,100)
-            
-        def get_speed(self):
-                speed = self.motorconn.get_axis_parameter(3)
-            #self.server.command_queue.put(command)
-            #print("sent")
-                return speed
+    def goto_position(self,position):
+        travellingspeed = 100 #whatever number is adequate
+        if position > self.get_position():
+                   self.Set(self.pv_speed,-travellingspeed)
+                   while(self.pv_targetreached==False):
+                       time.sleep(0.05) #wait until position is reached
+                   self.Set(self.pv_speed, 0) #stop when target is reached
+                   self.set_break()
         
-        def rightstop_status(self):
-                return self.axisparameter.rightstop_readout()
-            
-        def leftstop_status(self):
-                return self.axisparameter.leftstop_readout()
+       
+    def get_position(self):
+        """TODO!!: return the position value. Define the LEFT endstop as "position 0"
+        then count the revolutions for figuring out the actual position."""
+
+        self.position = self.Get(pv_position)
+       
+        leftend = 0
+        rightend = 30 #measured by moving the sled there!!!
         
-        def pps_to_rpm(self,v_pps): #standard values for a TMCL-1260
-                """translate pulsepersecond to rev per minute"""
-                v_rps = v_pps/(200*256)
-                return 60*v_rps
-            
-        def position_reached():
-                return self.motorconn.get_position_reached()
-            
-        def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
-                """move motor to the very left until endstop is triggered. 
-                Immediately stop and identify this position as '0'"""
-                self.release_break()
-                self.start_move_left(15000)
-            #self.server.command_queue.put(command) #those did not do anything anymore... the commands are being sent in the very first line anyway
-            #self.server.command_queue.put(command1)
-            
-                endstop = 0
-                print("starting reference search")
-                while endstop == 0:
-                    endstop = self.rightstop_status() #self.axisparameter.rightstop_readout()#self.server.command_queue.get()
-                
-                    time.sleep(0.2) #short interval but not to long in order not to damage the thing
-            #print("loop ended")
-                self.stop_move()
-            #self.server.command_queue.put(command2)
-                time.sleep(0.2) #make sure it actually stopped
-                self.axisparameter.set(1,0)
-            #self.server.command_queue.put(command3)
-                position = self.axisparameter.actual_position
-                print("endstop position initialized as '0'")
-                print("position:", position)
-                return
-  
+        if self.position <= leftend: #make sure the sled does not move beyond endstops!!!
+            self.start_move_right(5000)
+            time.sleep(1)
+            self.stop_move()
+
+        if self.position >= rightend:
+            self.start_move_left(5000)
+            time.sleep(1)
+            self.stop_move()
+       
+        return self.position 
+   
+    def get_speed(self):
+        speed = self.Get(pv_speed)
+        return speed
+   
+    def rightstop_status(self):
+        return self.Get(pv_rightstopstatus)
+       
+    def leftstop_status(self):
+        return self.Get(pv_leftstopstatus)
+   
+    def position_reached(self):
+        """returns True or False"""
+        return self.Get(pv_targetreached)
+       
+    def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
+        """move motor to the very left until endstop is triggered.
+        Immediately stop and identify this position as '0'"""
+        self.release_brake()
+        self.start_move_left(15000) #just with some seed that is fast enough, left is backwards
+        
+       
+        endstop = 0
+        print("starting reference search")
+        while endstop == 0: #check the endstop value and terminate as soon as it is 1
+            endstop = self.rightstop_status() 
+           
+            time.sleep(0.1) 
+       
+        self.stop_move()
+       
+        time.sleep(0.2) #make sure it actually stopped
+        self.set_brake()
+        self.axisparameter.set(1,0)
+        
+        position = self.axisparameter.actual_position
+        print("endstop position initialized as '0'")
+        print("position:", position)
+        return
+
+
+    
+if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
+    try:
+        # Initialize the server
+        server = MotorServer(port='COM7', baud_rate=9600) #create the bus connection
+        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+           
+        MODULE_ADRESS = 1
+        MOTOR_NUMBER = 0
+           
+        # Initialize the motor client and start it up in an extra thread.
+        server.create_and_start_motor_client(server, MODULE_ADRESS, MOTOR_NUMBER, command_queue)
+
+    except:
+        print("thread error failed...")
+    try:
+        # Example: Move motor 1 by 1000 steps
+       
+        server.issue_motor_command(command_queue, ("release_brake",))
+        
+        server.issue_motor_command(command_queue, ("go_to_position",100000))
+        #server.issue_motor_command(command_queue, ("move_right",20000))
+        
+        time.sleep(8)
+        
+        position = server.issue_motor_command(command_queue, ("get_position",), isreturn = 1)
+        print(position)
+        
+        
+        server.issue_motor_command(command_queue, ("stop_move",))
+        server.issue_motor_command(command_queue, ("set_brake",))
+        #command_queue.put(("stop_move",))
+        #command_queue.put(("set_brake",))
+       
+       
+        
+        #command_queue.put(("stop",))
+        server.issue_motor_command(command_queue, ("stop",))
+        time.sleep(2) #give the thread some time before the connection is closed...
+        server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
+       
+    except KeyboardInterrupt:
+        server.stop_server()
+        print("KeyboardInterrupt, the server has stopped")
