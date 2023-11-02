@@ -12,11 +12,11 @@ import queue
 
 import time
 
-from AllpyTMCL_classes import*
+
 
 
 #Define a global lock for the serial port such that only one thread at a time can use it
-epics_port_lock = threading.Lock() 
+serial_port_lock = threading.Lock() 
 
 class MotorServer:
     def __init__(self, port, baud_rate):
