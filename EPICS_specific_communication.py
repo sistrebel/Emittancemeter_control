@@ -126,8 +126,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
         self.pv_rawincr_set = PV('T-MWE1X:INKR:raw')
         self.pv_targetreached = PV('XXX:m1.VAL')
-        self.pv_leftstopstatus = PV('XXX:m1.VAL')
-        self.pv_rightstopstatus = PV('XXX:m1.VAL')
+        self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
         self.pv_reference = PV('XXX:m1.VAL')
         
 
@@ -195,15 +194,15 @@ class MotorClient(): #i don't know if Thread is necessary
     def release_brake(self):
         self.Set(self.pv_brake,1)
    
-    def set_brake(self):
+    def set_brake(self):#there is no break at the moment
         self.Set(self.pv_brake,0)
        
-    def start_move_left(self, speed):#this is backwards !!!
-        self.Set(self.pv_speed,-speed)
+    def start_move_left(self, steps_to_incr):#this is backwards !!!
+        self.Set(self.pv_rawincr_set,-steps_to_incr) #negative to go left/backwards
      
    
-    def start_move_right(self, speed): #this is forwards !!!
-        self.Set(self.pv_speed,speed)
+    def start_move_right(self, steps_to_incr): #this is forwards !!!
+        self.Set(self.pv_rawincr_set,steps_to_incr)
        
  
     def stop_move(self):
@@ -232,25 +231,28 @@ class MotorClient(): #i don't know if Thread is necessary
         """TODO!!: return the position value. Define the LEFT endstop as "position 0"
         then count the revolutions for figuring out the actual position."""
 
-        self.position = self.Get(pv_position)
+        self.position = self.Get(self.pv_position)
        
-        leftend = 0
-        rightend = 30 #measured by moving the sled there!!!
+        # leftend = 0
+        # rightend = 30 #measured by moving the sled there!!!
         
-        if self.position <= leftend: #make sure the sled does not move beyond endstops!!!
-            self.start_move_right(5000)
-            time.sleep(1)
-            self.stop_move()
+        # if self.position <= leftend: #make sure the sled does not move beyond endstops!!!
+        #     self.start_move_right(5000)
+        #     time.sleep(1)
+        #     self.stop_move()
 
-        if self.position >= rightend:
-            self.start_move_left(5000)
-            time.sleep(1)
-            self.stop_move()
+        # if self.position >= rightend:
+        #     self.start_move_left(5000)
+        #     time.sleep(1)
+        #     self.stop_move()
        
         return self.position 
    
+    def set_speed(self,speed):
+        self.Set(pv_speed_set,speed)
+    
     def get_speed(self):
-        speed = self.Get(pv_speed)
+        speed = self.Get(pv_speed_get)
         return speed
    
     def rightstop_status(self):
@@ -260,7 +262,8 @@ class MotorClient(): #i don't know if Thread is necessary
         return self.Get(pv_leftstopstatus)
    
     def position_reached(self):
-        """returns True or False"""
+        """returns True or False, maybe do it by using the 'busy' PV """
+        
         return self.Get(pv_targetreached)
        
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
