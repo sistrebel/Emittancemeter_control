@@ -61,7 +61,10 @@ def start_scan(motor1_queue,motor2_queue,number_of_points,x_length,y_length,serv
         point_x = point[0]
         point_y = point[1]
         print(point_x,point_y)
-    server.issue_motor_command(motor1_queue,point_x, isreturn = 0)
+        server.issue_motor_command(motor1_queue,("go_to_position",point_x))  #moves both motors to the right position
+        server.issue_motor_command(motor2_queue,("go_to_position",point_y))
+        
+        
     
     
     #now the scan just needs to move the motors to those step positions one after another
@@ -72,12 +75,12 @@ def pause_scan():
     
 
 
-# Example usage:
-num_points = 100  # Number of measurement points
-x_length = 50000  # Length of the x-axis
-y_length = 4000 # Length of the y-axis
+# # Example usage:
+# num_points = 100  # Number of measurement points
+# x_length = 50000  # Length of the x-axis
+# y_length = 4000 # Length of the y-axis
 
-measurement_points = distribute_measurement_points(num_points, x_length, y_length)
-plot_measurement_points(measurement_points, x_length, y_length)
+# measurement_points = distribute_measurement_points(num_points, x_length, y_length)
+# #plot_measurement_points(measurement_points, x_length, y_length)
 
-#start_scan(1,1,num_points, x_length, y_length,1)
+# start_scan(1,1,num_points, x_length, y_length,1)

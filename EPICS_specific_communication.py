@@ -235,6 +235,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.stepcount = self.stepcount + position_steps
         print("stepcount is:", self.stepcount)
         self.ismoving = False
+        return
        
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
