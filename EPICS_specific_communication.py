@@ -113,7 +113,7 @@ class MotorClient(): #i don't know if Thread is necessary
         #set initial position
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
         self.stepcount = 0
-        self.time_needed = 0
+       
         
         #keep track of movement for position
         self.ismoving = False
@@ -228,9 +228,9 @@ class MotorClient(): #i don't know if Thread is necessary
         velocity = self.Get(self.pv_speed_get)
         
         
-        self.time_needed = abs(self.stepcount - position_steps)/velocity 
+        time_needed = abs(self.stepcount - position_steps)/velocity 
         
-        #time.sleep(time_needed) #wait with other commands during that time as well
+        time.sleep(time_needed) #wait with other commands during that time as well
         
         self.stepcount = self.stepcount + position_steps
         print("stepcount is:", self.stepcount)
@@ -296,8 +296,8 @@ class MotorClient(): #i don't know if Thread is necessary
         
         while True:
             #print(self.ismoving)
-            start_time = time.time() 
-            if self.ismoving and time.time()-start_time < self.time_needed:
+    
+            if self.ismoving:
                 
                 velocity = self.Get(self.pv_speed_get)
                 acceleration = self.Get(self.pv_acc_get)
