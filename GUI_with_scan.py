@@ -118,8 +118,9 @@ class MainWindow(QMainWindow):
         self.Targetposition = 0 #set initial position
         self.sent = False
         
+        
         #do a reference search as soon as the applications starts
-        self.get_reference() 
+        #self.get_reference() 
         
         #empty lists for saving position plot
         self.all_positions = []

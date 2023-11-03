@@ -114,6 +114,10 @@ class MotorClient(): #i don't know if Thread is necessary
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
         
         
+        #keep track of movement for position
+        self.ismoving = False
+        self.start_position_thread()
+        
         #initialize the pv's i am using here 
         self.pv_brake = PV('XXX:m1.VAL') #change the names of record usw accordingly... prolly specific to the motor which is initialized ?
         self.pv_speed_set = PV('T-MWE1X:VL:1')
@@ -188,7 +192,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
-        return pv.get(pv)
+        return pv.get()
        
 
     def release_brake(self):
@@ -206,48 +210,40 @@ class MotorClient(): #i don't know if Thread is necessary
        
  
     def stop_move(self):
-        self.Set(self.pv_speed,0)
-        
+        self.Set(self.pv_speed_set,0)
 
-
-    def position_to_steps(self,position):
-        """converts position in mm into steps"""
-        steps = 10*position #some kind of formula
-        return steps
 
     def goto_position(self,position_steps):
         #position_steps = self.position_to_steps(position)
         print("here")
         self.Set(self.pv_targetposition_steps, position_steps)
-        # travellingspeed = 100 #whatever number is adequate
-        # if position > self.get_position():
-        #            self.Set(self.pv_speed,-travellingspeed)
-        #            while(self.pv_targetreached==False):
-        #                time.sleep(0.05) #wait until position is reached
-        #            self.Set(self.pv_speed, 0) #stop when target is reached
-        #            self.set_break()
+        self.ismoving = True
+        velocity = self.Get(self.pv_speed_get)
         
+        
+        time_needed = abs(self.stepcount - position_steps)/velocity
+        
+        time.sleep(time_needed)
+        self.stepcount = self.stepcount + position_steps
+        self.ismoving = False
        
     def get_position(self):
-        """TODO!!: return the position value. Define the LEFT endstop as "position 0"
+        """ return the position value. Define the LEFT endstop as "position 0"
         then count the revolutions for figuring out the actual position."""
-
-        print("hereeeee")
-        self.position = self.Get(self.pv_position)
-       
-        # leftend = 0
-        # rightend = 30 #measured by moving the sled there!!!
         
-        # if self.position <= leftend: #make sure the sled does not move beyond endstops!!!
-        #     self.start_move_right(5000)
-        #     time.sleep(1)
-        #     self.stop_move()
-
-        # if self.position >= rightend:
-        #     self.start_move_left(5000)
-        #     time.sleep(1)
-        #     self.stop_move()
-       
+        """not possible at the moment, maybe with step counter, velocity and acceleration one could get the position to disply it..."""
+        
+        # if self.ismoving == True
+        # velocity = self.Get(self.pv_speed_get)
+        # acceleration = self.Get(self.pv_acc_get)
+        
+        # while time.time() < 
+        # s = 0.5*acceleration*time**2 + velocity*time 
+        
+        #print("hereeeee")
+        #self.position = 0 #self.Get(self.pv_position)
+        #return   #plot no possible at the moment with this type of device
+        #print(self.position)
         return self.position 
    
     def set_speed(self,speed):
@@ -286,7 +282,6 @@ class MotorClient(): #i don't know if Thread is necessary
         print("starting reference search")
         while endstop == None: #check the endstop value and terminate as soon as it is 1
             endstop = self.endstop_status() 
-            
         self.stop_move()
        
         #time.sleep(0.2) #make sure it actually stopped
@@ -295,8 +290,35 @@ class MotorClient(): #i don't know if Thread is necessary
         
         #position = self.axisparameter.actual_position
         print("endstop position initialized as '0'")
+        self.stepcount = 0
         #print("position:", position)
         return
+
+
+    
+    def move_device_position(self):
+        
+        while True:
+            if self.ismoving:
+                velocity = self.Get(self.pv_speed_get)
+                acceleration = self.Get(self.pv_acc_get)
+                
+                looptime = 0.1
+                self.position += 0.5*acceleration*looptime**2 + velocity*looptime
+                print(self.position)
+            time.sleep(0.1)  # Adjust the sleep time as needed
+
+    def start_position_thread(self):
+        print("istarted")
+        self.thread = threading.Thread(target=self.move_device_position)
+        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
+        self.thread.start()
+
+    def stop_position_thread(self):
+        self.ismoving = False
+        self.thread.join()
+
+
 
 
     
@@ -329,7 +351,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         time.sleep(5)
         
         position = server.issue_motor_command(command_queue, ("get_position",), isreturn = 1)
-        #print(position)
+        print(position)
         
         
         #server.issue_motor_command(command_queue, ("stop_move",))
