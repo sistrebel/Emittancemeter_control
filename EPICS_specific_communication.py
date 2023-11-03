@@ -114,8 +114,10 @@ class MotorClient(): #i don't know if Thread is necessary
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
         self.stepcount = 0
         
+        
         #keep track of movement for position
         self.ismoving = False
+        self.direction = "pos" #default direction forward
         self.start_position_thread()
         
         #initialize the pv's i am using here 
@@ -217,34 +219,26 @@ class MotorClient(): #i don't know if Thread is necessary
     def goto_position(self,position_steps):
         #position_steps = self.position_to_steps(position)
         print("here")
+        if position_steps > 0:
+            self.direction = "pos"
+        if position_steps < 0: 
+            self.direction = "neg"
         self.Set(self.pv_targetposition_steps, position_steps)
         self.ismoving = True
         velocity = self.Get(self.pv_speed_get)
         
         
-        time_needed = abs(self.stepcount - position_steps)/velocity #??
+        time_needed = abs(self.stepcount - position_steps)/velocity 
         
         self.stepcount = self.stepcount + position_steps
+        print("stepcount is:", self.stepcount)
         self.ismoving = False
        
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
         then count the revolutions for figuring out the actual position."""
         
-        """not possible at the moment, maybe with step counter, velocity and acceleration one could get the position to disply it..."""
-        
-        # if self.ismoving == True
-        # velocity = self.Get(self.pv_speed_get)
-        # acceleration = self.Get(self.pv_acc_get)
-        
-        # while time.time() < 
-        # s = 0.5*acceleration*time**2 + velocity*time 
-        
-        #print("hereeeee")
-        #self.position = 0 #self.Get(self.pv_position)
-        #return   #plot no possible at the moment with this type of device
-        #print(self.position)
-        return self.position 
+        return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
         self.Set(self.pv_speed_set,speed)
@@ -299,13 +293,17 @@ class MotorClient(): #i don't know if Thread is necessary
     def move_device_position(self):
         
         while True:
-            print(self.ismoving)
+            #print(self.ismoving)
             if self.ismoving:
                 velocity = self.Get(self.pv_speed_get)
                 acceleration = self.Get(self.pv_acc_get)
                 
+                
                 looptime = 0.1
-                self.position += 0.5*acceleration*looptime**2 + velocity*looptime
+                if self.direction == "pos":
+                    self.position +=  velocity*looptime
+                if self.direction == "neg":
+                    self.position -= velocity*looptime
                 print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
 
