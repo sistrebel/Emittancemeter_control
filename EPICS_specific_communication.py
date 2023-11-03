@@ -112,7 +112,7 @@ class MotorClient(): #i don't know if Thread is necessary
        
         #set initial position
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
-        
+        self.stepcount = 0
         
         #keep track of movement for position
         self.ismoving = False
@@ -192,7 +192,8 @@ class MotorClient(): #i don't know if Thread is necessary
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
-        return pv.get()
+        value = pv.get()
+        return value
        
 
     def release_brake(self):
@@ -221,9 +222,8 @@ class MotorClient(): #i don't know if Thread is necessary
         velocity = self.Get(self.pv_speed_get)
         
         
-        time_needed = abs(self.stepcount - position_steps)/velocity
+        time_needed = abs(self.stepcount - position_steps)/velocity #??
         
-        time.sleep(time_needed)
         self.stepcount = self.stepcount + position_steps
         self.ismoving = False
        
@@ -299,6 +299,7 @@ class MotorClient(): #i don't know if Thread is necessary
     def move_device_position(self):
         
         while True:
+            print(self.ismoving)
             if self.ismoving:
                 velocity = self.Get(self.pv_speed_get)
                 acceleration = self.Get(self.pv_acc_get)
