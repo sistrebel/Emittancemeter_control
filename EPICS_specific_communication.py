@@ -31,8 +31,8 @@ class MotorServer:
    
     def stop_server(self): #make sure that when running it again the serial port is accessible
         self.running = False
-        self.serial_port.close()
-        print("port closed")
+        #self.serial_port.close()
+        print(" closed")
        
     def start(self): #sends everything that is put into the queue
         try:
@@ -95,8 +95,7 @@ class MotorClient(): #i don't know if Thread is necessary
             "reference_search": self.reference_search,
             "go_to_position": self.goto_position,
             "get_position": self.get_position,
-            "right_endstop": self.rightstop_status,
-            "left_endstop": self.leftstop_status,
+            "right_endstop": self.endstop_status,
             "position_reached": self.position_reached,
             
         }
@@ -142,6 +141,7 @@ class MotorClient(): #i don't know if Thread is necessary
     def stop_motor(self):
         self.stop_flag.set()
         self.is_running= False
+        print("stop")
        
     def ex_command(self,command):
         """excecutes the commands which are sent by addressing the commands from the command list"""
@@ -188,7 +188,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
-        return pv.get(value)
+        return pv.get(pv)
        
 
     def release_brake(self):
@@ -215,8 +215,9 @@ class MotorClient(): #i don't know if Thread is necessary
         steps = 10*position #some kind of formula
         return steps
 
-    def goto_position(self,position):
-        position_steps = self.position_to_steps(position)
+    def goto_position(self,position_steps):
+        #position_steps = self.position_to_steps(position)
+        print("here")
         self.Set(self.pv_targetposition_steps, position_steps)
         # travellingspeed = 100 #whatever number is adequate
         # if position > self.get_position():
@@ -231,6 +232,7 @@ class MotorClient(): #i don't know if Thread is necessary
         """TODO!!: return the position value. Define the LEFT endstop as "position 0"
         then count the revolutions for figuring out the actual position."""
 
+        print("hereeeee")
         self.position = self.Get(self.pv_position)
        
         # leftend = 0
@@ -249,46 +251,51 @@ class MotorClient(): #i don't know if Thread is necessary
         return self.position 
    
     def set_speed(self,speed):
-        self.Set(pv_speed_set,speed)
+        self.Set(self.pv_speed_set,speed)
     
     def get_speed(self):
-        speed = self.Get(pv_speed_get)
+        speed = self.Get(self.pv_speed_get)
         return speed
    
-    def rightstop_status(self):
-        return self.Get(pv_rightstopstatus)
-       
-    def leftstop_status(self):
-        return self.Get(pv_leftstopstatus)
-   
+    def endstop_status(self):
+        endstopvalue = self.Get(self.pv_endstopstatus)
+        
+        if endstopvalue == 0xD:
+            print("upper end reached")
+            return "upper"
+        if endstopvalue == 0xB:
+            print("lower end reached")
+            return "lower"
+        else:
+            print("no endstop reached")
+            return None
+        
+            
     def position_reached(self):
         """returns True or False, maybe do it by using the 'busy' PV """
-        
-        return self.Get(pv_targetreached)
+        ...
+        #return self.Get(self.pv_targetreached)
        
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
         """move motor to the very left until endstop is triggered.
         Immediately stop and identify this position as '0'"""
-        self.release_brake()
-        self.start_move_left(15000) #just with some seed that is fast enough, left is backwards
-        
-       
-        endstop = 0
+        self.release_brake()  #prolly won't do much
+        self.start_move_left(50000) #start to move a big value until the endstop is reached, stops automatically
+    
+        endstop = None
         print("starting reference search")
-        while endstop == 0: #check the endstop value and terminate as soon as it is 1
-            endstop = self.rightstop_status() 
-           
-            time.sleep(0.1) 
-       
+        while endstop == None: #check the endstop value and terminate as soon as it is 1
+            endstop = self.endstop_status() 
+            
         self.stop_move()
        
-        time.sleep(0.2) #make sure it actually stopped
+        #time.sleep(0.2) #make sure it actually stopped
         self.set_brake()
-        self.axisparameter.set(1,0)
+        #self.axisparameter.set(1,0)
         
-        position = self.axisparameter.actual_position
+        #position = self.axisparameter.actual_position
         print("endstop position initialized as '0'")
-        print("position:", position)
+        #print("position:", position)
         return
 
 
@@ -310,19 +317,23 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     try:
         # Example: Move motor 1 by 1000 steps
        
-        server.issue_motor_command(command_queue, ("release_brake",))
+        #server.issue_motor_command(command_queue, ("release_brake",))
         
-        server.issue_motor_command(command_queue, ("go_to_position",100))
+        #server.issue_motor_command(command_queue, ("reference_search",))
+        
+        server.issue_motor_command(command_queue, ("go_to_position",-1000))
+        
+        #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
         
-        time.sleep(8)
+        time.sleep(5)
         
         position = server.issue_motor_command(command_queue, ("get_position",), isreturn = 1)
-        print(position)
+        #print(position)
         
         
-        server.issue_motor_command(command_queue, ("stop_move",))
-        server.issue_motor_command(command_queue, ("set_brake",))
+        #server.issue_motor_command(command_queue, ("stop_move",))
+        #server.issue_motor_command(command_queue, ("set_brake",))
         #command_queue.put(("stop_move",))
         #command_queue.put(("set_brake",))
        
