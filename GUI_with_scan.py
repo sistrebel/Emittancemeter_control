@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
             
     def retrieve_numberofpoints(self):
         """get number of points for scan"""
-        points = self.textEdit_Points.toPlainText() #maybe this is wrong
+        points = int(self.textEdit_Points.toPlainText()) #maybe this is wrong
         scan_script.start_scan(self.motor1_queue,self.motor2_queue,points,self.x_length,self.y_length,self.server) #starts the scan with #points measurementpoints in the grid 
     
     def retrieve_directory(self):

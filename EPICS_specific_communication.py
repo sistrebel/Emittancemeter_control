@@ -235,8 +235,11 @@ class MotorClient(): #i don't know if Thread is necessary
         
         print("velocity", velocity)
         
-        
-        time_needed = abs(self.stepcount - position_steps)/velocity 
+        if velocity != 0:
+            time_needed = abs(self.stepcount - position_steps)/velocity 
+        else:
+            time_needed = 0.01
+            print("WARNING: velocity is 0")
         print("time needed", time_needed)
         
         time.sleep(time_needed) #wait with other commands during that time as well
@@ -244,7 +247,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.stepcount = self.stepcount + position_steps
         print("stepcount is:", self.stepcount)
         self.ismoving = False
-        return 
+        
        
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
