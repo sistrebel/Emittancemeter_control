@@ -232,7 +232,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if position_steps < 0: 
             self.direction = "neg"
         self.Set(self.pv_targetposition_steps, position_steps)
-        self.ismoving = True
+        self.ismoving = True #maybe this is it...
         velocity = self.Get(self.pv_speed_get)
         
         print("velocity", velocity)
@@ -250,6 +250,7 @@ class MotorClient(): #i don't know if Thread is necessary
         print("stepcount is:", self.stepcount)
         self.ismoving = False
         
+        return
        
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"

@@ -315,15 +315,14 @@ class MainWindow(QMainWindow):
         # position = float(Target)*steps_per_cm #translate cm position into steps
         
         
-        
         self.server.issue_motor_command(self.movingmotor_queue,("release_brake",))
         time.sleep(0.1)
         self.server.issue_motor_command(self.movingmotor_queue, ("go_to_position",Target))
         
-        while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
-            time.sleep(0.1)
+        # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
+        #     time.sleep(0.1)
         self.server.issue_motor_command(self.movingmotor_queue, ("set_brake",))
-        self.show_message("position reached")
+        #self.show_message("position reached")
     
     def go_home(self,stop = False):
         """moves motor to initial position and if stop == True the server connection is stopped and port closed"""
