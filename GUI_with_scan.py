@@ -74,7 +74,10 @@ class MainWindow(QMainWindow):
         self.MOTOR_NUMBER_1 = 0 
         self.MOTOR_NUMBER_2 = 0
         self.MOTOR_NUMBER_3 = 0
-    
+        
+        #total grid dimensions in steps
+        self.x_length = 50000
+        self.y_length = 4000
         
         #initialize the motor queues
         self.motor1_queue =  queue.Queue()
@@ -131,7 +134,7 @@ class MainWindow(QMainWindow):
     def LoadGuis(self):        
         #load main window with uic.loadUI
         #note that the r"" is important or \\Users....
-        loadUi(r"C:\Users\strebe_s\Desktop\Emittancemeter_control\Real_mainwindow.ui",self) #adjust this one to specific place
+        loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place
         return
     
     def get_axis(self):
@@ -259,9 +262,9 @@ class MainWindow(QMainWindow):
             
     def retrieve_numberofpoints(self):
         """get number of points for scan"""
-        points = self.textEdit_Points.toPlainText()
-        scan_script.start_scan(self.motor1_queue,self.motor2_queue,points,self.server) #starts the scan with #points measurementpoints in the grid 
-            
+        points = self.textEdit_Points.toPlainText() #maybe this is wrong
+        scan_script.start_scan(self.motor1_queue,self.motor2_queue,points,self.x_length,self.y_length,self.server) #starts the scan with #points measurementpoints in the grid 
+    
     def retrieve_directory(self):
         directory = self.textEdit_Directory.toPlainText()
         return directory
