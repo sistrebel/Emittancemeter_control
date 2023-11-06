@@ -178,11 +178,11 @@ class MotorClient(): #i don't know if Thread is necessary
                           isreached = self.position_reached()
                           if isreached is not None:
                               result_queue.put(isreached)
-                if command[0] == "go_to_position":
-                    self.ex_command(command) #excecute the command
-                    while self.ismoving == True:
-                        time.sleep(0.05)
-                    result_queue.put(self.isreached)
+                #if command[0] == "go_to_position":
+                   # self.ex_command(command) #excecute the command
+                   # while self.ismoving == True:
+                      #  time.sleep(0.05)
+                    #Eresult_queue.put(self.ismoving)
                         
                 else:
                     #self.motor_functions(command)
@@ -233,8 +233,11 @@ class MotorClient(): #i don't know if Thread is necessary
         self.ismoving = True
         velocity = self.Get(self.pv_speed_get)
         
+        print("velocity", velocity)
+        
         
         time_needed = abs(self.stepcount - position_steps)/velocity 
+        print("time needed", time_needed)
         
         time.sleep(time_needed) #wait with other commands during that time as well
         

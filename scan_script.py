@@ -9,6 +9,7 @@ Created on Thu Nov  2 17:41:41 2023
 
 import EPICS_specific_communication as control
 import matplotlib.pyplot as plt
+from time import time
 
 def distribute_measurement_points(num_points, x_length, y_length):
     if num_points <= 0:
@@ -54,6 +55,7 @@ def start_scan(motor1_queue,motor2_queue,number_of_points,x_length,y_length,serv
     #axis length in steps, parameters to adjust for specific situation...
     # x_length = 40000
     # y_length = 5000
+    print("number of points", number_of_points)
     
     point_distribution = distribute_measurement_points(number_of_points,x_length,y_length)
     
@@ -61,10 +63,12 @@ def start_scan(motor1_queue,motor2_queue,number_of_points,x_length,y_length,serv
         point_x = point[0]
         point_y = point[1]
         print(point_x,point_y)
-        reachedx = server.issue_motor_command(motor1_queue,("go_to_position",point_x),isreturn = 1)  #moves both motors to the right position
-        reachedy = server.issue_motor_command(motor2_queue,("go_to_position",point_y),isreturn = 1) #the individual threads wait until the motor has moved there
+        server.issue_motor_command(motor1_queue,("go_to_position",point_x),isreturn = 0)  #moves both motors to the right position
+        server.issue_motor_command(motor2_queue,("go_to_position",point_y),isreturn = 0) #the individual threads wait until the motor has moved there
         
+        time.sleep(5) #safety
         
+        print("go again")
     
     
     #now the scan just needs to move the motors to those step positions one after another
@@ -76,11 +80,11 @@ def pause_scan():
 
 
 # # Example usage:
-# num_points = 100  # Number of measurement points
-# x_length = 50000  # Length of the x-axis
-# y_length = 4000 # Length of the y-axis
+num_points = 100  # Number of measurement points
+x_length = 50000  # Length of the x-axis
+y_length = 4000 # Length of the y-axis
 
-# measurement_points = distribute_measurement_points(num_points, x_length, y_length)
-# #plot_measurement_points(measurement_points, x_length, y_length)
+measurement_points = distribute_measurement_points(num_points, x_length, y_length)
+#plot_measurement_points(measurement_points, x_length, y_length)
 
-# start_scan(1,1,num_points, x_length, y_length,1)
+start_scan(1,1,num_points, x_length, y_length,1)
