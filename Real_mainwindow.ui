@@ -321,7 +321,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Submit Resolution &amp; start Scan</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_speed_2">
+   <widget class="QTextEdit" name="textEdit_Points">
     <property name="geometry">
      <rect>
       <x>360</x>
