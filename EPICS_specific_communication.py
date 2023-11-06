@@ -91,6 +91,7 @@ class MotorClient(): #i don't know if Thread is necessary
             "move_right": self.start_move_right,
             "move_left": self.start_move_left,
             "set_brake": self.set_brake,
+            "set_speed": self.set_speed,
             "release_brake": self.release_brake,
             "reference_search": self.reference_search,
             "go_to_position": self.goto_position,
@@ -134,7 +135,8 @@ class MotorClient(): #i don't know if Thread is necessary
         self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
         self.pv_reference = PV('XXX:m1.VAL')
         
-
+        #set an initial_speed to 500 steps/s
+        self.Set(self.pv_speed_set,500)
     
        
     def start_motor(self):

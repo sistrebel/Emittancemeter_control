@@ -117,7 +117,7 @@ class MainWindow(QMainWindow):
         self.messagetimer.start(20000) #updates every 20s
         
         
-        self.speed = 7000 #set initial speed if none is selected
+        self.speed = 500 #set initial speed if none is selected
         self.Targetposition = 0 #set initial position
         self.sent = False
         
@@ -272,6 +272,7 @@ class MainWindow(QMainWindow):
     def retrieve_speed(self):
         """get the speed from the MainWindow and set the global variable speed to its value"""
         self.speed = self.textEdit_speed.toPlainText()
+        self.server.issue_motor_command(self.movingmotor_queue,("set_speed",self.speed))
         self.show_message("new speed:"+ self.speed)
     
     def retrieve_position(self):
