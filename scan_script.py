@@ -61,8 +61,8 @@ def start_scan(motor1_queue,motor2_queue,number_of_points,x_length,y_length,serv
         point_x = point[0]
         point_y = point[1]
         print(point_x,point_y)
-        server.issue_motor_command(motor1_queue,("go_to_position",point_x))  #moves both motors to the right position
-        server.issue_motor_command(motor2_queue,("go_to_position",point_y))
+        reachedx = server.issue_motor_command(motor1_queue,("go_to_position",point_x),isreturn = 1)  #moves both motors to the right position
+        reachedy = server.issue_motor_command(motor2_queue,("go_to_position",point_y),isreturn = 1) #the individual threads wait until the motor has moved there
         
         
     

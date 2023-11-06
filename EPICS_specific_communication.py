@@ -178,6 +178,12 @@ class MotorClient(): #i don't know if Thread is necessary
                           isreached = self.position_reached()
                           if isreached is not None:
                               result_queue.put(isreached)
+                if command[0] == "go_to_position":
+                    self.ex_command(command) #excecute the command
+                    while self.ismoving == True:
+                        time.sleep(0.05)
+                    result_queue.put(self.isreached)
+                        
                 else:
                     #self.motor_functions(command)
                     self.ex_command(command)
@@ -235,7 +241,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.stepcount = self.stepcount + position_steps
         print("stepcount is:", self.stepcount)
         self.ismoving = False
-        return
+        return 
        
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
