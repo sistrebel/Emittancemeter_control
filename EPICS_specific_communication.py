@@ -150,6 +150,7 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_targetreached = PV('XXX:m1.VAL')
             self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
             self.pv_emstop = PV('T-MWE1Y:STOP:2')
+            self.pv_command = PV('T-MWE1Y:CMD:2')
         
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
@@ -166,6 +167,7 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_targetreached = PV('XXX:m1.VAL')
             self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
             self.pv_emstop = PV('T-MWE2Y:STOP:2')
+            self.pv_command = PV('T-MWE2Y:CMD:2')
         
         #set an initial_speed to 500 steps/s (not a random value which might still be in the IOC...)
         self.Set(self.pv_speed_set,500) 
