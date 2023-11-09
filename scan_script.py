@@ -142,9 +142,10 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             while moving == False: #wait till motors are free and stopped
                 if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
                     server.issue_motor_command(motor1.command_queue,("go_to_position",point_x),isreturn = 0)  #moves motor on thread one
+                    time.sleep(0.1) #safety
                     server.issue_motor_command(motor2.command_queue,("go_to_position",point_y),isreturn = 0) #moves motor on thread two
                     moving = True
-                else: time.sleep(0.2)
+                else: time.sleep(0.1)
             #time.sleep(time_needed)
             
             while moving == True: #wait until motors are done moving
