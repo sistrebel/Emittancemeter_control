@@ -233,8 +233,7 @@ class MotorClient(): #i don't know if Thread is necessary
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
         pv.put(value)
-        time.sleep(0.05) #internal calc wait
-        print("laaaaaaaaaaaaaaaaa")
+        time.sleep(0.2) #safety
         return "has been set"
 
     def Get(self,pv):
