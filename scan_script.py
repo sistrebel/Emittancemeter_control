@@ -155,7 +155,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     print("arrived at point")
            
             
-            result = start_readout(motor3.command,server)
+            result = start_readout(motor3,server)
             
             print(result)
             
