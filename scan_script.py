@@ -109,7 +109,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     server.issue_motor_command(motor2.command_queue,("calibrate",),isreturn = 0)
     server.issue_motor_command(motor3.command_queue,("calibrate",),isreturn = 0)
     
-    while motor1.iscalibrating == True or motor2.iscalibrating == True or motor3.iscalibrating == True: #wait for calibration to be done
+    while motor1.iscalibrating == True or motor2.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         time.sleep(0.1)
     #axis length in steps, parameters to adjust for specific situation...
     # x_length = 40000
