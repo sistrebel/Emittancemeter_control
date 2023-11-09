@@ -378,7 +378,7 @@ class MotorClient(): #i don't know if Thread is necessary
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
                         self.position -= velocity*looptime
-                print(self.position)
+                #print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
 
     def start_position_thread(self):

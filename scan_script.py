@@ -74,7 +74,7 @@ def snake_grid(num_points, x_lenght,y_length):
     # Sort the points in a snake-like pattern
     
     grid_points = np.column_stack((xx, yy))
-    # print(grid_points)
+    print(grid_points)
     # Return the points as a 2D array
     return grid_points
 
@@ -196,7 +196,7 @@ def start_readout(motor3,server):
     
     while moving == True: #wait until motors are done moving
         if motor3.ismoving == True:  #check that motors are actually free to move
-            time.sleep(0.1)
+            time.sleep(0.05)
             print(get_signal()) #simulate the readout while the motor is moving
         else:
             moving = False 
@@ -255,7 +255,7 @@ def mm_to_steps(mm,axis):
 
 
 # # # Example usage:
-num_points = 100  # Number of measurement points
+num_points = 6  # Number of measurement points
 x_length = 21700  # Length of the x-axis
 y_length = 104000 # Length of the y-axis
 
