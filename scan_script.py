@@ -109,14 +109,16 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     server.issue_motor_command(motor2.command_queue,("calibrate",),isreturn = 0)
     server.issue_motor_command(motor3.command_queue,("calibrate",),isreturn = 0)
     
+    while motor1.iscalibrating == True or motor2.iscalibrating == True or motor3.iscalibrating == True: #wait for calibration to be done
+        time.sleep(0.1)
     #axis length in steps, parameters to adjust for specific situation...
     # x_length = 40000
     # y_length = 5000
     print("number of points", number_of_points)
     
     #set the desired scan speed
-    x_speed = 500
-    y_speed = 500
+    x_speed = 1000
+    y_speed = 1000
     server.issue_motor_command(motor1.command_queue,("set_speed",x_speed),isreturn = 0)
     server.issue_motor_command(motor2.command_queue,("set_speed",y_speed),isreturn = 0)
     
@@ -153,7 +155,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     print("arrived at point")
            
             
-            result = start_readout(motor3,server)
+            result = start_readout(motor3.command,server)
             
             print(result)
             
@@ -176,7 +178,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
 def start_readout(motor3,server):
     """does readout stuff"""
-    readout_speed = 500
+    readout_speed = 1000
     server.issue_motor_command(motor3.command_queue,("set_speed",readout_speed),isreturn = 0)
     
     end_point = 1000

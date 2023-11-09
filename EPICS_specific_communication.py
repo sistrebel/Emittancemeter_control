@@ -112,6 +112,7 @@ class MotorClient(): #i don't know if Thread is necessary
        
         
         #keep track of movement for position
+        self.iscalibrating = False
         self.ismoving = False
         self.direction = "pos" #default direction forward
         self.start_position_thread()
@@ -332,6 +333,11 @@ class MotorClient(): #i don't know if Thread is necessary
         
     def calibration(self):
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
+        self.iscalibrating = True
+        time.sleep(0.2)
+        while self.pv_endstopstatus == 0xC: #didn't reach endstop yet
+             time.sleep(0.1)
+        self.iscalibrating = False
         
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
         """move motor to the very left until endstop is triggered.
