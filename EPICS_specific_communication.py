@@ -19,20 +19,14 @@ import time
 serial_port_lock = threading.Lock() 
 
 class MotorServer:
-    def __init__(self, port, baud_rate):
-       ...
-     
-       # self.serial_port = serial.Serial(port, baud_rate)
-       # self.bus = connect(self.serial_port) #from AllpyTMCL_classes; init, this returns all methods form the Bus class, so we do not need any other method which "sends" directly to the serial port
-       
-    def send_command(self, command, value): 
-        ...
+    def __init__(self):
+       self.running = True
 
-   
     def stop_server(self): #make sure that when running it again the serial port is accessible
         self.running = False
-        #self.serial_port.close()
+        
         print(" closed")
+        
        
     def start(self): #sends everything that is put into the queue
         try:
@@ -59,11 +53,12 @@ class MotorServer:
             self.serial_port.close()
             print("Exiting...")
     
-    def create_and_start_motor_client(self,server, MODULE_ADRESS, MOTOR_NUMBER, command_queue):
-        motor = MotorClient(server, MODULE_ADRESS, MOTOR_NUMBER, command_queue)
+    def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue):
+        motor = MotorClient(server, MOTOR_NUMBER, command_queue)
         motor.start_motor()
         thread = threading.Thread(target=motor.run)
         thread.start()
+        return motor
 
     def issue_motor_command(self,command_queue,command_data, isreturn = 0):
         result_queue = queue.Queue()
@@ -78,7 +73,7 @@ class MotorServer:
 # Client class to control a TMCL stepper motor (the commands are specific to this device...)
 class MotorClient(): #i don't know if Thread is necessary
    
-    def __init__(self, server, MODULE_ADDRESS, MOTOR_NUMBER, command_queue):  
+    def __init__(self, server, MOTOR_NUMBER, command_queue):  
    
         self.is_running = False  
         self.command_queue = command_queue
@@ -88,16 +83,18 @@ class MotorClient(): #i don't know if Thread is necessary
             "start": self.start_motor,
             "stop": self.stop_motor,
             "stop_move": self.stop_move,
-            "move_right": self.start_move_right,
-            "move_left": self.start_move_left,
+            "move_forwards": self.move_forwards,
+            "move_backwards": self.move_backwards,
             "set_brake": self.set_brake,
             "set_speed": self.set_speed,
+            "get_speed": self.get_speed,
             "release_brake": self.release_brake,
             "reference_search": self.reference_search,
             "go_to_position": self.goto_position,
             "get_position": self.get_position,
             "right_endstop": self.endstop_status,
             "position_reached": self.position_reached,
+            "calibrate": self.calibration,
             
         }
         
@@ -105,8 +102,6 @@ class MotorClient(): #i don't know if Thread is necessary
         self.stop_flag = threading.Event()
        
         self.server = server
-       
-        self.MODULE_ADDRESS = MODULE_ADDRESS 
        
         self.MOTOR_NUMBER = MOTOR_NUMBER
         #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
@@ -121,34 +116,73 @@ class MotorClient(): #i don't know if Thread is necessary
         self.direction = "pos" #default direction forward
         self.start_position_thread()
         
-        #initialize the pv's i am using here 
-        self.pv_brake = PV('XXX:m1.VAL') #change the names of record usw accordingly... prolly specific to the motor which is initialized ?
-        self.pv_speed_set = PV('T-MWE1X:VL:1')
-        self.pv_acc_set = PV('T-MWE1X:AC:1')
-        self.pv_acc_get = PV('T-MWE1X:ACRB:1')
-        self.pv_speed_get = PV('T-MWE1X:VLRB:1')
-        self.pv_COM_status = PV('T-MWE1X:COM:2')
-        self.pv_position = PV('XXX:m1.VAL')
-        self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
-        self.pv_rawincr_set = PV('T-MWE1X:INKR:raw')
-        self.pv_targetreached = PV('XXX:m1.VAL')
-        self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
-        self.pv_reference = PV('XXX:m1.VAL')
         
-        #set an initial_speed to 500 steps/s
-        self.Set(self.pv_speed_set,500)
+        #depending on MOTOR_NUMBER this will be different
+        
+        if MOTOR_NUMBER == 1:
+            #initialize the pv's i am using here 
+            print("yes")
+            self.pv_brake = PV('XXX:m1.VAL') #has none
+            self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
+            self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
+            self.pv_speed_get = PV('T-MWE1X:SMMAXRB:2')
+            self.pv_COM_status = PV('T-MWE1X:COM:2')
+            self.pv_position = PV('T-MWE1X:IST:1')  #in steps
+            self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+            self.pv_move_rel = PV('T-MWE1X:SMMS:2') #move relative 
+            self.pv_move_abs = PV('T-MWE1X:SMAP:2') #move absolute
+            self.pv_targetreached = PV('XXX:m1.VAL')
+            self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
+            self.pv_emstop = PV('T-MWE1X:STOP:2')
+            self.pv_command = PV('T-MWE1X:CMD:2')
+        
+        if MOTOR_NUMBER == 2: #correct PV's
+            #initialize the pv's i am using here 
+            self.pv_brake = PV('XXX:m1.VAL') #has none
+            self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
+            self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
+            self.pv_speed_get = PV('T-MWE1Y:VLRB:1')
+            self.pv_COM_status = PV('T-MWE1Y:COM:2')
+            self.pv_position = PV('T-MWE1Y:IST:1')  #in steps
+            self.pv_targetposition_steps = PV('T-MWE1Y:SOL:1') #in steps
+            self.pv_move_rel = PV('T-MWE1Y:SMMS:2') #move relative 
+            self.pv_move_abs = PV('T-MWE1Y:SMAP:2') #move absolute
+            self.pv_targetreached = PV('XXX:m1.VAL')
+            self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
+            self.pv_emstop = PV('T-MWE1Y:STOP:2')
+        
+        if MOTOR_NUMBER == 3: #correct PV's
+            #initialize the pv's i am using here 
+            self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
+            self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
+            self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
+            self.pv_ramp_set = PV('T-MWE2Y:SMRAMP:2')
+            self.pv_speed_get =  PV('T-MWE2Y:SMMAXRB:2')
+            self.pv_COM_status = PV('T-MWE2Y:COM:2')
+            self.pv_position = PV('T-MWE2Y:IST:1')  #in steps
+            self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+            self.pv_move_rel = PV('T-MWE2Y:SMMS:2') #move relative 
+            self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
+            self.pv_targetreached = PV('XXX:m1.VAL')
+            self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
+            self.pv_emstop = PV('T-MWE2Y:STOP:2')
+        
+        #set an initial_speed to 500 steps/s (not a random value which might still be in the IOC...)
+        self.Set(self.pv_speed_set,500) 
     
        
     def start_motor(self):
         self.is_running = True
-        #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
-        self.motorconn = ...#self.server.bus.get_motor(self.MODULE_ADDRESS,self.MOTOR_NUMBER) 
-        self.axisparameter = ... #AxisParameterInterface(self.motorconn)   #from allmyTMCLclasse; AxisParameterInterface
+        #not necessary anymore as long as python script run in same place as EPICS does --> PV's are visible then
+        #self.motorconn = ...#self.server.bus.get_motor(self.MODULE_ADDRESS,self.MOTOR_NUMBER) 
+        #self.axisparameter = ... #AxisParameterInterface(self.motorconn)   #from allmyTMCLclasse; AxisParameterInterface
        
        
     def stop_motor(self):
         self.stop_flag.set()
         self.is_running= False
+        self.stop_position_thread()
+        
         print("stop")
        
     def ex_command(self,command):
@@ -160,7 +194,6 @@ class MotorClient(): #i don't know if Thread is necessary
             with serial_port_lock: #make sure that commands are only sent through the port if no other thread is using it already
                 func = self.command_functions[command_name]
                 func(*args)
-    
     
     def run(self):  
         """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
@@ -185,20 +218,22 @@ class MotorClient(): #i don't know if Thread is necessary
                    # while self.ismoving == True:
                       #  time.sleep(0.05)
                     #Eresult_queue.put(self.ismoving)
+                if command[0] == "get_speed":
+                    with serial_port_lock: #make sure that this function is also blocked
+                        speed = self.get_speed()
                         
+                        result_queue.put(speed)
                 else:
-                    #self.motor_functions(command)
                     self.ex_command(command)
             except queue.Empty:
                 pass
-            time.sleep(0.1) #just some waiting time here to keep synchronization 
+            time.sleep(0.05) #just some waiting time here to keep synchronization 
             
     
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
         pv.put(value)
-#     command
-#     self.server.command_queue.put(command)
+        
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
@@ -207,16 +242,16 @@ class MotorClient(): #i don't know if Thread is necessary
        
 
     def release_brake(self):
-        self.Set(self.pv_brake,1)
+        self.Set(self.pv_brake,1) #or reversed...
    
-    def set_brake(self):#there is no break at the moment
+    def set_brake(self):
         self.Set(self.pv_brake,0)
        
-    def start_move_left(self, steps_to_incr):#this is backwards !!!
+    def move_backwards(self, steps_to_incr):#this is backwards !!!
         self.Set(self.pv_rawincr_set,-steps_to_incr) #negative to go left/backwards
      
    
-    def start_move_right(self, steps_to_incr): #this is forwards !!!
+    def move_forwards(self, steps_to_incr): #this is forwards !!!
         self.Set(self.pv_rawincr_set,steps_to_incr)
        
  
@@ -231,27 +266,32 @@ class MotorClient(): #i don't know if Thread is necessary
             self.direction = "pos"
         if position_steps < 0: 
             self.direction = "neg"
-        self.Set(self.pv_targetposition_steps, position_steps)
-        self.ismoving = True #maybe this is it...
+        
         velocity = self.Get(self.pv_speed_get)
         
         print("velocity", velocity)
         
-        if velocity != 0:
+        if velocity !=0 and velocity!= None:
+            
+            self.Set(self.pv_targetposition_steps, position_steps)
+            self.ismoving = True 
+            
             time_needed = abs(self.stepcount - position_steps)/velocity 
+            time.sleep(time_needed)
+            self.stepcount = self.stepcount + position_steps
+            print("stepcount is:", self.stepcount)  
+            print("time needed", time_needed)
         else:
-            time_needed = 0.01
-            print("WARNING: velocity is 0")
-        print("time needed", time_needed)
+            print("WARNING: velocity is 0 or None")
+            
         
-        time.sleep(time_needed) #wait with other commands during that time as well
-        
-        self.stepcount = self.stepcount + position_steps
-        print("stepcount is:", self.stepcount)
+         #wait with other commands during that time as well
+    
         self.ismoving = False
         
         return
        
+      
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
         then count the revolutions for figuring out the actual position."""
@@ -259,6 +299,7 @@ class MotorClient(): #i don't know if Thread is necessary
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
+        print("yuuuh")
         self.Set(self.pv_speed_set,speed)
     
     def get_speed(self):
@@ -284,6 +325,10 @@ class MotorClient(): #i don't know if Thread is necessary
         ...
         #return self.Get(self.pv_targetreached)
        
+        
+    def calibration(self):
+        self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
+        
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
         """move motor to the very left until endstop is triggered.
         Immediately stop and identify this position as '0'"""
@@ -316,14 +361,13 @@ class MotorClient(): #i don't know if Thread is necessary
             if self.ismoving:
                 
                 velocity = self.Get(self.pv_speed_get)
-                acceleration = self.Get(self.pv_acc_get)
                 
-                
-                looptime = 0.1
-                if self.direction == "pos":
-                    self.position +=  velocity*looptime
-                if self.direction == "neg":
-                    self.position -= velocity*looptime
+                if velocity != None:
+                    looptime = 0.1
+                    if self.direction == "pos":
+                        self.position +=  velocity*looptime
+                    if self.direction == "neg":
+                        self.position -= velocity*looptime
                 print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
 
@@ -344,24 +388,22 @@ class MotorClient(): #i don't know if Thread is necessary
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     try:
         # Initialize the server
-        server = MotorServer(port='COM7', baud_rate=9600) #create the bus connection
+        server = MotorServer() #create the bus connection
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
            
-        MODULE_ADRESS = 1
-        MOTOR_NUMBER = 0
+        
+        MOTOR_NUMBER = 1
            
         # Initialize the motor client and start it up in an extra thread.
-        server.create_and_start_motor_client(server, MODULE_ADRESS, MOTOR_NUMBER, command_queue)
+        server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
 
     except:
         print("thread error failed...")
     try:
         # Example: Move motor 1 by 1000 steps
-       
-        #server.issue_motor_command(command_queue, ("release_brake",))
+        server.issue_motor_command(command_queue, ("calibrate",))
         
-        #server.issue_motor_command(command_queue, ("reference_search",))
-        
+        server.issue_motor_command(command_queue, ("set_speed",1000))
         server.issue_motor_command(command_queue, ("go_to_position",1000))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
@@ -369,8 +411,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         time.sleep(5)
         
-        position = server.issue_motor_command(command_queue, ("get_position",), isreturn = 1)
-        print(position)
+        speed = server.issue_motor_command(command_queue, ("get_speed",), isreturn = 1)
+        print(speed)
         
         
         #server.issue_motor_command(command_queue, ("stop_move",))
