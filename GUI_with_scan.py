@@ -63,17 +63,13 @@ class MainWindow(QMainWindow):
        
       
         #connect to the server who does the connection to the device and the communication
-        self.server = control.MotorServer(port='COM7', baud_rate=9600) #only one server 
+        self.server = control.MotorServer() #only one server 
         
-        #assuming we have 3 motors controlled by one module
-        self.MODULE_ADRESS_1 = 1 
-        self.MODULE_ADRESS_2 = 1
-        self.MODULE_ADRESS_3 = 1
-       
+  
         #would in principle have different motor numbers starting at 0 (first axis)
-        self.MOTOR_NUMBER_1 = 0 
-        self.MOTOR_NUMBER_2 = 0
-        self.MOTOR_NUMBER_3 = 0
+        self.MOTOR_NUMBER_1 = 1 #horizontal collimator
+        self.MOTOR_NUMBER_2 = 2 #vertical collimator
+        self.MOTOR_NUMBER_3 = 3 #vertical readout
         
         #total grid dimensions in steps
         self.x_length = 50000
@@ -82,14 +78,12 @@ class MainWindow(QMainWindow):
         #initialize the motor queues
         self.motor1_queue =  queue.Queue()
         self.motor2_queue =  queue.Queue()
-        
         self.motor3_queue =  queue.Queue()
         
         #create the motor instances
-        self.server.create_and_start_motor_client(self.server, self.MODULE_ADRESS_1, self.MOTOR_NUMBER_1, self.motor1_queue)
-        self.server.create_and_start_motor_client(self.server, self.MODULE_ADRESS_1, self.MOTOR_NUMBER_1, self.motor1_queue)
-        
-        self.server.create_and_start_motor_client(self.server, self.MODULE_ADRESS_1, self.MOTOR_NUMBER_1, self.motor1_queue)
+        self.motor1 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_1, self.motor1_queue)
+        self.motor2 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_2, self.motor2_queue)
+        self.motor3 = self.server.create_and_start_motor_client(self.server,  self.MOTOR_NUMBER_3, self.motor3_queue)
         
     
         #initialize the moving axis with the first motor
@@ -144,10 +138,8 @@ class MainWindow(QMainWindow):
         self.show_message("selected " + Axis)
         
         if Axis == "Axis 1":
-            #print("yes")
             self.movingmotor = self.motor1_queue
         if Axis == "Axis 2":
-            #print("wow")
             self.movingmotor = self.motor2_queue
         if Axis == "Axis 3":
             self.movingmotor = self.motor3_queue
@@ -169,7 +161,7 @@ class MainWindow(QMainWindow):
         
         self.data_line =  self.graphWidget.plot(np.array(self.time), self.position, pen=pen) #divide time by 1000 to get seconds instead of ms
         
-    def update_plot_data(self):
+    def update_plot_data(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
         """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
         
         self.time = self.time[1:] #remove first
@@ -225,8 +217,8 @@ class MainWindow(QMainWindow):
         """Connecting the buttons"""
         self.GoleftButton.clicked.connect(self.leftbuttonclick)
         self.GorightButton.clicked.connect(self.rightbuttonclick)
-        self.GoleftButton.pressed.connect(self.move_left) #use press and release to have responsive buttons
-        self.GorightButton.pressed.connect(self.move_right)
+        self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
+        self.GorightButton.pressed.connect(self.move_forwards)
         self.GoleftButton.released.connect(self.stop)
         self.GorightButton.released.connect(self.stop)
         
@@ -263,8 +255,10 @@ class MainWindow(QMainWindow):
     def retrieve_numberofpoints(self):
         """get number of points for scan"""
         points = int(self.textEdit_Points.toPlainText()) #maybe this is wrong
-        scan_script.start_scan(self.motor1_queue,self.motor2_queue,points,self.x_length,self.y_length,self.server) #starts the scan with #points measurementpoints in the grid 
-    
+        if points > 0:
+            scan_script.start_scan(self.motor1,self.motor2,self.motor3,points,self.x_length,self.y_length,self.server) #starts the scan with #points measurementpoints in the grid 
+        else:
+            self.show_message("INVALID VALUE")
     def retrieve_directory(self):
         directory = self.textEdit_Directory.toPlainText()
         return directory
@@ -277,7 +271,7 @@ class MainWindow(QMainWindow):
     
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
-        self.Targetposition = self.textEdit_position.toPlainText()
+        self.Targetposition = int(self.textEdit_position.toPlainText())
         self.goto_position(self.Targetposition)
         
     def leftbuttonclick(self):
@@ -292,16 +286,16 @@ class MainWindow(QMainWindow):
     
     """change the way i send commands, use the issue commands function instead of doing it directly!!!"""
     
-    def move_left(self): #backwards
+    def move_backwards(self): #backwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
         self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor_queue, ("move_left",self.speed))
+        self.server.issue_motor_command(self.movingmotor_queue, ("move_backwards",self.speed))
         
     
-    def move_right(self): #forwards
+    def move_forwards(self): #forwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
         self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor_queue, ("move_right",self.speed))
+        self.server.issue_motor_command(self.movingmotor_queue, ("move_forwards",self.speed))
         
     def stop(self):
         self.server.issue_motor_command(self.movingmotor_queue, ("stop_move",))
@@ -329,10 +323,11 @@ class MainWindow(QMainWindow):
        
         
         self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
+        
         time.sleep(0.1)
         self.server.issue_motor_command(self.movingmotor_queue, ("go_to_position",0))
-        while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
-            time.sleep(0.1)
+        # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
+        #     time.sleep(0.1)
         self.server.issue_motor_command(self.movingmotor_queue, ("set_brake",))
         
         time.sleep(0.2) #wait until the command was processed
@@ -343,15 +338,10 @@ class MainWindow(QMainWindow):
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
         self.go_home(stop = True) #go home and stop the conection 
-        #self.server.stop_server()
+        self.server.stop_server()
         QApplication.quit()
         return
   
-    def get_input(self):
-        print("rotate by how many degrees?")
-        deg = int(input())
-        return deg
-
     def get_reference(self):
         self.show_message("reference search ongoing")
         #self.movingmotor_queue.put(("reference_search",))
