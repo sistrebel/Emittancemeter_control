@@ -233,7 +233,7 @@ class MotorClient(): #i don't know if Thread is necessary
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
         pv.put(value)
-        
+        return "has been set"
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
@@ -273,9 +273,10 @@ class MotorClient(): #i don't know if Thread is necessary
         
         if velocity !=0 and velocity!= None:
             
-            self.Set(self.pv_targetposition_steps, position_steps)
-            self.ismoving = True 
+            res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
+            print(res)
             
+            self.ismoving = True 
             time_needed = abs(self.stepcount - position_steps)/velocity 
             time.sleep(time_needed)
             self.stepcount = self.stepcount + position_steps
@@ -299,7 +300,6 @@ class MotorClient(): #i don't know if Thread is necessary
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
-        print("yuuuh")
         self.Set(self.pv_speed_set,speed)
     
     def get_speed(self):
@@ -307,6 +307,7 @@ class MotorClient(): #i don't know if Thread is necessary
         return speed
    
     def endstop_status(self):
+        #to do
         endstopvalue = self.Get(self.pv_endstopstatus)
         
         if endstopvalue == 0xD:
