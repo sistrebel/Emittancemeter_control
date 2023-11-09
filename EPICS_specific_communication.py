@@ -283,7 +283,7 @@ class MotorClient(): #i don't know if Thread is necessary
             self.ismoving = True 
             time_needed = abs(self.stepcount - position_steps)/velocity 
             time.sleep(time_needed)
-            self.stepcount = self.stepcount + position_steps
+            self.stepcount = position_steps #this is wrooooooongnnnnngngngngn!!!!!!!!!
             print("stepcount is:", self.stepcount)  
             print("time needed", time_needed)
         else:
