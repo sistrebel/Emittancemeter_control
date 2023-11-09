@@ -122,6 +122,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     x_speed = 1000
     y_speed = 1000
     server.issue_motor_command(motor1.command_queue,("set_speed",x_speed),isreturn = 0)
+    time.sleep(0.1)
     server.issue_motor_command(motor2.command_queue,("set_speed",y_speed),isreturn = 0)
     
     point_distribution = snake_grid(number_of_points,x_length,y_length)
@@ -163,6 +164,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             print(result)
             
             #return to initial position
+            time.sleep(0.1)
             return_speed = 1000
             server.issue_motor_command(motor3.command_queue,("go_to_position",return_speed),isreturn = 0)
             
