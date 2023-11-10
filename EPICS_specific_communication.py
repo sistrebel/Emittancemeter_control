@@ -352,6 +352,7 @@ class MotorClient(): #i don't know if Thread is necessary
    
     def set_speed(self,speed):
         self.pv_speed_set.put(speed)
+        
     
     def get_speed(self):
         speed = self.Get(self.pv_speed_get)
@@ -462,8 +463,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(command_queue, ("calibrate",))
         while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
             time.sleep(0.1)
-        server.issue_motor_command(command_queue, ("s ",1000))
+        server.issue_motor_command(command_queue, ("set_speed ",1000))
         time.sleep(0.1)
+        print(motor3.pv_speed_get.get())
         server.issue_motor_command(command_queue, ("go_to_position",1000))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
