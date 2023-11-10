@@ -93,7 +93,7 @@ class MotorClient(): #i don't know if Thread is necessary
         
         self.stop_flag = threading.Event()
        
-        #self.server = server
+        self.server = server
        
         self.MOTOR_NUMBER = MOTOR_NUMBER
         #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
@@ -170,9 +170,9 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
             
             self.calibration()
-            self.Set(self.pv_speed_set, 1500)
-            self.Set(self.pv_MAXCW, 104172)
-            self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            self.pv_speed_set.put(1500)
+            self.pv_MAXCW.put(105172)  
+            self.pv_SPAD.put(752) #don't part. about this value...
             
             self.Set(self.pv_targetposition_DRVL, 0)
             self.Set(self.pv_targetposition_DRVH, 104172)
@@ -203,10 +203,10 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
             
             self.calibration()
-            self.Set(self.pv_brake, 1)
-            self.Set(self.pv_speed_set, 1500)
-            self.Set(self.pv_MAXCW, 9600)  
-            self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            self.pv_brake.put(1)
+            self.pv_speed_set.put(1500)
+            self.pv_MAXCW.put(9600)  
+            self.pv_SPAD.put(752) #don't part. about this value...
             
             self.pv_targetposition_DRVL.put(0)
             self.pv_targetposition_DRVH.put(9600)
