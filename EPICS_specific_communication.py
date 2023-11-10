@@ -114,7 +114,7 @@ class MotorClient(): #i don't know if Thread is necessary
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
-            print("yes")
+            
             self.pv_brake = PV('XXX:m1.VAL') #has none
             self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
             self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
@@ -130,12 +130,21 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_command = PV('T-MWE1X:CMD:2')
             self.pv_MAXCW = PV('T-MWE1X:MAXCW:2')
             self.pv_SPAD = PV('T-MWE1X:SPAD:2')
+            self.pv_targetposition_DRVL = PV('T-MWE1X:SOL:1.DRVL')
+            self.pv_targetposition_DRVH = PV('T-MWE1X:SOL:1.DRVH')
+            self.pv_targetposition_LOPR = PV('T-MWE1X:SOL:1.LOPR')
+            self.pv_targetposition_HOPR = PV('T-MWE1X:SOL:1.HOPR')
             
             #set initial parameters and calibrate
             self.calibration()
             self.Set(self.pv_speed_set, 1500)
             self.Set(self.pv_MAXCW, 21766)
             self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            
+            self.Set(self.pv_targetposition_DRVL, 0)
+            self.Set(self.pv_targetposition_DRVH, 21766)
+            self.Set(self.pv_targetposition_LOPR, 0)
+            self.Set(self.pv_targetposition_HOPR, 21766)
             
             
         if MOTOR_NUMBER == 2: #correct PV's
@@ -155,12 +164,21 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_command = PV('T-MWE1Y:CMD:2')
             self.pv_MAXCW = PV('T-MWE1Y:MAXCW:2')
             self.pv_SPAD = PV('T-MWE1Y:SPAD:2')
+            self.pv_targetposition_DRVL = PV('T-MWE1Y:SOL:1.DRVL') #endpoint parameters for SOL:1
+            self.pv_targetposition_DRVH = PV('T-MWE1Y:SOL:1.DRVH')
+            self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
+            self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
             
             self.calibration()
             self.Set(self.pv_speed_set, 1500)
             self.Set(self.pv_MAXCW, 104172)
             self.Set(self.pv_SPAD, 752) #don't part. about this value...
-       
+            
+            self.Set(self.pv_targetposition_DRVL, 0)
+            self.Set(self.pv_targetposition_DRVH, 104172)
+            self.Set(self.pv_targetposition_LOPR, 0)
+            self.Set(self.pv_targetposition_HOPR, 104172)
+            
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
@@ -179,11 +197,21 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_command = PV('T-MWE2Y:CMD:2')
             self.pv_MAXCW = PV('T-MWE2Y:MAXCW:2')
             self.pv_SPAD = PV('T-MWE2Y:SPAD:2')
+            self.pv_targetposition_DRVL = PV('T-MWE2Y:SOL:1.DRVL')
+            self.pv_targetposition_DRVH = PV('T-MWE2Y:SOL:1.DRVH')
+            self.pv_targetposition_LOPR = PV('T-MWE2Y:SOL:1.LOPR')
+            self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
             
             self.calibration()
+            self.Set(self.pv_break, 1)
             self.Set(self.pv_speed_set, 1500)
-            self.Set(self.pv_MAXCW, 10000)  #needs to be adjusted still !!!
+            self.Set(self.pv_MAXCW, 9600)  
             self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            
+            self.Set(self.pv_targetposition_DRVL, 0)
+            self.Set(self.pv_targetposition_DRVH, 9600)
+            self.Set(self.pv_targetposition_LOPR, 0)
+            self.Set(self.pv_targetposition_HOPR, 9600)
         
          
        
@@ -420,7 +448,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
            
         
-        MOTOR_NUMBER = 1
+        MOTOR_NUMBER = 3
            
         # Initialize the motor client and start it up in an extra thread.
         motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
@@ -434,12 +462,12 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
             time.sleep(0.1)
         server.issue_motor_command(command_queue, ("set_speed",1000))
         time.sleep(0.1)
-        server.issue_motor_command(command_queue, ("go_to_position",10000))
+        server.issue_motor_command(command_queue, ("go_to_position",1000))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
         
-        time.sleep(5)
+        time.sleep(0.1)
         
         speed = server.issue_motor_command(command_queue, ("get_speed",), isreturn = 1)
         print(speed)
@@ -453,7 +481,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
        
         
         #command_queue.put(("stop",))
-        server.issue_motor_command(command_queue, ("stop",))
+        #server.issue_motor_command(command_queue, ("stop",))
         time.sleep(2) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
