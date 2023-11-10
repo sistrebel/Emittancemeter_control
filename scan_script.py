@@ -199,7 +199,7 @@ def start_readout(motor3,server):
     time.sleep(0.1)
     server.issue_motor_command(motor3.command_queue,("set_speed",readout_speed),isreturn = 0)
     
-    end_point = 1000
+    end_point = 9000
     start_point = 0
     
     #time_needed = time_estimation(start_point, end_point, readout_speed,readout_speed)
