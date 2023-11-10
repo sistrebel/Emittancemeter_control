@@ -208,10 +208,10 @@ class MotorClient(): #i don't know if Thread is necessary
             self.Set(self.pv_MAXCW, 9600)  
             self.Set(self.pv_SPAD, 752) #don't part. about this value...
             
-            self.Set(self.pv_targetposition_DRVL, 0)
-            self.Set(self.pv_targetposition_DRVH, 9600)
-            self.Set(self.pv_targetposition_LOPR, 0)
-            self.Set(self.pv_targetposition_HOPR, 9600)
+            self.pv_targetposition_DRVL.put(0)
+            self.pv_targetposition_DRVH.put(9600)
+            self.pv_targetposition_LOPR.put(0)
+            self.pv_targetposition_HOPR.put(9600)
         
          
        
