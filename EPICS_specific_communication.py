@@ -203,7 +203,7 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
             
             self.calibration()
-            self.Set(self.pv_break, 1)
+            self.Set(self.pv_brake, 1)
             self.Set(self.pv_speed_set, 1500)
             self.Set(self.pv_MAXCW, 9600)  
             self.Set(self.pv_SPAD, 752) #don't part. about this value...
@@ -444,21 +444,21 @@ class MotorClient(): #i don't know if Thread is necessary
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     try:
         # Initialize the server
-        server = MotorServer() #create the bus connection
+        server = MotorServer()
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
            
         
         MOTOR_NUMBER = 3
            
         # Initialize the motor client and start it up in an extra thread.
-        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor3 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
 
     except:
         print("thread error failed...")
     try:
         # Example: Move motor 1 by 1000 steps
         server.issue_motor_command(command_queue, ("calibrate",))
-        while motor1.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
+        while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
             time.sleep(0.1)
         server.issue_motor_command(command_queue, ("set_speed",1000))
         time.sleep(0.1)
