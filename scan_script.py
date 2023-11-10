@@ -113,9 +113,12 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     #start with recalibration of the motors:
     server.issue_motor_command(motor1.command_queue,("calibrate",),isreturn = 0)
     wait_for_server(server)
+    time.sleep(0.1)
     server.issue_motor_command(motor2.command_queue,("calibrate",),isreturn = 0)
+    time.sleep(0.1)
     wait_for_server(server)
     server.issue_motor_command(motor3.command_queue,("calibrate",),isreturn = 0)
+    time.sleep(0.1)
     
     while motor1.iscalibrating == True or motor2.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         time.sleep(0.1)
@@ -129,8 +132,10 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     y_speed = 1000
     server.issue_motor_command(motor1.command_queue,("set_speed",x_speed),isreturn = 0)
     wait_for_server(server)
+    time.sleep(0.1)
     server.issue_motor_command(motor2.command_queue,("set_speed",y_speed),isreturn = 0)
     wait_for_server(server)
+    time.sleep(0.1)
     point_distribution = snake_grid(number_of_points,x_length,y_length)
     print(point_distribution)
     
@@ -151,9 +156,10 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             while moving == False: #wait till motors are free and stopped
                 if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
                     server.issue_motor_command(motor1.command_queue,("go_to_position",point_x),isreturn = 0)  #moves motor on thread one
+                    moving = True
                     time.sleep(0.1) #safety
                     server.issue_motor_command(motor2.command_queue,("go_to_position",point_y),isreturn = 0) #moves motor on thread two
-                    moving = True
+                    time.sleep(0.1)
                 else: time.sleep(0.1)
             #time.sleep(time_needed)
             
@@ -173,7 +179,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             time.sleep(0.1)
             return_speed = 1000
             server.issue_motor_command(motor3.command_queue,("go_to_position",return_speed),isreturn = 0)
-            
+            time.sleep(0.1)
             #old_point = new_point 
             
             
@@ -190,6 +196,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
 def start_readout(motor3,server):
     """does readout stuff"""
     readout_speed = 1000
+    time.sleep(0.1)
     server.issue_motor_command(motor3.command_queue,("set_speed",readout_speed),isreturn = 0)
     
     end_point = 1000
@@ -200,6 +207,7 @@ def start_readout(motor3,server):
     moving = False
     while moving == False: #wait till motors are free and stopped
         if motor3.ismoving == False:  #check that motors are actually free to move, readjusting takes time as well
+            time.sleep(0.1)
             server.issue_motor_command(motor3.command_queue,("go_to_position",end_point),isreturn = 0)
             moving = True
         else: time.sleep(0.2)
