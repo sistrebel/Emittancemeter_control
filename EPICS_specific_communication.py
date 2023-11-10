@@ -138,6 +138,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #set initial parameters and calibrate
             self.calibration()
             self.pv_speed_set.put(1500)
+            print(self.pv_speed_get())
             self.pv_MAXCW.put(21766)
             self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -171,6 +172,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
             self.calibration()
             self.pv_speed_set.put(1500)
+            print(self.pv_speed_get())
             self.pv_MAXCW.put(105172)  
             self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -206,6 +208,7 @@ class MotorClient(): #i don't know if Thread is necessary
             self.calibration()
             self.pv_brake.put(1)
             self.pv_speed_set.put(1500)
+            print(self.pv_speed_get())
             self.pv_MAXCW.put(9600)  
             self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -463,7 +466,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(command_queue, ("calibrate",))
         while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
             time.sleep(0.1)
-        server.issue_motor_command(command_queue, ("set_speed ",1000))
+        server.issue_motor_command(command_queue, ("set_speed",1000))
         time.sleep(0.1)
         print(motor3.pv_speed_get.get())
         server.issue_motor_command(command_queue, ("go_to_position",1000))
