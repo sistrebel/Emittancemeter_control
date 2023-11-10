@@ -93,7 +93,7 @@ class MotorClient(): #i don't know if Thread is necessary
         
         self.stop_flag = threading.Event()
        
-        self.server = server
+        #self.server = server
        
         self.MOTOR_NUMBER = MOTOR_NUMBER
         #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
@@ -273,7 +273,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     res = self.ex_command(command)
                 
                 if res == "done":
-                    server.issending = False
+                    self.server.issending = False
             except queue.Empty:
                 pass
             
@@ -457,6 +457,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     except:
         print("thread error failed...")
     try:
+        
         # Example: Move motor 1 by 1000 steps
         server.issue_motor_command(command_queue, ("calibrate",))
         while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done

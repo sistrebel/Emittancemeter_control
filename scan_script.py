@@ -271,7 +271,7 @@ x_length = 21700  # Length of the x-axis
 y_length = 104000 # Length of the y-axis
 
 #measurement_points = distribute_measurement_points(num_points, x_length, y_length)
-points_distribution = snake_grid(num_points,x_length, y_length)
+#points_distribution = snake_grid(num_points,x_length, y_length)
 # #plot_measurement_points(measurement_points, x_length, y_length)
 
 # start_scan(1,1,num_points, x_length, y_length,1)
