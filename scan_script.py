@@ -13,8 +13,7 @@ import time
 from random import random
 import numpy as np
 
-"""random change""" 
-#woaaaahhhh
+
 
 def distribute_measurement_points(num_points, x_length, y_length):
     if num_points <= 0:
@@ -102,6 +101,10 @@ def plot_measurement_points(points_distribution, x_length, y_length):
     plt.show()
 # Example usage:
 
+def wait_for_server(server):
+    while server.issending == True:
+        pass
+    return "done"
 
 
 def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): #this will then issue the commands through the right command queue
@@ -109,9 +112,9 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     #start with recalibration of the motors:
     server.issue_motor_command(motor1.command_queue,("calibrate",),isreturn = 0)
-    time.sleep(0.1)
+    wait_for_server(server)
     server.issue_motor_command(motor2.command_queue,("calibrate",),isreturn = 0)
-    time.sleep(0.1)
+    wait_for_server(server)
     server.issue_motor_command(motor3.command_queue,("calibrate",),isreturn = 0)
     
     while motor1.iscalibrating == True or motor2.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
@@ -125,9 +128,9 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     x_speed = 1000
     y_speed = 1000
     server.issue_motor_command(motor1.command_queue,("set_speed",x_speed),isreturn = 0)
-    time.sleep(0.1)
+    wait_for_server(server)
     server.issue_motor_command(motor2.command_queue,("set_speed",y_speed),isreturn = 0)
-    
+    wait_for_server(server)
     point_distribution = snake_grid(number_of_points,x_length,y_length)
     print(point_distribution)
     

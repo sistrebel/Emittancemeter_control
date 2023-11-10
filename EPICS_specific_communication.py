@@ -35,19 +35,10 @@ class MotorServer:
                 if not self.command_queue.empty():# and self.isreading:
                     print("is reading:", self.isreading)
                     command = self.command_queue.get() #command_item = self.command_queue.get()#
-                   
-                    # command = command_item['command'] #extra bit
-                    # response_queue = command_item['response_queue']
-                   
+                  
                     self.send_command(command)
                    
-                    # #extra bit for reading response, 
-                    # if self.serial_port.in_waiting: 
-                    #     response = self.serial_port.readline().decode('utf-8').strip()
-                       
-                    #     print("response", response)
-                       
-                    # self.command_queue.task_done()
+
                     
         except KeyboardInterrupt:
             self.serial_port.close()
@@ -61,6 +52,7 @@ class MotorServer:
         return motor
 
     def issue_motor_command(self,command_queue,command_data, isreturn = 0):
+        self.issending = True
         result_queue = queue.Queue()
         command_queue.put((command_data, result_queue))
         
@@ -136,7 +128,16 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
             self.pv_emstop = PV('T-MWE1X:STOP:2')
             self.pv_command = PV('T-MWE1X:CMD:2')
-        
+            self.pv_MAXCW = PV('T-MWE1X:MAXCW:2')
+            self.pv_SPAD = PV('T-MWE1X:SPAD:2')
+            
+            #set initial parameters and calibrate
+            self.calibration()
+            self.Set(self.pv_speed_set, 1500)
+            self.Set(self.pv_MAXCW, 21766)
+            self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            
+            
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
             self.pv_brake = PV('XXX:m1.VAL') #has none
@@ -152,7 +153,14 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
             self.pv_emstop = PV('T-MWE1Y:STOP:2')
             self.pv_command = PV('T-MWE1Y:CMD:2')
-        
+            self.pv_MAXCW = PV('T-MWE1Y:MAXCW:2')
+            self.pv_SPAD = PV('T-MWE1Y:SPAD:2')
+            
+            self.calibration()
+            self.Set(self.pv_speed_set, 1500)
+            self.Set(self.pv_MAXCW, 104172)
+            self.Set(self.pv_SPAD, 752) #don't part. about this value...
+       
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
@@ -169,10 +177,15 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
             self.pv_emstop = PV('T-MWE2Y:STOP:2')
             self.pv_command = PV('T-MWE2Y:CMD:2')
+            self.pv_MAXCW = PV('T-MWE2Y:MAXCW:2')
+            self.pv_SPAD = PV('T-MWE2Y:SPAD:2')
+            
+            self.calibration()
+            self.Set(self.pv_speed_set, 1500)
+            self.Set(self.pv_MAXCW, 10000)  #needs to be adjusted still !!!
+            self.Set(self.pv_SPAD, 752) #don't part. about this value...
         
-        #set an initial_speed to 500 steps/s (not a random value which might still be in the IOC...)
-        self.Set(self.pv_speed_set,500) 
-    
+         
        
     def start_motor(self):
         self.is_running = True
@@ -183,7 +196,7 @@ class MotorClient(): #i don't know if Thread is necessary
        
     def stop_motor(self):
         self.stop_flag.set()
-        self.is_running= False
+        self.is_running = False
         self.stop_position_thread()
         
         print("stop")
@@ -197,7 +210,7 @@ class MotorClient(): #i don't know if Thread is necessary
             with serial_port_lock: #make sure that commands are only sent through the port if no other thread is using it already
                 func = self.command_functions[command_name]
                 func(*args)
-    
+        return "done"
     def run(self):  
         """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
         The commands in the command queue are issued from the """
@@ -211,11 +224,13 @@ class MotorClient(): #i don't know if Thread is necessary
                         if position is not None:
                             self.position = position
                             result_queue.put(position)
+                            res = "done"
                 if command[0] == "position_reached":
                       with serial_port_lock: #make sure that this function is also blocked
                           isreached = self.position_reached()
                           if isreached is not None:
                               result_queue.put(isreached)
+                              res = "done"
                 #if command[0] == "go_to_position":
                    # self.ex_command(command) #excecute the command
                    # while self.ismoving == True:
@@ -224,13 +239,16 @@ class MotorClient(): #i don't know if Thread is necessary
                 if command[0] == "get_speed":
                     with serial_port_lock: #make sure that this function is also blocked
                         speed = self.get_speed()
-                        
                         result_queue.put(speed)
+                        res = "done"
                 else:
-                    self.ex_command(command)
+                    res = self.ex_command(command)
+                
+                if res == "done":
+                    server.issending = False
             except queue.Empty:
                 pass
-            time.sleep(0.05) #just some waiting time here to keep synchronization 
+            
             
     
     def Set(self,pv,value):
@@ -405,16 +423,18 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         MOTOR_NUMBER = 1
            
         # Initialize the motor client and start it up in an extra thread.
-        server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
 
     except:
         print("thread error failed...")
     try:
         # Example: Move motor 1 by 1000 steps
         server.issue_motor_command(command_queue, ("calibrate",))
-        
+        while motor1.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
+            time.sleep(0.1)
         server.issue_motor_command(command_queue, ("set_speed",1000))
-        server.issue_motor_command(command_queue, ("go_to_position",1000))
+        time.sleep(0.1)
+        server.issue_motor_command(command_queue, ("go_to_position",10000))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
