@@ -13,6 +13,9 @@ import time
 from random import random
 import numpy as np
 
+"""random change""" 
+#woaaaahhhh
+
 def distribute_measurement_points(num_points, x_length, y_length):
     if num_points <= 0:
         return []
