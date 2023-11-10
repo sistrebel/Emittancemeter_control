@@ -137,14 +137,14 @@ class MotorClient(): #i don't know if Thread is necessary
             
             #set initial parameters and calibrate
             self.calibration()
-            self.Set(self.pv_speed_set, 1500)
-            self.Set(self.pv_MAXCW, 21766)
-            self.Set(self.pv_SPAD, 752) #don't part. about this value...
+            self.pv_speed_set.put(1500)
+            self.pv_MAXCW.put(21766)
+            self.pv_SPAD.put(752) #don't part. about this value...
             
-            self.Set(self.pv_targetposition_DRVL, 0)
-            self.Set(self.pv_targetposition_DRVH, 21766)
-            self.Set(self.pv_targetposition_LOPR, 0)
-            self.Set(self.pv_targetposition_HOPR, 21766)
+            self.pv_targetposition_DRVL.put(0)
+            self.pv_targetposition_DRVH.put(21766)
+            self.pv_targetposition_LOPR.put(0)
+            self.pv_targetposition_HOPR.put(21766)
             
             
         if MOTOR_NUMBER == 2: #correct PV's
@@ -174,10 +174,11 @@ class MotorClient(): #i don't know if Thread is necessary
             self.pv_MAXCW.put(105172)  
             self.pv_SPAD.put(752) #don't part. about this value...
             
-            self.Set(self.pv_targetposition_DRVL, 0)
-            self.Set(self.pv_targetposition_DRVH, 104172)
-            self.Set(self.pv_targetposition_LOPR, 0)
-            self.Set(self.pv_targetposition_HOPR, 104172)
+
+            self.pv_targetposition_DRVL.put(0)
+            self.pv_targetposition_DRVH.put(104172)
+            self.pv_targetposition_LOPR.put(0)
+            self.pv_targetposition_HOPR.put(104172)
             
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
