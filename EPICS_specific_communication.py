@@ -349,15 +349,13 @@ class MotorClient(): #i don't know if Thread is necessary
                 time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                
+                time.sleep(0.1) #safety wait
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 print(res)
                 self.ismoving = True 
-                self.time_needed = abs(self.stepcount - position_steps)/velocity  #fiixxxx thiiiiisssss!!!!!
+                self.time_needed = abs(self.stepcount - position_steps)/velocity  
                 
-                #time_sending = 2
-                #self.start_timer_thread(time_sending)
-                #time.sleep(time_needed)
+        
                 self.stepcount = position_steps #new position in steps #SOL position
                 print("stepcount is:", self.stepcount)  
                 print("time needed", self.time_needed)
