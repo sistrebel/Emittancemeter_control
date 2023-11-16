@@ -344,12 +344,12 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            while self.ismoving == True or self.issending == True:
+            while self.ismoving == True:
                 print("waiting")
                 time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                time.sleep(0.1) #safety wait because otherwise the processing has not yet been done...
+                time.sleep(1) #safety wait because otherwise the processing has not yet been done...
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 print(res)
                 self.ismoving = True 
@@ -535,6 +535,10 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
         
         server.issue_motor_command(motor1, ("go_to_position",0))
+        
+        server.issue_motor_command(motor1, ("go_to_position",2000))
+        
+        server.issue_motor_command(motor1, ("calibrate",))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
