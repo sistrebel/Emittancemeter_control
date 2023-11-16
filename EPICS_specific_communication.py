@@ -413,12 +413,11 @@ class MotorClient(): #i don't know if Thread is necessary
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
             return
-        
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
         self.iscalibrating = True
         #time.sleep(0.2)
         while self.Get(self.pv_endstopstatus) != 0xD: #didn't reach endstop ye
-             print(self.Get(self.pv_endstopstatus))
+             #print(self.Get(self.pv_endstopstatus))
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
@@ -508,13 +507,14 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # Initialize the server
         server = MotorServer()
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-           
+        command_queue2 = queue.Queue()
         
         MOTOR_NUMBER = 1
            
         # Initialize the motor client and start it up in an extra thread.
         
         motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         print("done initializing")
     
@@ -529,24 +529,28 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #     time.sleep(0.1)
         #     print("calibrating")
         server.issue_motor_command(motor1, ("set_speed",1300))
+        server.issue_motor_command(motor2, ("set_speed",1300))
         #print("here")
         time.sleep(0.1)
         
         server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
-        
+        server.issue_motor_command(motor2, ("set_speed",1300))
         server.issue_motor_command(motor1, ("go_to_position",0))
+        server.issue_motor_command(motor2, ("set_speed",1300))
         
         server.issue_motor_command(motor1, ("go_to_position",2000))
         
+        
         server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor2, ("set_speed",1300))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
         
-        time.sleep(0.1)
+        # time.sleep(0.1)
         
-        speed = server.issue_motor_command(motor1, ("get_speed",), isreturn = 1)
-        print(speed)
+        # speed = server.issue_motor_command(motor1, ("get_speed",), isreturn = 1)
+        # print(speed)
         
         
         #server.issue_motor_command(command_queue, ("stop_move",))
