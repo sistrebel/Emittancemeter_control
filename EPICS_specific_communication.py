@@ -537,7 +537,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         time.sleep(0.1)
         
-        speed = server.issue_motor_command(motor3, ("get_speed",), isreturn = 1)
+        speed = server.issue_motor_command(motor1, ("get_speed",), isreturn = 1)
         print(speed)
         
         
