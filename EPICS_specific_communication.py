@@ -256,7 +256,7 @@ class MotorClient(): #i don't know if Thread is necessary
         The commands in the command queue are issued from the """
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
-            with self.port_lock: #make sure that this critical section can only be accessed when the motor lock is free
+             #make sure that this critical section can only be accessed when the motor lock is free
                 try:
                     command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                     if command[0] == "get_position":
@@ -419,6 +419,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.pv_endstopstatus == 0xC: #didn't reach endstop yet
              time.sleep(0.1)
         self.iscalibrating = False
+        print("done calibrating")
         
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
         """move motor to the very left until endstop is triggered.
@@ -506,11 +507,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
            
         
-        MOTOR_NUMBER = 3
+        MOTOR_NUMBER = 1
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor3 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
         
         print("done initializing")
     
@@ -519,17 +520,17 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     try:
         
         # Example: Move motor 1 by 1000 steps
-        #server.issue_motor_command(motor3, ("calibrate",))
+        server.issue_motor_command(motor1, ("calibrate",))
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
-        server.issue_motor_command(motor3, ("set_speed",1000))
+        server.issue_motor_command(motor1, ("set_speed",1000))
         #print("here")
         #time.sleep(0.1)
         
-        server.issue_motor_command(motor3, ("go_to_position",10000)) #do not return from this;((()))
+        server.issue_motor_command(motor1, ("go_to_position",10000)) #do not return from this;((()))
         #time.sleep(2)
-        server.issue_motor_command(motor3, ("go_to_position",0))
+        server.issue_motor_command(motor1, ("go_to_position",0))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
