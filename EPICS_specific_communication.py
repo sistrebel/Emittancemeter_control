@@ -344,7 +344,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            while self.ismoving == True:
+            while self.ismoving == True or self.iscalibrating == True:
                 print("waiting")
                 time.sleep(0.1)
             
@@ -416,7 +416,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
         self.iscalibrating = True
         time.sleep(0.2)
-        while self.pv_endstopstatus == 0xC: #didn't reach endstop yet
+        while self.pv_endstopstatus != 0xD: #didn't reach upper endstop yet
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
@@ -465,6 +465,7 @@ class MotorClient(): #i don't know if Thread is necessary
         
     def lock_for_time(self):
         while True:
+            
             if self.time_needed > 0:  #only when it has been set true in another place!!!
                 start = time.time()
                 print("start counting")
