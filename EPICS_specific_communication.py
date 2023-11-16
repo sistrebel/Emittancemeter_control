@@ -514,7 +514,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # Initialize the motor client and start it up in an extra thread.
         
         motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
-        time.sleep(0.3)
+        time.sleep(2)
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         print("done initializing")
