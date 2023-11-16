@@ -355,8 +355,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.ismoving = True 
                 time_needed = abs(self.stepcount - position_steps)/velocity  #fiixxxx thiiiiisssss!!!!!
                 
-                time_sending = 2
-                self.start_timer_thread(time_sending)
+                #time_sending = 2
+                #self.start_timer_thread(time_sending)
                 #time.sleep(time_needed)
                 self.stepcount = position_steps #new position in steps #SOL position
                 print("stepcount is:", self.stepcount)  
@@ -521,12 +521,13 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         # Example: Move motor 1 by 1000 steps
         server.issue_motor_command(motor1, ("calibrate",))
+        time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
         server.issue_motor_command(motor1, ("set_speed",1000))
         #print("here")
-        #time.sleep(0.1)
+        time.sleep(0.1)
         
         server.issue_motor_command(motor1, ("go_to_position",10000)) #do not return from this;((()))
         #time.sleep(2)
