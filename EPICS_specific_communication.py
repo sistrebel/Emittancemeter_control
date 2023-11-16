@@ -141,7 +141,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_HOPR = PV('T-MWE1X:SOL:1.HOPR')
                 
                 #set initial parameters and calibrate
-                self.calibration()
+                self.calibration() #i do calibrate!!!
                 self.pv_speed_set.put(1500)
                 print(self.pv_speed_set.get())
                 self.pv_MAXCW.put(21766)
@@ -344,7 +344,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            while self.ismoving == True or self.iscalibrating == True:
+            while self.ismoving == True:
                 print("waiting")
                 time.sleep(0.1)
             
@@ -413,10 +413,13 @@ class MotorClient(): #i don't know if Thread is necessary
        
         
     def calibration(self):
+        if self.Get(self.pv_speed_get) == None:
+            return
+        
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
         self.iscalibrating = True
         time.sleep(0.2)
-        while self.pv_endstopstatus != 0xD: #didn't reach upper endstop yet
+        while self.pv_endstopstatus != 0xD: #didn't reach endstop yet
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
