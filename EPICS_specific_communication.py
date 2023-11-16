@@ -523,7 +523,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
         #time.sleep(2)
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         print("done initializing")
     
@@ -537,25 +537,25 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
-        server.issue_motor_command(motor2, ("set_speed",1300))
-        time.sleep(0.2)
+        server.issue_motor_command(motor1, ("set_speed",1300))
+        #time.sleep(0.2)
         #erver.issue_motor_command(motor1, ("set_speed",1300))
         #print("here")
         
         
-        server.issue_motor_command(motor2, ("go_to_position",1000)) #do not return from this;((()))
-        time.sleep(0.2)
-        server.issue_motor_command(motor1, ("go_to_position",1000))
-        time.sleep(0.2)
-        server.issue_motor_command(motor2, ("go_to_position",0))
-        time.sleep(0.2)
+        server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
+        #time.sleep(0.2)
+        #server.issue_motor_command(motor1, ("go_to_position",1000))
+        #time.sleep(0.2)
+        #server.issue_motor_command(motor2, ("go_to_position",0))
+       # time.sleep(0.2)
         server.issue_motor_command(motor1, ("go_to_position",0))
         
-        time.sleep(0.2)
+        #time.sleep(0.2)
         server.issue_motor_command(motor1, ("go_to_position",2000))
         
         
-        server.issue_motor_command(motor2, ("calibrate",))
+        #server.issue_motor_command(motor2, ("calibrate",))
         server.issue_motor_command(motor1, ("calibrate",))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
