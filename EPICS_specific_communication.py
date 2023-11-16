@@ -21,7 +21,7 @@ import time
 class MotorServer:
     def __init__(self):
        self.running = True
-
+       self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
     def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
         
@@ -54,6 +54,7 @@ class MotorServer:
     def issue_motor_command(self,motor,command_data, isreturn = 0):
         self.issending = True
         result_queue = queue.Queue()
+        
         motor.command_queue.put((command_data, result_queue)) #put the command in the queue regardless
     
         if isreturn == 1: #only look for a return value if isreturn = 1
@@ -117,7 +118,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.locked = False
         #depending on MOTOR_NUMBER this will be different
         
-        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
+        
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
@@ -263,7 +264,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(self.pv_status) != 1: #means Done
+                    if self.Get(server.pv_status) != 1: #means Done
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -530,7 +531,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         
-        time.sleep(4)
+        
         print("done initializing")
     
     except:
