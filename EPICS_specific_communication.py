@@ -349,7 +349,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                time.sleep(0.1) #safety wait
+                time.sleep(1) #safety wait
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 print(res)
                 self.ismoving = True 
@@ -533,7 +533,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         time.sleep(0.1)
         
         server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
-        time.sleep(0.1)
+        
         server.issue_motor_command(motor1, ("go_to_position",0))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
