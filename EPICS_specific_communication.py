@@ -120,6 +120,9 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
             #with self.port_lock:
+                
+                self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
+                
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
                 self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
@@ -258,42 +261,47 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                    if command[0] == "get_position":
-                        #with port_lock: #make sure that this function is also blocked
-                            position = self.get_position()
-                            if position is not None:
-                                self.position = position
-                                result_queue.put(position)
-                                res = "done"
-                    if command[0] == "position_reached":
-                          #with port_lock: #make sure that this function is also blocked
-                              isreached = self.position_reached()
-                              if isreached is not None:
-                                  result_queue.put(isreached)
-                                  res = "done"
-                    #if command[0] == "go_to_position":
-                       # self.ex_command(command) #excecute the command
-                       # while self.ismoving == True:
-                          #  time.sleep(0.05)
-                        #Eresult_queue.put(self.ismoving)
-                    if command[0] == "get_speed":
-                        #with port_lock: #make sure that this function is also blocked
-                            speed = self.get_speed()
-                            result_queue.put(speed)
-                            res = "done"
-                    else:
-                        print("else")
-                        res = self.ex_command(command)
+                    if self.Get(self.pv_status) == 2: #means Done
                     
-                    if res == "done":
-                        self.server.issending = False
-                        time.sleep(0.1)
-                        print("free again")
+                        command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+                        if command[0] == "get_position":
+                            #with port_lock: #make sure that this function is also blocked
+                                position = self.get_position()
+                                if position is not None:
+                                    self.position = position
+                                    result_queue.put(position)
+                                    res = "done"
+                        if command[0] == "position_reached":
+                              #with port_lock: #make sure that this function is also blocked
+                                  isreached = self.position_reached()
+                                  if isreached is not None:
+                                      result_queue.put(isreached)
+                                      res = "done"
+                        #if command[0] == "go_to_position":
+                           # self.ex_command(command) #excecute the command
+                           # while self.ismoving == True:
+                              #  time.sleep(0.05)
+                            #Eresult_queue.put(self.ismoving)
+                        if command[0] == "get_speed":
+                            #with port_lock: #make sure that this function is also blocked
+                                speed = self.get_speed()
+                                result_queue.put(speed)
+                                res = "done"
+                        else:
+                            print("else")
+                            res = self.ex_command(command)
+                        
+                        if res == "done":
+                            self.server.issending = False
+                            time.sleep(0.1)
+                            print("free again")
+                    else:
+                        print("is busy")
+                    
                 except:
-                    if self.command_queue.empty():
-                        pass
-                    else: print("something worse happened")
+                        if self.command_queue.empty():
+                            pass
+                        else: print("something worse happened")
                     
             
             
@@ -513,7 +521,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        #motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
         #time.sleep(2)
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
@@ -531,24 +539,24 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #     print("calibrating")
         server.issue_motor_command(motor2, ("set_speed",1300))
         time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("set_speed",1300))
+        #erver.issue_motor_command(motor1, ("set_speed",1300))
         #print("here")
         
         
         server.issue_motor_command(motor2, ("go_to_position",1000)) #do not return from this;((()))
         time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",1000))
+        server.issue_motor_command(motor1, ("go_to_position",1000))
         time.sleep(0.2)
         server.issue_motor_command(motor2, ("go_to_position",0))
         time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",0))
+        server.issue_motor_command(motor1, ("go_to_position",0))
         
         time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",2000))
+        server.issue_motor_command(motor1, ("go_to_position",2000))
         
         
         server.issue_motor_command(motor2, ("calibrate",))
-        #server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor1, ("calibrate",))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
