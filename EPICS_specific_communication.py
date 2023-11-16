@@ -418,8 +418,9 @@ class MotorClient(): #i don't know if Thread is necessary
         
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
         self.iscalibrating = True
-        time.sleep(0.2)
-        while self.pv_endstopstatus != 0xD: #didn't reach endstop yet
+        #time.sleep(0.2)
+        while self.Get(self.pv_endstopstatus) != 0xD: #didn't reach endstop ye
+             print(self.Get(self.pv_endstopstatus))
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
@@ -524,8 +525,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     try:
         
         # Example: Move motor 1 by 1000 steps
-        server.issue_motor_command(motor1, ("calibrate",))
-        time.sleep(0.1)
+        # server.issue_motor_command(motor1, ("calibrate",))
+        # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
