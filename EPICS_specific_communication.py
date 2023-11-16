@@ -15,14 +15,14 @@ import time
 
 
 
-#Define a global lock for the serial port such that only one thread at a time can use it
-serial_port_lock = threading.Lock() 
+#Define a global lock for the port such that only one thread at a time can use it
+#port_lock = threading.Lock() 
 
 class MotorServer:
     def __init__(self):
        self.running = True
 
-    def stop_server(self): #make sure that when running it again the serial port is accessible
+    def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
         
         print(" closed")
@@ -45,21 +45,21 @@ class MotorServer:
             print("Exiting...")
     
     def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue):
-        motor = MotorClient(server, MOTOR_NUMBER, command_queue)
+        motor = MotorClient(server, MOTOR_NUMBER, command_queue) #pass the general port lock to each motor thread
         motor.start_motor()
         thread = threading.Thread(target=motor.run)
         thread.start()
         return motor
 
-    def issue_motor_command(self,command_queue,command_data, isreturn = 0):
+    def issue_motor_command(self,motor,command_data, isreturn = 0):
         self.issending = True
         result_queue = queue.Queue()
-        command_queue.put((command_data, result_queue))
-        
+        motor.command_queue.put((command_data, result_queue)) #put the command in the queue regardless
+    
         if isreturn == 1: #only look for a return value if isreturn = 1
             result = result_queue.get()
         else: result = 1
-        
+    
         return result 
 
 # Client class to control a TMCL stepper motor (the commands are specific to this device...)
@@ -67,6 +67,8 @@ class MotorClient(): #i don't know if Thread is necessary
    
     def __init__(self, server, MOTOR_NUMBER, command_queue):  
    
+        self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
+        
         self.is_running = False  
         self.command_queue = command_queue
         
@@ -101,7 +103,7 @@ class MotorClient(): #i don't know if Thread is necessary
         #set initial position
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
         self.stepcount = 0
-       
+        self.time_needed = 0
         
         #keep track of movement for position
         self.iscalibrating = False
@@ -109,115 +111,120 @@ class MotorClient(): #i don't know if Thread is necessary
         self.direction = "pos" #default direction forward
         self.start_position_thread()
         
+        #start the thread to time ismoving variable...
+        self.start_timer_thread()
         
+        self.locked = False
         #depending on MOTOR_NUMBER this will be different
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
-            
-            self.pv_brake = PV('XXX:m1.VAL') #has none
-            self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
-            self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
-            self.pv_speed_get = PV('T-MWE1X:SMMAXRB:2')
-            self.pv_COM_status = PV('T-MWE1X:COM:2')
-            self.pv_position = PV('T-MWE1X:IST:1')  #in steps
-            self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
-            self.pv_move_rel = PV('T-MWE1X:SMMS:2') #move relative 
-            self.pv_move_abs = PV('T-MWE1X:SMAP:2') #move absolute
-            self.pv_targetreached = PV('XXX:m1.VAL')
-            self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
-            self.pv_emstop = PV('T-MWE1X:STOP:2')
-            self.pv_command = PV('T-MWE1X:CMD:2')
-            self.pv_MAXCW = PV('T-MWE1X:MAXCW:2')
-            self.pv_SPAD = PV('T-MWE1X:SPAD:2')
-            self.pv_targetposition_DRVL = PV('T-MWE1X:SOL:1.DRVL')
-            self.pv_targetposition_DRVH = PV('T-MWE1X:SOL:1.DRVH')
-            self.pv_targetposition_LOPR = PV('T-MWE1X:SOL:1.LOPR')
-            self.pv_targetposition_HOPR = PV('T-MWE1X:SOL:1.HOPR')
-            
-            #set initial parameters and calibrate
-            self.calibration()
-            self.pv_speed_set.put(1500)
-            print(self.pv_speed_set.get())
-            self.pv_MAXCW.put(21766)
-            self.pv_SPAD.put(752) #don't part. about this value...
-            
-            self.pv_targetposition_DRVL.put(0)
-            self.pv_targetposition_DRVH.put(21766)
-            self.pv_targetposition_LOPR.put(0)
-            self.pv_targetposition_HOPR.put(21766)
+            #with self.port_lock:
+                self.pv_brake = PV('XXX:m1.VAL') #has none
+                self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
+                self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
+                self.pv_speed_get = PV('T-MWE1X:SMMAXRB:2')
+                self.pv_COM_status = PV('T-MWE1X:COM:2')
+                self.pv_position = PV('T-MWE1X:IST:1')  #in steps
+                self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+                self.pv_move_rel = PV('T-MWE1X:SMMS:2') #move relative 
+                self.pv_move_abs = PV('T-MWE1X:SMAP:2') #move absolute
+                self.pv_targetreached = PV('XXX:m1.VAL')
+                self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
+                self.pv_emstop = PV('T-MWE1X:STOP:2')
+                self.pv_command = PV('T-MWE1X:CMD:2')
+                self.pv_MAXCW = PV('T-MWE1X:MAXCW:2')
+                self.pv_SPAD = PV('T-MWE1X:SPAD:2')
+                self.pv_targetposition_DRVL = PV('T-MWE1X:SOL:1.DRVL')
+                self.pv_targetposition_DRVH = PV('T-MWE1X:SOL:1.DRVH')
+                self.pv_targetposition_LOPR = PV('T-MWE1X:SOL:1.LOPR')
+                self.pv_targetposition_HOPR = PV('T-MWE1X:SOL:1.HOPR')
+                
+                #set initial parameters and calibrate
+                self.calibration()
+                self.pv_speed_set.put(1500)
+                print(self.pv_speed_set.get())
+                self.pv_MAXCW.put(21766)
+                self.pv_SPAD.put(752) #don't part. about this value...
+                
+                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVH.put(21766)
+                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_HOPR.put(21766)
             
             
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
-            self.pv_brake = PV('XXX:m1.VAL') #has none
-            self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
-            self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
-            self.pv_speed_get = PV('T-MWE1Y:VLRB:1')
-            self.pv_COM_status = PV('T-MWE1Y:COM:2')
-            self.pv_position = PV('T-MWE1Y:IST:1')  #in steps
-            self.pv_targetposition_steps = PV('T-MWE1Y:SOL:1') #in steps
-            self.pv_move_rel = PV('T-MWE1Y:SMMS:2') #move relative 
-            self.pv_move_abs = PV('T-MWE1Y:SMAP:2') #move absolute
-            self.pv_targetreached = PV('XXX:m1.VAL')
-            self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
-            self.pv_emstop = PV('T-MWE1Y:STOP:2')
-            self.pv_command = PV('T-MWE1Y:CMD:2')
-            self.pv_MAXCW = PV('T-MWE1Y:MAXCW:2')
-            self.pv_SPAD = PV('T-MWE1Y:SPAD:2')
-            self.pv_targetposition_DRVL = PV('T-MWE1Y:SOL:1.DRVL') #endpoint parameters for SOL:1
-            self.pv_targetposition_DRVH = PV('T-MWE1Y:SOL:1.DRVH')
-            self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
-            self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
-            
-            self.calibration()
-            self.pv_speed_set.put(1500)
-            print(self.pv_speed_set.get())
-            self.pv_MAXCW.put(105172)  
-            self.pv_SPAD.put(752) #don't part. about this value...
+           # with self.port_lock:
+                self.pv_brake = PV('XXX:m1.VAL') #has none
+                self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
+                self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
+                self.pv_speed_get = PV('T-MWE1Y:VLRB:1')
+                self.pv_COM_status = PV('T-MWE1Y:COM:2')
+                self.pv_position = PV('T-MWE1Y:IST:1')  #in steps
+                self.pv_targetposition_steps = PV('T-MWE1Y:SOL:1') #in steps
+                self.pv_move_rel = PV('T-MWE1Y:SMMS:2') #move relative 
+                self.pv_move_abs = PV('T-MWE1Y:SMAP:2') #move absolute
+                self.pv_targetreached = PV('XXX:m1.VAL')
+                self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
+                self.pv_emstop = PV('T-MWE1Y:STOP:2')
+                self.pv_command = PV('T-MWE1Y:CMD:2')
+                self.pv_MAXCW = PV('T-MWE1Y:MAXCW:2')
+                self.pv_SPAD = PV('T-MWE1Y:SPAD:2')
+                self.pv_targetposition_DRVL = PV('T-MWE1Y:SOL:1.DRVL') #endpoint parameters for SOL:1
+                self.pv_targetposition_DRVH = PV('T-MWE1Y:SOL:1.DRVH')
+                self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
+                self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
+                
+                self.calibration()
+                self.pv_speed_set.put(1500)
+                print(self.pv_speed_set.get())
+                self.pv_MAXCW.put(105172)  
+                self.pv_SPAD.put(752) #don't part. about this value...
             
 
-            self.pv_targetposition_DRVL.put(0)
-            self.pv_targetposition_DRVH.put(104172)
-            self.pv_targetposition_LOPR.put(0)
-            self.pv_targetposition_HOPR.put(104172)
+                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVH.put(104172)
+                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_HOPR.put(104172)
             
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
-            self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
-            self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
-            self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
-            self.pv_ramp_set = PV('T-MWE2Y:SMRAMP:2')
-            self.pv_speed_get =  PV('T-MWE2Y:SMMAXRB:2')
-            self.pv_COM_status = PV('T-MWE2Y:COM:2')
-            self.pv_position = PV('T-MWE2Y:IST:1')  #in steps
-            self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
-            self.pv_move_rel = PV('T-MWE2Y:SMMS:2') #move relative 
-            self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
-            self.pv_targetreached = PV('XXX:m1.VAL')
-            self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
-            self.pv_emstop = PV('T-MWE2Y:STOP:2')
-            self.pv_command = PV('T-MWE2Y:CMD:2')
-            self.pv_MAXCW = PV('T-MWE2Y:MAXCW:2')
-            self.pv_SPAD = PV('T-MWE2Y:SPAD:2')
-            self.pv_targetposition_DRVL = PV('T-MWE2Y:SOL:1.DRVL')
-            self.pv_targetposition_DRVH = PV('T-MWE2Y:SOL:1.DRVH')
-            self.pv_targetposition_LOPR = PV('T-MWE2Y:SOL:1.LOPR')
-            self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
+            #with self.port_lock:
+                self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
+                self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
+                self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
+                self.pv_ramp_set = PV('T-MWE2Y:SMRAMP:2')
+                self.pv_speed_get =  PV('T-MWE2Y:SMMAXRB:2')
+                self.pv_COM_status = PV('T-MWE2Y:COM:2')
+                self.pv_position = PV('T-MWE2Y:IST:1')  #in steps
+                self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+                self.pv_move_rel = PV('T-MWE2Y:SMMS:2') #move relative 
+                self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
+                self.pv_targetreached = PV('XXX:m1.VAL')
+                self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
+                self.pv_emstop = PV('T-MWE2Y:STOP:2')
+                self.pv_command = PV('T-MWE2Y:CMD:2')
+                self.pv_MAXCW = PV('T-MWE2Y:MAXCW:2')
+                self.pv_SPAD = PV('T-MWE2Y:SPAD:2')
+                self.pv_targetposition_DRVL = PV('T-MWE2Y:SOL:1.DRVL')
+                self.pv_targetposition_DRVH = PV('T-MWE2Y:SOL:1.DRVH')
+                self.pv_targetposition_LOPR = PV('T-MWE2Y:SOL:1.LOPR')
+                self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
+                
+                self.calibration()
+                self.pv_brake.put(1)
+                self.pv_speed_set.put(1500)
+                print(self.pv_speed_set.get())
+                time.sleep(0.1)
+                self.pv_MAXCW.put(9600)  
+                self.pv_SPAD.put(752) #don't part. about this value...
+                
+                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVH.put(9600)
+                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_HOPR.put(9600)
             
-            self.calibration()
-            self.pv_brake.put(1)
-            self.pv_speed_set.put(1500)
-            print(self.pv_speed_set.get())
-            time.sleep(0.1)
-            self.pv_MAXCW.put(9600)  
-            self.pv_SPAD.put(752) #don't part. about this value...
-            
-            self.pv_targetposition_DRVL.put(0)
-            self.pv_targetposition_DRVH.put(9600)
-            self.pv_targetposition_LOPR.put(0)
-            self.pv_targetposition_HOPR.put(9600)
-        
          
        
     def start_motor(self):
@@ -240,7 +247,7 @@ class MotorClient(): #i don't know if Thread is necessary
         command_name, *args = command
        
         if command_name in self.command_functions:
-            with serial_port_lock: #make sure that commands are only sent through the port if no other thread is using it already
+            #with port_lock: #make sure that commands are only sent through the port if no other thread is using it already
                 func = self.command_functions[command_name]
                 func(*args)
         return "done"
@@ -249,49 +256,59 @@ class MotorClient(): #i don't know if Thread is necessary
         The commands in the command queue are issued from the """
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
-            try:
-                command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                if command[0] == "get_position":
-                    with serial_port_lock: #make sure that this function is also blocked
-                        position = self.get_position()
-                        if position is not None:
-                            self.position = position
-                            result_queue.put(position)
+            with self.port_lock: #make sure that this critical section can only be accessed when the motor lock is free
+                try:
+                    command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+                    if command[0] == "get_position":
+                        #with port_lock: #make sure that this function is also blocked
+                            position = self.get_position()
+                            if position is not None:
+                                self.position = position
+                                result_queue.put(position)
+                                res = "done"
+                    if command[0] == "position_reached":
+                          #with port_lock: #make sure that this function is also blocked
+                              isreached = self.position_reached()
+                              if isreached is not None:
+                                  result_queue.put(isreached)
+                                  res = "done"
+                    #if command[0] == "go_to_position":
+                       # self.ex_command(command) #excecute the command
+                       # while self.ismoving == True:
+                          #  time.sleep(0.05)
+                        #Eresult_queue.put(self.ismoving)
+                    if command[0] == "get_speed":
+                        #with port_lock: #make sure that this function is also blocked
+                            speed = self.get_speed()
+                            result_queue.put(speed)
                             res = "done"
-                if command[0] == "position_reached":
-                      with serial_port_lock: #make sure that this function is also blocked
-                          isreached = self.position_reached()
-                          if isreached is not None:
-                              result_queue.put(isreached)
-                              res = "done"
-                #if command[0] == "go_to_position":
-                   # self.ex_command(command) #excecute the command
-                   # while self.ismoving == True:
-                      #  time.sleep(0.05)
-                    #Eresult_queue.put(self.ismoving)
-                if command[0] == "get_speed":
-                    with serial_port_lock: #make sure that this function is also blocked
-                        speed = self.get_speed()
-                        result_queue.put(speed)
-                        res = "done"
-                else:
-                    res = self.ex_command(command)
-                
-                if res == "done":
-                    self.server.issending = False
-            except queue.Empty:
-                pass
+                    else:
+                        print("else")
+                        res = self.ex_command(command)
+                    
+                    if res == "done":
+                        self.server.issending = False
+                        time.sleep(0.1)
+                        print("free again")
+                except:
+                    if self.command_queue.empty():
+                        pass
+                    else: print("something worse happened")
+                    
             
             
     
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
+        #with self.port_lock:
+        print("set")
         pv.put(value)
         #time.sleep(0.2) #safety
         return "has been set"
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
+        #with self.port_lock:
         value = pv.get()
         return value
        
@@ -316,36 +333,45 @@ class MotorClient(): #i don't know if Thread is necessary
 
     def goto_position(self,position_steps):
         #position_steps = self.position_to_steps(position)
-        print("here")
-        if position_steps > 0:
-            self.direction = "pos"
-        if position_steps < 0: 
-            self.direction = "neg"
-        
-        velocity = self.Get(self.pv_speed_get)
-        
-        print("velocity", velocity)
-        
-        if velocity !=0 and velocity!= None:
+        #with self.port_lock:
+            print(position_steps)
+            if position_steps > 0:
+                self.direction = "pos"
+            if position_steps < 0: 
+                self.direction = "neg"
             
-            res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
-            print(res)
+            velocity = self.Get(self.pv_speed_get)
             
-            self.ismoving = True 
-            time_needed = abs(self.stepcount - position_steps)/velocity 
-            time.sleep(time_needed)
-            self.stepcount = position_steps #this is wrooooooongnnnnngngngngn!!!!!!!!!
-            print("stepcount is:", self.stepcount)  
-            print("time needed", time_needed)
-        else:
-            print("WARNING: velocity is 0 or None")
+            print("velocity", velocity)
             
+            while self.ismoving == True:
+                print("waiting")
+                time.sleep(0.1)
+            
+            if velocity !=0 and velocity!= None:
+                
+                res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
+                print(res)
+                self.ismoving = True 
+                time_needed = abs(self.stepcount - position_steps)/velocity  #fiixxxx thiiiiisssss!!!!!
+                
+                time_sending = 2
+                self.start_timer_thread(time_sending)
+                #time.sleep(time_needed)
+                self.stepcount = position_steps #new position in steps #SOL position
+                print("stepcount is:", self.stepcount)  
+                print("time needed", self.time_needed)
+            else:
+                self.ismoving = True
+                print("WARNING: velocity is 0 or None")
+                self.time_needed = 3
+                #self.start_timer_thread(time_needed)
         
          #wait with other commands during that time as well
     
-        self.ismoving = False
+            #self.ismoving = False
         
-        return
+            return
        
       
     def get_position(self):
@@ -355,10 +381,13 @@ class MotorClient(): #i don't know if Thread is necessary
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
-        self.pv_speed_set.put(speed)
+        self.Set(self.pv_speed_set, speed)
+        # with self.port_lock:
+        #     self.pv_speed_set.put(speed)
         
     
     def get_speed(self):
+        
         speed = self.Get(self.pv_speed_get)
         return speed
    
@@ -416,14 +445,12 @@ class MotorClient(): #i don't know if Thread is necessary
 
     
     def move_device_position(self):
-        
         while True:
             #print(self.ismoving)
     
             if self.ismoving:
-                
                 velocity = self.Get(self.pv_speed_get)
-                
+                print(velocity)
                 if velocity != None:
                     looptime = 0.1
                     if self.direction == "pos":
@@ -433,16 +460,41 @@ class MotorClient(): #i don't know if Thread is necessary
                 #print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
 
+        self.ismoving = False
+        
+    def lock_for_time(self):
+        while True:
+            if self.time_needed > 0:  #only when it has been set true in another place!!!
+                start = time.time()
+                print("start counting")
+                while time.time() - start < self.time_needed:
+                    pass
+                print("ended, reset ismoving and time_needed")
+                self.ismoving = False
+                self.time_needed = 0 
+                
+                #self.thread.join()
+            #self.stop_timer_thread()
+        
     def start_position_thread(self):
-        print("istarted")
+        print("position thread")
         self.thread = threading.Thread(target=self.move_device_position)
         self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
         self.thread.start()
 
     def stop_position_thread(self):
         self.ismoving = False
+        print("stopped moving")
         self.thread.join()
 
+    def start_timer_thread(self):
+        print("timer thread")
+        self.thread = threading.Thread(target=self.lock_for_time)
+        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
+        self.thread.start()
+        
+    def stop_timer_thread(self):
+        self.thread.join()
 
 
 
@@ -457,27 +509,34 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         MOTOR_NUMBER = 3
            
         # Initialize the motor client and start it up in an extra thread.
+        
         motor3 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
-
+        
+        print("done initializing")
+    
     except:
         print("thread error failed...")
     try:
         
         # Example: Move motor 1 by 1000 steps
-        server.issue_motor_command(command_queue, ("calibrate",))
-        while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
-            time.sleep(0.1)
-        server.issue_motor_command(command_queue, ("set_speed",1000))
-        time.sleep(0.1)
-        print(motor3.pv_speed_get.get())
-        server.issue_motor_command(command_queue, ("go_to_position",1000))
+        #server.issue_motor_command(motor3, ("calibrate",))
+        # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
+        #     time.sleep(0.1)
+        #     print("calibrating")
+        server.issue_motor_command(motor3, ("set_speed",1000))
+        #print("here")
+        #time.sleep(0.1)
+        
+        server.issue_motor_command(motor3, ("go_to_position",10000)) #do not return from this;((()))
+        #time.sleep(2)
+        server.issue_motor_command(motor3, ("go_to_position",0))
         
         #server.issue_motor_command(command_queue, ("move_left", 5000))
         #server.issue_motor_command(command_queue, ("move_right",20000))
         
         time.sleep(0.1)
         
-        speed = server.issue_motor_command(command_queue, ("get_speed",), isreturn = 1)
+        speed = server.issue_motor_command(motor3, ("get_speed",), isreturn = 1)
         print(speed)
         
         
