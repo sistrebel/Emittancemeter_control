@@ -117,11 +117,13 @@ class MotorClient(): #i don't know if Thread is necessary
         self.locked = False
         #depending on MOTOR_NUMBER this will be different
         
+        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
+        
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
             #with self.port_lock:
                 
-                self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
+                
                 
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
@@ -297,6 +299,8 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("free again")
                     else:
                         print("is busy")
+                        print(self.Get(self.pv_status))
+                        time.sleep(0.2)
                     
                 except:
                         if self.command_queue.empty():
