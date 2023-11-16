@@ -344,12 +344,12 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            while self.ismoving == True:
+            while self.ismoving == True or self.issending == True:
                 print("waiting")
                 time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                time.sleep(1) #safety wait
+                time.sleep(0.1) #safety wait because otherwise the processing has not yet been done...
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 print(res)
                 self.ismoving = True 
