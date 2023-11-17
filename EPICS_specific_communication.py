@@ -68,7 +68,8 @@ class MotorClient(): #i don't know if Thread is necessary
    
     def __init__(self, server, MOTOR_NUMBER, command_queue):  
    
-        self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
+        self.initializing = True 
+        #self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
         
         self.is_running = False  
         self.command_queue = command_queue
@@ -233,7 +234,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(9600)
             
-         
+        self.initializing = False
        
     def start_motor(self):
         self.is_running = True
@@ -537,7 +538,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
         print("cmdstatus of 1 is", motor2.Get(motor1.pv_CMD_status))
         
-        time.sleep(10)
+        while motor1.initializing == True or motor2.initializing == True: 
+            time.sleep(0.1)
+        #time.sleep(10)
         print("done initializing")
     
     except:
