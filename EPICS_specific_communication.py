@@ -241,7 +241,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     print("setting brake")
                     self.pv_brake.put(1)
                 
-                #self.calibration()
+                self.calibration()
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
