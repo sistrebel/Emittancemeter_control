@@ -127,6 +127,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 
                 self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
+                self.pv_motor_status = PV('T-MWE1X:CHS:1') #motor staus!!!
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
                 self.pv_min_speed_set = PV('T-MWE1X:SMMIN:2')
@@ -169,6 +170,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #initialize the pv's i am using here 
            # with self.port_lock:
                 self.pv_CMD_status = PV('T-MWE1Y:CMDS:1:SBNT') #command status, if 0 then busy
+                self.pv_motor_status = PV('T-MWE1Y:CHS:1')
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
                 self.pv_min_speed_set = PV('T-MWE1Y:SMMIN:2')
@@ -209,7 +211,8 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
-                self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status, if 0 then busy
+                self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status, if 0 then busy...can't be used...
+                self.pv_motor_status = PV('T-MWE2Y:CHS:1')
                 self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
                 self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
                 self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
@@ -282,7 +285,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_CMD_status) != 0: #should be 0 :()
+                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_motor_status) == 0xC :  #should something else !!!!!!!!! 
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
