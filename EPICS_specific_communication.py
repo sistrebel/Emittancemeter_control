@@ -559,6 +559,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(motor2, ("go_to_position",0))
        # time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",0))
+        time.sleep(0.5)
         server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
