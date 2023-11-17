@@ -537,7 +537,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
         print("cmdstatus of 1 is", motor2.Get(motor1.pv_CMD_status))
         
-        
+        time.sleep(10)
         print("done initializing")
     
     except:
