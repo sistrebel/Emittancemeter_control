@@ -129,6 +129,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
+                self.pv_speed_dist = PV('T-MWE1X:DIST:2')
                 self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
                 self.pv_speed_get = PV('T-MWE1X:SMMAXRB:2')
                 self.pv_COM_status = PV('T-MWE1X:COM:2')
@@ -150,6 +151,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 #set initial parameters and calibrate
                 self.calibration() #i do calibrate!!!
                 self.pv_speed_set.put(1500)
+                self.pv_speed_dist.put(200)
+                self.pv_ramp_set.put(25)
                 #print(self.pv_speed_set.get())
                 self.pv_MAXCW.put(21766)
                 self.pv_SPAD.put(752) #don't part. about this value...
@@ -166,6 +169,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_CMD_status = PV('T-MWE1Y:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
+                self.pv_speed_dist = PV('T-MWE1Y:DIST:2')
                 self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
                 self.pv_speed_get = PV('T-MWE1Y:SMMAXRB:2')
                 self.pv_COM_status = PV('T-MWE1Y:COM:2')
@@ -186,6 +190,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.calibration()
                 self.pv_speed_set.put(1500)
+                self.pv_speed_dist.put(200)
+                self.pv_ramp_set.put(25)
                 #print(self.pv_speed_get.get())
                 self.pv_MAXCW.put(104172)  
                 self.pv_SPAD.put(752) #don't part. about this value...
@@ -203,6 +209,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
                 self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
                 self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
+                self.pv_speed_dist = PV('T-MWE2Y:DIST:2')
                 self.pv_ramp_set = PV('T-MWE2Y:SMRAMP:2')
                 self.pv_speed_get =  PV('T-MWE2Y:SMMAXRB:2')
                 self.pv_COM_status = PV('T-MWE2Y:COM:2')
@@ -224,8 +231,10 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.calibration()
                 self.pv_brake.put(1)
                 self.pv_speed_set.put(1500)
-                print(self.pv_speed_set.get())
-                time.sleep(0.1)
+                self.pv_speed_dist.put(200)
+                self.pv_ramp_set.put(25)
+                #print(self.pv_speed_set.get())
+                #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
@@ -554,8 +563,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
-        server.issue_motor_command(motor1, ("set_speed",1500))
-        server.issue_motor_command(motor2, ("set_speed",1500)) 
+        server.issue_motor_command(motor1, ("set_speed",1300))
+        server.issue_motor_command(motor2, ("set_speed",1300)) 
         #time.sleep(0.2)
         #erver.issue_motor_command(motor1, ("set_speed",1300))
         #print("here")
