@@ -141,7 +141,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_move_abs = PV('T-MWE1X:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
                 self.pv_endstopstatus = PV('T-MWE1X:STA:1') #a hex value which changes value according to which endstop that is being triggered
-                self.pv_emstop = PV('T-MWE1X:STOP:2')
+                self.pv_endstop = PV('T-MWE1X:STOP:2')
                 self.pv_command = PV('T-MWE1X:CMD:2')
                 self.pv_MAXCW = PV('T-MWE1X:MAXCW:2')
                 self.pv_SPAD = PV('T-MWE1X:SPAD:2')
@@ -184,7 +184,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_move_abs = PV('T-MWE1Y:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
                 self.pv_endstopstatus = PV('T-MWE1Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
-                self.pv_emstop = PV('T-MWE1Y:STOP:2')
+                self.pv_endstop = PV('T-MWE1Y:STOP:2')
                 self.pv_command = PV('T-MWE1Y:CMD:2')
                 self.pv_MAXCW = PV('T-MWE1Y:MAXCW:2')
                 self.pv_SPAD = PV('T-MWE1Y:SPAD:2')
@@ -227,7 +227,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
                 self.pv_endstopstatus = PV('T-MWE2Y:STA:1') #a hex value which changes value according to which endstop that is being triggered
-                self.pv_emstop = PV('T-MWE2Y:STOP:2')
+                self.pv_endstop = PV('T-MWE2Y:STOP:2')
                 self.pv_command = PV('T-MWE2Y:CMD:2')
                 self.pv_MAXCW = PV('T-MWE2Y:MAXCW:2')
                 self.pv_SPAD = PV('T-MWE2Y:SPAD:2')
@@ -587,7 +587,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
         
-        server.issue_motor_command(motor3, ("go_to_position",2000))
+        #server.issue_motor_command(motor3, ("go_to_position",2000))
         
         #server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
