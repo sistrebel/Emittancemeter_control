@@ -252,7 +252,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(-10)
                 self.pv_targetposition_HOPR.put(9600)
             
-        self.initializing = False
+        if self.iscalibrating == False:
+            self.initializing = False
        
     def start_motor(self):
         self.is_running = True
