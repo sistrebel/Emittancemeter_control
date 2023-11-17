@@ -595,17 +595,18 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(motor2, ("go_to_position",0))
         #server.issue_motor_command(motor2, ("calibrate",))
         #server.issue_motor_command(motor1, ("calibrate",))
-        server.issue_motor_command(motor1, ("go_to_position",2000))
-        server.issue_motor_command(motor2, ("go_to_position",2000))
+        server.issue_motor_command(motor1, ("go_to_position",1100))
+        server.issue_motor_command(motor2, ("go_to_position",1100))
         
         
-        server.issue_motor_command(motor2, ("go_to_position",0))
+        #
+        server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost
         
         server.issue_motor_command(motor1, ("go_to_position",0))
         
-        server.issue_motor_command(motor1, ("go_to_position",100))
+        # server.issue_motor_command(motor1, ("go_to_position",100))
         
-        server.issue_motor_command(motor2, ("go_to_position",100))
+        # server.issue_motor_command(motor2, ("go_to_position",100))
         
         
         
