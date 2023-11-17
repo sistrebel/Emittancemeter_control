@@ -455,6 +455,7 @@ class MotorClient(): #i don't know if Thread is necessary
         #time.sleep(0.2)
         while self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
              #print(self.Get(self.pv_endstopstatus))
+             print("here")
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
@@ -554,7 +555,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+       # motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
@@ -587,9 +588,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
         
-        server.issue_motor_command(motor3, ("go_to_position",2000))
+        #server.issue_motor_command(motor3, ("go_to_position",2000))
         
-        server.issue_motor_command(motor2, ("go_to_position",2000))
+        #server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
 
