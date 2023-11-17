@@ -165,7 +165,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
                 self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
-                self.pv_speed_get = PV('T-MWE1Y:VLRB:1')
+                self.pv_speed_get = PV('T-MWE1Y:SMMAXRB:2')
                 self.pv_COM_status = PV('T-MWE1Y:COM:2')
                 self.pv_position = PV('T-MWE1Y:IST:1')  #in steps
                 self.pv_targetposition_steps = PV('T-MWE1Y:SOL:1') #in steps
@@ -530,7 +530,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #time.sleep(2)
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        time.sleep(5)
+        time.sleep(10)
         
         print("done initializing")
     
