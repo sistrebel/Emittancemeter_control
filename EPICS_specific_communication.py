@@ -125,7 +125,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #with self.port_lock:
                 
                 
-                
+                self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
                 self.pv_ramp_set = PV('T-MWE1X:SMRAMP:2')
@@ -162,6 +162,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
            # with self.port_lock:
+                self.pv_CMD_status = PV('T-MWE1Y:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1Y:SMMAX:2')
                 self.pv_ramp_set = PV('T-MWE1Y:SMRAMP:2')
@@ -197,6 +198,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
+                self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
                 self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
                 self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
@@ -264,7 +266,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(server.pv_status) != 1: #means Done
+                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_CMD_status) != 0: #means Done
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -299,8 +301,10 @@ class MotorClient(): #i don't know if Thread is necessary
                             time.sleep(0.1)
                             print("free again")
                     else:
-                        print("is busy")
+                        print("is busy, try again later")
                         print(self.Get(self.pv_status))
+                        print(self.Get(self.pv_CMD_status))
+                        
                         time.sleep(0.2)
                     
                 except:
@@ -559,7 +563,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(motor2, ("go_to_position",0))
        # time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",0))
-        #time.sleep(0.5)
+        time.sleep(1)
         server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
