@@ -285,7 +285,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
+                    if self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD or self.Get(self.pv_motor_status) == 0xF and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -432,7 +432,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if endstopvalue == 0xD:
             print("upper end reached")
             return "upper"
-        if endstopvalue == 0xB:
+        if endstopvalue == 0xF:
             print("lower end reached")
             return "lower"
         else:
@@ -595,6 +595,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # server.issue_motor_command(motor2, ("go_to_position",1000))
         
         server.issue_motor_command(motor1, ("go_to_position",0))
+        
         server.issue_motor_command(motor2, ("go_to_position",0))
         #server.issue_motor_command(motor2, ("calibrate",))
         #server.issue_motor_command(motor1, ("calibrate",))
@@ -631,7 +632,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
-        #time.sleep(30) #give the thread some time before the connection is closed...
+        time.sleep(30) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
