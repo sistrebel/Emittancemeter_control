@@ -237,7 +237,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
                 
                 self.pv_brake.put(1)
-                
+                while self.pv_brake_status.get() != 1:
+                    self.pv_brake.put(1)
                 
                 self.calibration()
                 self.pv_speed_set.put(1500)
@@ -452,7 +453,9 @@ class MotorClient(): #i don't know if Thread is necessary
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
             return
+        
         self.Set(self.pv_command,1) #enumerated calCCW to 1 i think 
+            
         self.iscalibrating = True
         #time.sleep(0.2)
         while self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
