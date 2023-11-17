@@ -432,7 +432,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if endstopvalue == 0xD:
             print("upper end reached")
             return "upper"
-        if endstopvalue == 0xF:
+        if endstopvalue == 0xF: #not sure!!!
             print("lower end reached")
             return "lower"
         else:
@@ -542,21 +542,26 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     #try:
         # Initialize the server
         server = MotorServer()
+        
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
         command_queue2 = queue.Queue()
+        command_queue3 = queue.Queue()
         
-        MOTOR_NUMBER = 1
+    
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
-        #time.sleep(2)
+        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
-        print("cmdstatus of 1 is", motor2.Get(motor1.pv_CMD_status))
+        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
-        while motor1.initializing == True or motor2.initializing == True: 
+        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
+        print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
+        print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
+        
+        while motor1.initializing == True or motor2.initializing == True or motor3.initializing == True: 
             time.sleep(0.1)
         #time.sleep(10)
         print("done initializing")
@@ -619,7 +624,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
         #time.sleep(30) #give the thread some time before the connection is closed...
-        #server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
+        status1 = motor1.pv_motor_status.get()
+        status2 = motor2.pv_motor_status.get()
+        status3 = motor3.pv_motor_status.get()
+        if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0xC or status3 == 0xD or status3 == 0xF:
+            server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
         #server.stop_server()
