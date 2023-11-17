@@ -302,10 +302,10 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("free again")
                     else:
                         print("is busy, try again later")
-                        print(self.Get(self.pv_status))
+                        print(self.Get(server.pv_status))
                         print(self.Get(self.pv_CMD_status))
                         
-                        time.sleep(0.2)
+                        #time.sleep(0.2)
                     
                 except:
                         if self.command_queue.empty():
@@ -563,7 +563,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(motor2, ("go_to_position",0))
        # time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",0))
-        time.sleep(1)
+        #time.sleep(1)
         server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
