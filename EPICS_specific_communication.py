@@ -577,9 +577,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
-        server.issue_motor_command(motor2, ("go_to_position",500))
+        server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
-        server.issue_motor_command(motor1, ("go_to_position",500))
+        server.issue_motor_command(motor1, ("go_to_position",2000))
         #time.sleep(0.2)
        #  server.issue_motor_command(motor1, ("go_to_position",1))
        # # time.sleep(0.2)
@@ -588,21 +588,21 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
        #  server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
-        server.issue_motor_command(motor1, ("go_to_position",1000))
-        server.issue_motor_command(motor2, ("go_to_position",1000))
+        # server.issue_motor_command(motor1, ("go_to_position",1000))
+        # server.issue_motor_command(motor2, ("go_to_position",1000))
         
         server.issue_motor_command(motor1, ("go_to_position",0))
         server.issue_motor_command(motor2, ("go_to_position",0))
         #server.issue_motor_command(motor2, ("calibrate",))
         #server.issue_motor_command(motor1, ("calibrate",))
-        server.issue_motor_command(motor1, ("go_to_position",1100))
-        server.issue_motor_command(motor2, ("go_to_position",1100))
+        # server.issue_motor_command(motor1, ("go_to_position",1100))
+        # server.issue_motor_command(motor2, ("go_to_position",1100))
         
         
-        #
-        server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost
         
-        server.issue_motor_command(motor1, ("go_to_position",0))
+        # server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost when the one before took too long
+        
+        # server.issue_motor_command(motor1, ("go_to_position",0))
         
         # server.issue_motor_command(motor1, ("go_to_position",100))
         
@@ -628,7 +628,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
-        time.sleep(30) #give the thread some time before the connection is closed...
+        #time.sleep(30) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
