@@ -377,7 +377,7 @@ class MotorClient(): #i don't know if Thread is necessary
             if position_steps < 0: 
                 self.direction = "neg"
             
-            velocity = self.Get(self.pv_speed_get)
+            velocity = self.pv_speed_get.get()#self.Get(self.pv_speed_get)
             
             print("velocity", velocity)
             
