@@ -240,6 +240,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 while self.Get(self.pv_brake_status) != 1:
                     print("setting brake")
                     self.pv_brake.put(1)
+                time.sleep(0.2)
                 
                 self.calibration()
                 self.pv_speed_set.put(1500)
