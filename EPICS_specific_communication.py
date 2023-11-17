@@ -581,11 +581,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #time.sleep(0.2)
         server.issue_motor_command(motor1, ("go_to_position",500))
         #time.sleep(0.2)
-        server.issue_motor_command(motor1, ("go_to_position",1))
-       # time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",0))
-        #time.sleep(1)
-        server.issue_motor_command(motor2, ("go_to_position",1))
+       #  server.issue_motor_command(motor1, ("go_to_position",1))
+       # # time.sleep(0.2)
+       #  #server.issue_motor_command(motor1, ("go_to_position",0))
+       #  #time.sleep(1)
+       #  server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
         server.issue_motor_command(motor1, ("go_to_position",1000))
@@ -604,6 +604,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(motor1, ("go_to_position",0))
         
         server.issue_motor_command(motor1, ("go_to_position",100))
+        
+        server.issue_motor_command(motor2, ("go_to_position",100))
         
         
         
