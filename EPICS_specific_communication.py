@@ -236,7 +236,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE2Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
                 
-                self.pv_brake.put("BreakOn")
+                self.pv_brake.put(1)
                 while self.pv_brake_status.get() != 1:
                     print("setting brake")
                     self.pv_brake.put(1)
