@@ -236,8 +236,10 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE2Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
                 
-                self.calibration()
                 self.pv_brake.put(1)
+                
+                
+                self.calibration()
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
