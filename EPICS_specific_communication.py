@@ -150,7 +150,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 #set initial parameters and calibrate
                 self.calibration() #i do calibrate!!!
                 self.pv_speed_set.put(1500)
-                print(self.pv_speed_set.get())
+                #print(self.pv_speed_set.get())
                 self.pv_MAXCW.put(21766)
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
@@ -186,7 +186,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.calibration()
                 self.pv_speed_set.put(1500)
-                print(self.pv_speed_get.get())
+                #print(self.pv_speed_get.get())
                 self.pv_MAXCW.put(104172)  
                 self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -521,7 +521,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
     
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
-    try:
+    #try:
         # Initialize the server
         server = MotorServer()
         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
@@ -543,9 +543,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #time.sleep(10)
         print("done initializing")
     
-    except:
-        print("thread error failed...")
-    try:
+    #except:
+        #print("thread error failed...")
+    #try:
         
         # Example: Move motor 1 by 1000 steps
         #server.issue_motor_command(motor2, ("calibrate",))
@@ -554,7 +554,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
         #     print("calibrating")
-        #server.issue_motor_command(motor1, ("set_speed",1300))
+        server.issue_motor_command(motor1, ("set_speed",1300))
         server.issue_motor_command(motor2, ("set_speed",1300)) 
         #time.sleep(0.2)
         #erver.issue_motor_command(motor1, ("set_speed",1300))
@@ -599,6 +599,6 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         time.sleep(5) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
-    except KeyboardInterrupt:
-        server.stop_server()
-        print("KeyboardInterrupt, the server has stopped")
+    #except KeyboardInterrupt:
+        #server.stop_server()
+        #print("KeyboardInterrupt, the server has stopped")
