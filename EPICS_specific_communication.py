@@ -185,7 +185,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.calibration()
                 self.pv_speed_set.put(1500)
                 print(self.pv_speed_get.get())
-                self.pv_MAXCW.put(105172)  
+                self.pv_MAXCW.put(104172)  
                 self.pv_SPAD.put(752) #don't part. about this value...
             
 
@@ -559,7 +559,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(motor2, ("go_to_position",0))
        # time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",0))
-        time.sleep(0.5)
+        #time.sleep(0.5)
         server.issue_motor_command(motor2, ("go_to_position",1))
         #time.sleep(0.2)
         #server.issue_motor_command(motor1, ("go_to_position",2000))
@@ -586,7 +586,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
-        time.sleep(2) #give the thread some time before the connection is closed...
+        time.sleep(5) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     except KeyboardInterrupt:
