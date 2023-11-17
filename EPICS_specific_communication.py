@@ -285,7 +285,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD or self.Get(self.pv_motor_status) == 0xF and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
+                    if self.Get(self.pv_motor_status) == 0x8 or self.Get(self.pv_motor_status) == 0xA or self.Get(self.pv_motor_status) == 0x9 or self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD or self.Get(self.pv_motor_status) == 0xF and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -627,7 +627,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         status1 = motor1.pv_motor_status.get()
         status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
-        if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0xC or status3 == 0xD or status3 == 0xF:
+        if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
             server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
