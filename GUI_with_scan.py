@@ -53,6 +53,7 @@ matplotlib.use('Qt5Agg')
 
 from PyQt5 import QtCore, QtWidgets, uic, QtGui
 
+from threading import Lock
 
 import scan_script
 
@@ -61,7 +62,7 @@ class MainWindow(QMainWindow):
     def __init__(self): #initializing the class
         super().__init__() #super means to load it at the very beginning
        
-      
+       
         #connect to the server who does the connection to the device and the communication
         self.server = control.MotorServer() #only one server 
         
