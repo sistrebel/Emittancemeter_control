@@ -159,9 +159,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_MAXCW.put(21766)
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
-                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVL.put(-10) #check what happens
                 self.pv_targetposition_DRVH.put(21766)
-                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_LOPR.put(-10)
                 self.pv_targetposition_HOPR.put(21766)
             
             
@@ -201,9 +201,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_SPAD.put(752) #don't part. about this value...
             
 
-                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVL.put(-10)
                 self.pv_targetposition_DRVH.put(104172)
-                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_LOPR.put(-10)
                 self.pv_targetposition_HOPR.put(104172)
             
         if MOTOR_NUMBER == 3: #correct PV's
@@ -244,9 +244,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_MAXCW.put(9600)  
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
-                self.pv_targetposition_DRVL.put(0)
+                self.pv_targetposition_DRVL.put(-10)
                 self.pv_targetposition_DRVH.put(9600)
-                self.pv_targetposition_LOPR.put(0)
+                self.pv_targetposition_LOPR.put(-10)
                 self.pv_targetposition_HOPR.put(9600)
             
         self.initializing = False
