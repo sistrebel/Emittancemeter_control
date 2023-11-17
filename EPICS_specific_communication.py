@@ -266,7 +266,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_CMD_status) != 0: #means Done
+                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_CMD_status) != 1: #should be 0 :()
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
