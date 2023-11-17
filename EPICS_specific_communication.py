@@ -184,7 +184,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.calibration()
                 self.pv_speed_set.put(1500)
-                print(self.pv_speed_set.get())
+                print(self.pv_speed_get.get())
                 self.pv_MAXCW.put(105172)  
                 self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -530,7 +530,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #time.sleep(2)
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        
+        time.sleep(5)
         
         print("done initializing")
     
