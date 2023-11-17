@@ -530,11 +530,12 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        #motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
+        motor1 = server.create_and_start_motor_client(server, MOTOR_NUMBER, command_queue)
         #time.sleep(2)
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        print(motor2.Get(motor2.pv_CMD_status))
+        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
+        print("cmdstatus of 1 is", motor2.Get(motor1.pv_CMD_status))
         
         
         print("done initializing")
@@ -545,6 +546,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         # Example: Move motor 1 by 1000 steps
         server.issue_motor_command(motor2, ("calibrate",))
+        server.issue_motor_command(motor1, ("calibrate",))
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
@@ -559,7 +561,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
         server.issue_motor_command(motor2, ("go_to_position",1000))
         #time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",1000))
+        server.issue_motor_command(motor1, ("go_to_position",1000))
         #time.sleep(0.2)
         #server.issue_motor_command(motor2, ("go_to_position",0))
        # time.sleep(0.2)
