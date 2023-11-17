@@ -552,17 +552,17 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
-        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
-        print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
+        #print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
+        #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
         print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
         
-        while motor1.initializing == True or motor2.initializing == True or motor3.initializing == True: 
+        while motor3.initializing == True: #or motor2.initializing == True or motor3.initializing == True: 
             time.sleep(0.1)
         #time.sleep(10)
         print("done initializing")
@@ -589,15 +589,15 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         server.issue_motor_command(motor3, ("go_to_position",2000))
         
-        server.issue_motor_command(motor2, ("go_to_position",2000))
+        #server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
-        server.issue_motor_command(motor1, ("go_to_position",2000))
+        #server.issue_motor_command(motor1, ("go_to_position",2000))
 
         
               
-        server.issue_motor_command(motor1, ("go_to_position",0))
+        #server.issue_motor_command(motor1, ("go_to_position",0))
         
-        server.issue_motor_command(motor2, ("go_to_position",0))
+        #server.issue_motor_command(motor2, ("go_to_position",0))
         
         # server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost when the one before took too long
         
@@ -628,12 +628,14 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
         #time.sleep(30) #give the thread some time before the connection is closed...
-        status1 = motor1.pv_motor_status.get()
-        status2 = motor2.pv_motor_status.get()
+        #status1 = motor1.pv_motor_status.get()
+        #status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
-        print(status1,status2,status3)
-        if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
-            server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
+        print(status3)
+        
+        #print(status1,status2,status3)
+        #if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
+            #server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
         #server.stop_server()
