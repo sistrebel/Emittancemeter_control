@@ -152,6 +152,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 #set initial parameters and calibrate
                 self.calibration() #i do calibrate!!!
+                
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -243,6 +244,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 time.sleep(0.2)
                 
                 self.calibration()
+                time.sleep(0.5)
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
