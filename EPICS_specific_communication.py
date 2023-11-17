@@ -586,6 +586,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
+        
+        server.issue_motor_command(motor3, ("go_to_position",2000))
+        
         server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
         server.issue_motor_command(motor1, ("go_to_position",2000))
@@ -628,6 +631,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         status1 = motor1.pv_motor_status.get()
         status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
+        print(status1,status2,status3)
         if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
             server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
