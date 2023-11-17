@@ -599,7 +599,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #command_queue.put(("stop",))
         #server.issue_motor_command(command_queue, ("stop",))
-        time.sleep(5) #give the thread some time before the connection is closed...
+        time.sleep(10) #give the thread some time before the connection is closed...
         server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
