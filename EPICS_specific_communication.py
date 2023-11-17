@@ -285,7 +285,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(server.pv_status) != 1 and self.Get(self.pv_motor_status) == 0xC :  #should something else !!!!!!!!! 
+                    if self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -322,7 +322,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     else:
                         print("is busy, try again later")
                         print(self.Get(server.pv_status))
-                        print(self.Get(self.pv_CMD_status))
+                        print(self.Get(self.pv_motor_status))
                         
                         #time.sleep(0.2)
                     
