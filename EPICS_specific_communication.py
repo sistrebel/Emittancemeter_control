@@ -251,8 +251,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(150) #long enough ramp
-                self.pv_brake_off.put(150) #time before busy 
-                self.pv_brake_on.put(1000) #time after busy
+                self.pv_brake_off.put(100) #time before busy 
+                self.pv_brake_on.put(800) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
@@ -605,6 +605,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
             server.issue_motor_command(motor3, ("go_to_position",2000))
             server.issue_motor_command(motor1, ("go_to_position",2000))
+            time.sleep(4)
             server.issue_motor_command(motor3, ("go_to_position",0))
             server.issue_motor_command(motor1, ("go_to_position",0))
         #server.issue_motor_command(motor2, ("go_to_position",2000))
