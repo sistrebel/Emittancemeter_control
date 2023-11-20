@@ -592,9 +592,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor2 = server.create_and_start_motor_client(server, 1, command_queue)
+        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor1 = server.create_and_start_motor_client(server, 2, command_queue2)
+        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
