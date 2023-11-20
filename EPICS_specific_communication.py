@@ -301,10 +301,10 @@ class MotorClient(): #i don't know if Thread is necessary
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
                     status = self.Get(self.pv_motor_status)
-                    if self.MOTOR_NUMBER == 3:
+                    if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
                         if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
                             isfree = True
-                    if self.MOTOR_NUMBER == 1 or self.MOTOR_NUMBER == 2: 
+                    if self.MOTOR_NUMBER == 1 or self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
                    # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
