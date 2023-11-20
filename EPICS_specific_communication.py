@@ -67,7 +67,9 @@ class MotorServer:
 class MotorClient(): #i don't know if Thread is necessary
    
     def __init__(self, server, MOTOR_NUMBER, command_queue):  
-   
+        
+        self.MOTOR_NUMBER = MOTOR_NUMBER
+        
         self.initializing = True 
         #self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
         
@@ -297,7 +299,8 @@ class MotorClient(): #i don't know if Thread is necessary
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
-                    if self.Get(self.pv_motor_status) == 0x8 or self.Get(self.pv_motor_status) == 0xA or self.Get(self.pv_motor_status) == 0x9 or self.Get(self.pv_motor_status) == 0xC or self.Get(self.pv_motor_status) == 0xD or self.Get(self.pv_motor_status) == 0xF and self.Get(server.pv_status) != 1  :  #should something else !!!!!!!!! 
+                    status = self.Get(self.pv_motor_status)
+                    if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
                     
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
