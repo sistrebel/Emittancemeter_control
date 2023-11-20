@@ -252,9 +252,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
-                self.pv_ramp_set.put(150) #long enough ramp
-                self.pv_brake_off.put(100) #time before busy 
-                self.pv_brake_on.put(800) #time after busy
+                self.pv_ramp_set.put(200) #long enough ramp
+                self.pv_brake_off.put(150) #time before busy 
+                self.pv_brake_on.put(900) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
@@ -469,7 +469,8 @@ class MotorClient(): #i don't know if Thread is necessary
             
         self.iscalibrating = True
         #time.sleep(0.2)
-        while self.Get(self.pv_endstopstatus) != 0xD and self.Get(self.pv_endstopstatus) != 0x9: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
+        status = self.Get(self.pv_motor_status)
+        while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
              #print(self.Get(self.pv_endstopstatus))
              print("here")
              time.sleep(0.1)
