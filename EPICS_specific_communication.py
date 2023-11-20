@@ -594,7 +594,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
         
         while motor3.initializing == True or motor2.initializing == True or motor3.initializing == True: 
-            time.sleep(0.1)
+            pass
+            #time.sleep(0.1)
         #time.sleep(10)
         print("done initializing")
     
