@@ -245,7 +245,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 while self.Get(self.pv_brake_status) != 1:
                     print("setting brake")
                     self.pv_brake.put(1)
-                time.sleep(0.2)
+                #time.sleep(0.2)
                 
                 self.calibration()
                 time.sleep(0.5)
@@ -615,13 +615,18 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #erver.issue_motor_command(motor1, ("set_speed",1300))
         #print("here")
         
+        for i in range(0,4):
         
-        server.issue_motor_command(motor3, ("go_to_position",1000)) #do not return from this;((()))
+            server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
         
        
         
               
-        server.issue_motor_command(motor3, ("go_to_position",0))
+            server.issue_motor_command(motor3, ("go_to_position",0))
+        
+        server.issue_motor_command(motor3, ("calibrate",))
+        
+        
         
         #server.issue_motor_command(motor2, ("go_to_position",0))
         
