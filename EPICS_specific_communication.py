@@ -300,8 +300,14 @@ class MotorClient(): #i don't know if Thread is necessary
              #make sure that this critical section can only be accessed when the motor lock is free
                 try:
                     status = self.Get(self.pv_motor_status)
-                    if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
-                    
+                    if self.MOTOR_NUMBER == 3:
+                        if status == 0x8 or status == 0xA or status == 0x9 and self.Get(server.pv_status) != 1:
+                            isfree = True
+                    if self.MOTOR_NUMBER == 1 or self.MOTOR_NUMBER == 2: 
+                        if status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  :
+                            isfree = True
+                   # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
+                    if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
                             #with port_lock: #make sure that this function is also blocked
@@ -334,6 +340,10 @@ class MotorClient(): #i don't know if Thread is necessary
                             self.server.issending = False
                             time.sleep(0.1)
                             print("free again")
+                        
+                        
+                        isfree = False
+                    
                     else:
                         print("is busy, try again later")
                         print(self.Get(server.pv_status))
