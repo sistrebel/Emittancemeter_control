@@ -480,6 +480,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.iscalibrating = True
         #time.sleep(0.2)
         status = self.Get(self.pv_motor_status)
+        
         while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
              #print(self.Get(self.pv_endstopstatus))
              print("here calibrating")
@@ -618,10 +619,10 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         for i in range(0,5):
         
-            server.issue_motor_command(motor3, ("go_to_position",2000))
+           # server.issue_motor_command(motor3, ("go_to_position",2000))
             server.issue_motor_command(motor1, ("go_to_position",2000))
             #time.sleep()
-            server.issue_motor_command(motor3, ("calibrate",))
+            #server.issue_motor_command(motor3, ("calibrate",))
             server.issue_motor_command(motor1, ("calibrate",))
         #server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.2)
