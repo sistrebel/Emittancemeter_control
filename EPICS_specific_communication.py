@@ -482,7 +482,8 @@ class MotorClient(): #i don't know if Thread is necessary
         status = self.Get(self.pv_motor_status)
         while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
              #print(self.Get(self.pv_endstopstatus))
-             print("here")
+             print("here calibrating")
+             status = self.Get(self.pv_motor_status)
              time.sleep(0.1)
         self.iscalibrating = False
         print("done calibrating")
