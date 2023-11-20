@@ -253,7 +253,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
-                self.pv_ramp_set.put(220) #long enough ramp
+                self.pv_ramp_set.put(230) #long enough ramp
                 self.pv_brake_off.put(200) #time before busy 
                 self.pv_brake_on.put(1200) #time after busy
                 #print(self.pv_speed_set.get())
@@ -304,13 +304,16 @@ class MotorClient(): #i don't know if Thread is necessary
                     status = self.Get(self.pv_motor_status)
                     if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
                         if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
+                            print("third")
                             isfree = True
                     if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
+                            print("first")
                     if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
+                            print("second")
                    # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
                     if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
