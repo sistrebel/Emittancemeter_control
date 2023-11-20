@@ -304,16 +304,16 @@ class MotorClient(): #i don't know if Thread is necessary
                     status = self.Get(self.pv_motor_status)
                     if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
                         if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
-                            print("third")
+                            #print("third")
                             isfree = True
                     if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
-                            print("first")
+                           # print("first")
                     if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
-                            print("second")
+                            #print("second")
                    # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
                     if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
@@ -632,9 +632,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(motor1, ("go_to_position",2000))
         
               
-        server.issue_motor_command(motor3, ("go_to_position",200))
+        server.issue_motor_command(motor3, ("go_to_position",400))
         #server.issue_motor_command(motor1, ("go_to_position",200))
-        server.issue_motor_command(motor2, ("go_to_position",200))
+        server.issue_motor_command(motor2, ("go_to_position",400))
         #server.issue_motor_command(motor3, ("calibrate",))
         
         
@@ -677,8 +677,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #print(status1,status2,status3)
         #if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
-            #server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
+        if command_queue.empty() and command_queue3.empty() and command_queue3.empty():
+            server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
-        #server.stop_server()
+        #erver.stop_server()
         #print("KeyboardInterrupt, the server has stopped")
