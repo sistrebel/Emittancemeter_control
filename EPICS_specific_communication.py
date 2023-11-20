@@ -227,7 +227,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_get =  PV('T-MWE2Y:SMMAXRB:2')
                 self.pv_COM_status = PV('T-MWE2Y:COM:2')
                 self.pv_position = PV('T-MWE2Y:IST:1')  #in steps
-                self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+                self.pv_targetposition_steps = PV('T-MWE2Y:SOL:1') #in steps
                 self.pv_move_rel = PV('T-MWE2Y:SMMS:2') #move relative 
                 self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
@@ -574,8 +574,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # Initialize the server
         server = MotorServer()
         
-        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        command_queue2 = queue.Queue()
+        #command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+        #command_queue2 = queue.Queue()
         command_queue3 = queue.Queue()
         
     
