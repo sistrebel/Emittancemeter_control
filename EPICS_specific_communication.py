@@ -582,7 +582,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
        # motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
@@ -615,23 +615,12 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #print("here")
         
         
-        #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
+        server.issue_motor_command(motor3, ("go_to_position",1000)) #do not return from this;((()))
         
-        for i in range(0,5):
-        
-           # server.issue_motor_command(motor3, ("go_to_position",2000))
-            server.issue_motor_command(motor1, ("go_to_position",2000))
-            #time.sleep()
-            #server.issue_motor_command(motor3, ("calibrate",))
-            server.issue_motor_command(motor1, ("calibrate",))
-        #server.issue_motor_command(motor2, ("go_to_position",2000))
-        #time.sleep(0.2)
-        #server.issue_motor_command(motor1, ("go_to_position",2000))
-        
-        server.issue_motor_command(motor3, ("calibrate",))
+       
         
               
-        #server.issue_motor_command(motor1, ("go_to_position",0))
+        server.issue_motor_command(motor3, ("go_to_position",0))
         
         #server.issue_motor_command(motor2, ("go_to_position",0))
         
