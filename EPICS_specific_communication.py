@@ -254,7 +254,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(200) #long enough ramp
                 self.pv_brake_off.put(150) #time before busy 
-                self.pv_brake_on.put(900) #time after busy
+                self.pv_brake_on.put(800) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
@@ -575,17 +575,17 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # Initialize the server
         server = MotorServer()
         
-        #command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        #command_queue2 = queue.Queue()
+        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+        command_queue2 = queue.Queue()
         command_queue3 = queue.Queue()
         
     
            
         # Initialize the motor client and start it up in an extra thread.
         
-        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-       # motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
@@ -615,16 +615,18 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #erver.issue_motor_command(motor1, ("set_speed",1300))
         #print("here")
         
-        for i in range(0,4):
         
-            server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
         
-       
+        server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
+        server.issue_motor_command(motor2, ("go_to_position",2000))
+        server.issue_motor_command(motor1, ("go_to_position",2000))
         
               
-            server.issue_motor_command(motor3, ("go_to_position",0))
+        server.issue_motor_command(motor3, ("go_to_position",200))
+        server.issue_motor_command(motor2, ("go_to_position",200))
+        server.issue_motor_command(motor1, ("go_to_position",200))
         
-        server.issue_motor_command(motor3, ("calibrate",))
+        #server.issue_motor_command(motor3, ("calibrate",))
         
         
         
