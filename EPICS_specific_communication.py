@@ -161,9 +161,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_MAXCW.put(21766)
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
-                self.pv_targetposition_DRVL.put(-10) #check what happens
+                self.pv_targetposition_DRVL.put(0) #check what happens
                 self.pv_targetposition_DRVH.put(21766)
-                self.pv_targetposition_LOPR.put(-10)
+                self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(21766)
             
             
@@ -204,9 +204,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_SPAD.put(752) #don't part. about this value...
             
 
-                self.pv_targetposition_DRVL.put(-10)
+                self.pv_targetposition_DRVL.put(0)
                 self.pv_targetposition_DRVH.put(104172)
-                self.pv_targetposition_LOPR.put(-10)
+                self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(104172)
             
         if MOTOR_NUMBER == 3: #correct PV's
@@ -216,6 +216,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_motor_status = PV('T-MWE2Y:CHS:1')
                 self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
                 self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
+                self.pv_brake_on = PV('T-MWE2Y:CMD2-BRON:2')
+                self.pv_brake_off = PV('T-MWE2Y:CMD2-BROFF:2')
                 self.pv_speed_set =  PV('T-MWE2Y:SMMAX:2')
                 self.pv_min_speed_set = PV('T-MWE2Y:SMMIN:2')
                 self.pv_speed_dist = PV('T-MWE2Y:DIST:2')
@@ -248,15 +250,17 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
-                self.pv_ramp_set.put(25)
+                self.pv_ramp_set.put(150) #long enough ramp
+                self.pv_brake_off.put(150) #time before busy 
+                self.pv_brake_on.put(1000) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
                 self.pv_SPAD.put(752) #don't part. about this value...
                 
-                self.pv_targetposition_DRVL.put(-10)
+                self.pv_targetposition_DRVL.put(0)
                 self.pv_targetposition_DRVH.put(9600)
-                self.pv_targetposition_LOPR.put(-10)
+                self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(9600)
             
         if self.iscalibrating == False:
@@ -597,7 +601,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #server.issue_motor_command(motor1, ("go_to_position",1000)) #do not return from this;((()))
         
-        for i in range(0,10):
+        for i in range(0,5):
         
             server.issue_motor_command(motor3, ("go_to_position",2000))
             
