@@ -664,7 +664,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(command_queue, ("set_brake",))
         #command_queue.put(("stop_move",))
         #command_queue.put(("set_brake",))
-       
+        time.sleep(10)
        
         
         #command_queue.put(("stop",))
@@ -674,11 +674,10 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
         print(status3)
-        
+        server.stop_server()
         #print(status1,status2,status3)
         #if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
-        if command_queue.empty() and command_queue3.empty() and command_queue3.empty():
-            server.stop_server() #stop server after series of commands, listening thread keeps running otherwise
+         #stop server after series of commands, listening thread keeps running otherwise
        
     #except KeyboardInterrupt:
         #erver.stop_server()
