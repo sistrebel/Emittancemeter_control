@@ -494,8 +494,9 @@ class MotorClient(): #i don't know if Thread is necessary
         
         self.pv_command.put(6) #enumerated calCCW to 1 i think , 6 is calCCW2
             
+        
         self.iscalibrating = True
-        #time.sleep(0.2)
+        time.sleep(0.5)
         status = self.Get(self.pv_motor_status)
         
         while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
