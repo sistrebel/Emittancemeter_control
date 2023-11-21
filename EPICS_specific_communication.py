@@ -155,8 +155,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 #set initial parameters and calibrate
                
-                self.calibration() #i do calibrate!!!
-                time.sleep(0.5)
+                #self.calibration() #i do calibrate!!!
+                #time.sleep(0.5)
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -197,7 +197,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
                 
-                self.calibration()
+                #self.calibration()
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -268,7 +268,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(9600)
                 
-                self.calibration()
+                #self.calibration()
                 
                 time.sleep(0.5)
         if self.iscalibrating == False:
@@ -495,17 +495,18 @@ class MotorClient(): #i don't know if Thread is necessary
         
         #self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
             
+        
         self.pv_COM_status.put(0)
         
         self.iscalibrating = True
         time.sleep(0.5)
         status = self.Get(self.pv_motor_status)
-        
         while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
              #print(self.Get(self.pv_endstopstatus))
              print(status)
-             status = self.Get(self.pv_motor_status)
              time.sleep(0.1)
+             status = self.Get(self.pv_motor_status)
+             
         self.iscalibrating = False
         print("done calibrating")
         
@@ -604,9 +605,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
+        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
         #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
         # print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
@@ -623,8 +624,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     #try:
         
         # Example: Move motor 1 by 1000 steps
-        #server.issue_motor_command(motor2, ("calibrate",))
-        #server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor2, ("calibrate",))
+        server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor3, ("calibrate",))
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
@@ -637,16 +639,18 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         
         
-        #server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
-        #server.issue_motor_command(motor2, ("go_to_position",2000))
+        server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
+        server.issue_motor_command(motor2, ("go_to_position",2000))
         #time.sleep(0.1)
-        #server.issue_motor_command(motor1, ("go_to_position",2000))
+        server.issue_motor_command(motor1, ("go_to_position",2000))
         #time.sleep(0.1)
               
-        #server.issue_motor_command(motor3, ("go_to_position",400))
-        #server.issue_motor_command(motor1, ("go_to_position",200))
-        #time.sleep(0.1)
-        #server.issue_motor_command(motor2, ("go_to_position",1000))
+        # server.issue_motor_command(motor3, ("go_to_position",400))
+        # server.issue_motor_command(motor1, ("go_to_position",200))
+        # time.sleep(0.1)
+        # server.issue_motor_command(motor2, ("go_to_position",1000))
+        #
+        
         #server.issue_motor_command(motor3, ("calibrate",))
         
         
@@ -676,7 +680,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #server.issue_motor_command(command_queue, ("set_brake",))
         #command_queue.put(("stop_move",))
         #command_queue.put(("set_brake",))
-        time.sleep(10)
+        #time.sleep(10)
        
         
         #command_queue.put(("stop",))
