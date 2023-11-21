@@ -169,7 +169,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(21766)
                 self.calibration() #i do calibrate!!!
-                
+                time.sleep(0.5)
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
            # with self.port_lock:
@@ -212,7 +212,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(104172)
                 self.calibration()
-                
+                time.sleep(0.5)
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
@@ -270,6 +270,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.calibration()
                 
+                time.sleep(0.5)
         if self.iscalibrating == False:
             self.initializing = False
        
