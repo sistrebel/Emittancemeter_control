@@ -250,12 +250,12 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.calibration()
                 time.sleep(0.5)
-                self.pv_speed_set.put(1500)
-                self.pv_min_speed_set.put(500)
+                self.pv_speed_set.put(1000)
+                self.pv_min_speed_set.put(0)
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(230) #long enough ramp
-                self.pv_brake_off.put(200) #time before busy 
-                self.pv_brake_on.put(1200) #time after busy
+                self.pv_brake_off.put(500) #time before busy 
+                self.pv_brake_on.put(1000) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
@@ -674,7 +674,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
         print(status3)
-        server.stop_server()
+        motor1.stop_motor()
+        motor2.stop_motor()
+        motor3.stop_motor()
         #print(status1,status2,status3)
         #if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
          #stop server after series of commands, listening thread keeps running otherwise
