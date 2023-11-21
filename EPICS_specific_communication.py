@@ -154,7 +154,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_HOPR = PV('T-MWE1X:SOL:1.HOPR')
                 
                 #set initial parameters and calibrate
-                self.calibration() #i do calibrate!!!
+               
                 
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
@@ -168,7 +168,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_DRVH.put(21766)
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(21766)
-            
+                self.calibration() #i do calibrate!!!
                 
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
@@ -197,7 +197,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
                 
-                self.calibration()
+                
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -211,7 +211,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_DRVH.put(104172)
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(104172)
-            
+                self.calibration()
                 
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
@@ -269,6 +269,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_HOPR.put(9600)
                 
                 self.calibration()
+                
         if self.iscalibrating == False:
             self.initializing = False
        
@@ -604,11 +605,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
-        #print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
-        #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
-        #print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
+        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
+        print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
+        print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
         
-        while  motor3.initializing == True: #motor1.initializing == True or motor2.initializing == True or
+        while  motor3.initializing == True or  motor1.initializing == True or motor2.initializing == True:
             print("is initializing")
             #time.sleep(0.1)
         #time.sleep(10)
