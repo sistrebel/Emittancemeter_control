@@ -319,14 +319,15 @@ class MotorClient(): #i don't know if Thread is necessary
                     #         #print("third")
                     #         isfree = True
                     # if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
-                    #     if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
+                    #     if status == 0x8 or status == 0xA or status == 0x9 or status == 0x0:# and self.Get(server.pv_status) != 1  :
                     #         isfree = True
                     #         #print("first")
                     # if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
-                    #     if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
-                    #         isfree = True
-                    #         #print("second")
-                    if status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
+                    #     if status == 0xC or status == 0xD or status == 0xF or status == 0x1:# and self.Get(server.pv_status) != 1  :
+                            #isfree = True
+                            #print("second")
+                    if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(server.pv_status) != 1  : 
+                    
                     #if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
@@ -370,7 +371,8 @@ class MotorClient(): #i don't know if Thread is necessary
                         #print("is busy, try again later")
                         #print(self.Get(server.pv_status))
                         #print(self.Get(self.pv_motor_status))
-                        
+                        # if status == 0x0:
+                        #     print("not calibrated")
                         time.sleep(0.1)
                     
                 except:
