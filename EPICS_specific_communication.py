@@ -649,7 +649,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #time.sleep(5)
         server.issue_motor_command(motor3, ("calibrate",))
         
-        for i in range(0,3):
+        for i in range(0,2):
        
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
