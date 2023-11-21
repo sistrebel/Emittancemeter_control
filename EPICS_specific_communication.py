@@ -648,6 +648,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         server.issue_motor_command(motor2, ("calibrate",))
         #time.sleep(5)
         server.issue_motor_command(motor3, ("calibrate",))
+        
+        for i in range(0,3):
+       
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
@@ -661,17 +664,17 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         
         # server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
-        
-        server.issue_motor_command(motor1, ("go_to_position",500))
-        #time.sleep(0.1)
-        server.issue_motor_command(motor2, ("go_to_position",500))
-        #time.sleep(0.1)
-        server.issue_motor_command(motor3, ("go_to_position",500))
-              
-        server.issue_motor_command(motor3, ("go_to_position",200))
-        server.issue_motor_command(motor1, ("go_to_position",200))
-        # time.sleep(0.1)
-        server.issue_motor_command(motor2, ("go_to_position",200))
+            
+            server.issue_motor_command(motor1, ("go_to_position",500))
+            #time.sleep(0.1)
+            server.issue_motor_command(motor2, ("go_to_position",500))
+            #time.sleep(0.1)
+            server.issue_motor_command(motor3, ("go_to_position",500))
+                  
+            server.issue_motor_command(motor3, ("go_to_position",200))
+            server.issue_motor_command(motor1, ("go_to_position",200))
+            # time.sleep(0.1)
+            server.issue_motor_command(motor2, ("go_to_position",200))
         #
         
         #server.issue_motor_command(motor3, ("calibrate",))
