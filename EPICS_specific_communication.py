@@ -501,7 +501,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.pv_COM_status.put(0)
         
         self.iscalibrating = True
-        time.sleep(0.5)
+        time.sleep(1)
         print("hi")
         status = self.Get(self.pv_motor_status)
         print("hello")
@@ -626,6 +626,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #     #time.sleep(0.1)
         # #time.sleep(10)
         # print("done initializing")
+    
     
     #except:
         #print("thread error failed...")
