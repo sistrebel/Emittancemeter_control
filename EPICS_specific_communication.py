@@ -321,7 +321,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     #     if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                     #         isfree = True
                     #         #print("second")
-                    if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  : 
+                    if status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
                     #if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
