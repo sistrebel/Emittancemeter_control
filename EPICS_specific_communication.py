@@ -56,6 +56,7 @@ class MotorServer:
     def issue_motor_command(self,motor,command_data, isreturn = 0):
         while self.issending == True:
             print("is waiting to send")
+            time.sleep(0.1)
         self.issending = True
         result_queue = queue.Queue()
         
