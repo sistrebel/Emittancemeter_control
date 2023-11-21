@@ -617,11 +617,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
+        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
         #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
         # print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
@@ -643,7 +643,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #motor3.calibration()
         # Example: Move motor 1 by 1000 steps
         #server.issue_motor_command(motor1, ("calibrate",))
-        server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor3, ("calibrate",))
         #time.sleep(5)
         #server.issue_motor_command(motor3, ("calibrate",))
         # time.sleep(0.1)
@@ -662,20 +662,20 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #server.issue_motor_command(motor1, ("go_to_position",500))
         #time.sleep(0.1)
-        server.issue_motor_command(motor1, ("go_to_position",500))
+        server.issue_motor_command(motor3, ("go_to_position",500))
         #time.sleep(0.1)
               
         # server.issue_motor_command(motor3, ("go_to_position",400))
         #server.issue_motor_command(motor1, ("go_to_position",200))
         # time.sleep(0.1)
-        server.issue_motor_command(motor1, ("go_to_position",1000))
+        server.issue_motor_command(motor3, ("go_to_position",1000))
         #
         
         #server.issue_motor_command(motor3, ("calibrate",))
         
         
         
-        server.issue_motor_command(motor1, ("go_to_position",0))
+        server.issue_motor_command(motor3, ("go_to_position",0))
         
         # server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost when the one before took too long
         
