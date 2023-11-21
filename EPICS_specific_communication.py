@@ -506,7 +506,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
         print("aii")
         
-        #self.pv_COM_status.put(0)
+        self.pv_COM_status.put(0)
         
         self.iscalibrating = True
         time.sleep(1)
