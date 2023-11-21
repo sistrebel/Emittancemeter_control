@@ -343,6 +343,7 @@ class MotorClient(): #i don't know if Thread is necessary
                         else:
                             print("else")
                             res = self.ex_command(command)
+                            time.sleep(0.1)
                         
                         if res == "done":
                             self.server.issending = False
