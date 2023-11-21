@@ -155,7 +155,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 #set initial parameters and calibrate
                
-                
+                self.calibration() #i do calibrate!!!
+                time.sleep(0.5)
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -168,8 +169,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_DRVH.put(21766)
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(21766)
-                self.calibration() #i do calibrate!!!
-                time.sleep(0.5)
+                
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
            # with self.port_lock:
@@ -197,7 +197,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
                 
-                
+                self.calibration()
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -211,8 +211,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_DRVH.put(104172)
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(104172)
-                self.calibration()
-                time.sleep(0.5)
+                
+                #time.sleep(0.5)
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
