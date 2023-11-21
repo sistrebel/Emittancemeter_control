@@ -492,7 +492,8 @@ class MotorClient(): #i don't know if Thread is necessary
         
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
-            return
+             print("vel none")
+             return
         
         #self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
         print("aii")
