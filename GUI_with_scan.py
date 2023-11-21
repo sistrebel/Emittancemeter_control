@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
         
         
 
-        self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
+        #self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
         
         
     def plot(self): #this is the important bit where you can modify the plot window
