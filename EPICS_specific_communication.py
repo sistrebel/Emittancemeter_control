@@ -249,7 +249,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     #time.sleep(0.05)
                 #time.sleep(0.2)
                 
-                self.calibration()
+                
                 #time.sleep(0.5)
                 self.pv_speed_set.put(1000)
                 self.pv_min_speed_set.put(0)
@@ -266,7 +266,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_DRVH.put(9600)
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(9600)
-            
+                
+                self.calibration()
         if self.iscalibrating == False:
             self.initializing = False
        
