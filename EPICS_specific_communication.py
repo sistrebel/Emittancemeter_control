@@ -156,7 +156,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 #set initial parameters and calibrate
                
-                self.calibration() #i do calibrate!!!
+                #self.calibration() #i do calibrate!!!
                 #time.sleep(0.5)
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
@@ -198,7 +198,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR = PV('T-MWE1Y:SOL:1.LOPR')
                 self.pv_targetposition_HOPR = PV('T-MWE1Y:SOL:1.HOPR')
                 
-                self.calibration()
+                #self.calibration()
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -630,9 +630,12 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #print("thread error failed...")
     #try:
         
+        motor1.calibration()
+        motor2.calibration()
+        
         # Example: Move motor 1 by 1000 steps
-        server.issue_motor_command(motor2, ("calibrate",))
-        server.issue_motor_command(motor1, ("calibrate",))
+        #server.issue_motor_command(motor2, ("calibrate",))
+        #server.issue_motor_command(motor1, ("calibrate",))
         #server.issue_motor_command(motor3, ("calibrate",))
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
