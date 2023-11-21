@@ -104,7 +104,10 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start(100) #updates every 100ms
         
-        
+        #initialize the update timer for the xy-plot
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_plot_xy)
+        self.timer.start(100) #updates every 100ms
         
         #initialize the ready-message for status-message-window
         self.messagetimer = QTimer(self)
@@ -139,11 +142,48 @@ class MainWindow(QMainWindow):
         self.show_message("selected " + Axis)
         
         if Axis == "Axis 1":
-            self.movingmotor = self.motor1_queue
+            self.movingmotor = self.motor1
         if Axis == "Axis 2":
-            self.movingmotor = self.motor2_queue
+            self.movingmotor = self.motor2
         if Axis == "Axis 3":
-            self.movingmotor = self.motor3_queue
+            self.movingmotor = self.motor3
+        
+    
+    def xy_plot(self):
+        """make a 2D plot of the collimator position
+        x horizontal and y vertival
+        
+        Should be displayed when a scan is started and forms a snake after a scan. """
+        
+        #plotstyle
+        self.graphWidget.showGrid(x=True, y=True)
+        self.graphWidget.setTitle("xy-plot")
+        styles = {'color':'r', 'font-size':'20px'}
+        self.graphWidget.setLabel('left', 'Position [cm]', **styles)
+        self.graphWidget.setLabel('bottom', 'Time [s]', **styles)
+        pen = pg.mkPen("r") #red line pen
+        self.graphWidget.setBackground("w") #make white background
+        
+        #create the plot
+        self.horizontal = [] #list(range(100))  # 100 time points
+        self.vertical = []  # 100 data points
+        
+        self.data_line =  self.graphWidget.plot(self.horizontal, self.vertical, pen=pen) #divide time by 1000 to get secon
+        
+    
+    def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
+        """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
+        
+        
+        #newhorizontal = ... """get current horizontal position"""
+        #newvertical = ... """get current verzital position"""
+        #self.horizontal.append(newhorizontal) 
+        #self.vertical.append(newvertical)
+        
+        
+
+        self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
+        
         
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
@@ -170,7 +210,7 @@ class MainWindow(QMainWindow):
         
         self.position = self.position[1:]  # Remove the first
         
-        newposition = self.server.issue_motor_command(self.movingmotor_queue, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition = self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
         
         
         self.position.append(newposition)
@@ -233,7 +273,8 @@ class MainWindow(QMainWindow):
     
         """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
         self.ScanButton.clicked.connect(self.retrieve_numberofpoints) #gets data and starts scan script
-        #self.PauseScanButton.clicked.connect(scan_script.pause_scan)
+        self.PauseScanButton.clicked.connect(scan_script.pause_scan)
+        self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
         
         
     def save_plot(self):
