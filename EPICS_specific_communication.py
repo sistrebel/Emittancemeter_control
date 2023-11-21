@@ -74,6 +74,7 @@ class MotorClient(): #i don't know if Thread is necessary
         #self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
         
         self.is_running = False  
+        
         self.command_queue = command_queue
         
         #list might be adjusted if necessary
@@ -245,11 +246,11 @@ class MotorClient(): #i don't know if Thread is necessary
                 while self.Get(self.pv_brake_status) != 1:
                     print("setting brake")
                     self.pv_brake.put(1)
-                    time.sleep(0.05)
+                    #time.sleep(0.05)
                 #time.sleep(0.2)
                 
                 self.calibration()
-                time.sleep(0.5)
+                #time.sleep(0.5)
                 self.pv_speed_set.put(1000)
                 self.pv_min_speed_set.put(0)
                 self.pv_speed_dist.put(200)
@@ -299,6 +300,7 @@ class MotorClient(): #i don't know if Thread is necessary
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
+                
                 try:
                     isfree = False
                     status = self.Get(self.pv_motor_status)
@@ -593,17 +595,17 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
            
         # Initialize the motor client and start it up in an extra thread.
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
-        print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
-        print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
+        #print("cmdstatus of 2 is", motor2.Get(motor2.pv_CMD_status))
+        #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
         print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
         
-        while motor1.initializing == True or motor2.initializing == True or motor3.initializing == True: 
+        while  motor3.initializing == True: #motor1.initializing == True or motor2.initializing == True or
             print("is initializing")
             #time.sleep(0.1)
         #time.sleep(10)
@@ -630,13 +632,13 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
         #server.issue_motor_command(motor2, ("go_to_position",2000))
-        time.sleep(0.1)
-        server.issue_motor_command(motor1, ("go_to_position",2000))
-        time.sleep(0.1)
+        #time.sleep(0.1)
+        #server.issue_motor_command(motor1, ("go_to_position",2000))
+        #time.sleep(0.1)
               
         #server.issue_motor_command(motor3, ("go_to_position",400))
         #server.issue_motor_command(motor1, ("go_to_position",200))
-        time.sleep(0.1)
+        #time.sleep(0.1)
         #server.issue_motor_command(motor2, ("go_to_position",1000))
         #server.issue_motor_command(motor3, ("calibrate",))
         
