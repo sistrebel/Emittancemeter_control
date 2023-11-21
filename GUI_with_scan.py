@@ -352,7 +352,7 @@ class MainWindow(QMainWindow):
         # position = float(Target)*steps_per_cm #translate cm position into steps
         
         
-        self.server.issue_motor_command(self.movingmoto,("release_brake",))
+        self.server.issue_motor_command(self.movingmotor,("release_brake",))
         time.sleep(0.1)
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
