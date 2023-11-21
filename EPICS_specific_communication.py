@@ -613,7 +613,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
@@ -636,7 +636,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #motor2.calibration()
         #motor3.calibration()
         # Example: Move motor 1 by 1000 steps
-        #server.issue_motor_command(motor2, ("calibrate",))
+        server.issue_motor_command(motor2, ("calibrate",))
         server.issue_motor_command(motor1, ("calibrate",))
         
         #server.issue_motor_command(motor3, ("calibrate",))
