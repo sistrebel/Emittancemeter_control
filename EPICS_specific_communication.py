@@ -361,7 +361,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     
                 except:
                         if self.command_queue.empty():
-                            print("isempty")
+                            #print("isempty")
                             pass
                         else: print("something worse happened")
                     
