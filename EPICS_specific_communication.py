@@ -630,14 +630,14 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #print("thread error failed...")
     #try:
         
-        motor1.calibration()
-        motor2.calibration()
-        motor3.calibration()
+        #motor1.calibration()
+        #motor2.calibration()
+        #motor3.calibration()
         # Example: Move motor 1 by 1000 steps
-        #server.issue_motor_command(motor2, ("calibrate",))
-        #server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor2, ("calibrate",))
+        server.issue_motor_command(motor1, ("calibrate",))
         #
-        #server.issue_motor_command(motor3, ("calibrate",))
+        server.issue_motor_command(motor3, ("calibrate",))
         # time.sleep(0.1)
         # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
         #     time.sleep(0.1)
@@ -652,9 +652,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         # server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
         
-        server.issue_motor_command(motor2, ("go_to_position",500))
+        #server.issue_motor_command(motor2, ("go_to_position",500))
         #time.sleep(0.1)
-        server.issue_motor_command(motor1, ("go_to_position",500))
+        #server.issue_motor_command(motor1, ("go_to_position",500))
         time.sleep(0.1)
               
         # server.issue_motor_command(motor3, ("go_to_position",400))
