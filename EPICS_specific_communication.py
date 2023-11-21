@@ -377,8 +377,8 @@ class MotorClient(): #i don't know if Thread is necessary
                     
                 except:
                         if self.command_queue.empty():
-                            print("isempty")
-                            time.sleep(0.4)
+                            #print("isempty")
+                            time.sleep(0.1)
                             pass
                         else: print("something worse happened")
                     
