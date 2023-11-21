@@ -53,6 +53,8 @@ class MotorServer:
         return motor
 
     def issue_motor_command(self,motor,command_data, isreturn = 0):
+        while self.issending == True:
+            print("is waiting to send")
         self.issending = True
         result_queue = queue.Queue()
         
@@ -298,6 +300,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #with port_lock: #make sure that commands are only sent through the port if no other thread is using it already
                 func = self.command_functions[command_name]
                 func(*args)
+                
         return "done"
     def run(self):  
         """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
@@ -353,7 +356,7 @@ class MotorClient(): #i don't know if Thread is necessary
                             time.sleep(0.1)
                         
                         if res == "done":
-                            self.server.issending = False
+                            server.issending = False
                             time.sleep(0.1)
                             print("free again")
                         
