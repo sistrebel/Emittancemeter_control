@@ -380,7 +380,11 @@ class MotorClient(): #i don't know if Thread is necessary
                             #print("isempty")
                             time.sleep(0.1)
                             pass
-                        else: print("something worse happened")
+                        else: 
+                            time.sleep(0.1)
+                            print("command")
+                                
+                            print("something worse happened")
                     
             
             
@@ -611,59 +615,23 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         command_queue2 = queue.Queue()
         command_queue3 = queue.Queue()
         
-        # manager = Manager()
-        
-        # command_queue = manager.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        # command_queue2 = manager.Queue()
-        # command_queue3 = manager.Queue()
-           
-        # Initialize the motor client and start it up in an extra thread.
+     
         
         motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
-        
-        #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
-        # print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
-        # print("cmdstatus of 3 is", motor3.Get(motor3.pv_CMD_status))
-        
-        # while  motor1.initializing == True or  motor2.initializing == True or motor3.initializing == True:
-        #     print("is initializing")
-        #     #time.sleep(0.1)
-        # #time.sleep(10)
-        # print("done initializing")
-    
-    
-    #except:
-        #print("thread error failed...")
-    #try:
-        
-        #motor1.calibration()
-        #motor2.calibration()
-        #motor3.calibration()
-        # Example: Move motor 1 by 1000 steps
+   
         server.issue_motor_command(motor1, ("calibrate",))
         server.issue_motor_command(motor2, ("calibrate",))
         #time.sleep(5)
         server.issue_motor_command(motor3, ("calibrate",))
         
         for i in range(0,2):
-       
-        # time.sleep(0.1)
-        # while motor3.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
-        #     time.sleep(0.1)
-        #     print("calibrating")
-        # server.issue_motor_command(motor1, ("set_speed",1500))
-        # server.issue_motor_command(motor2, ("set_speed",1500)) 
-        #time.sleep(0.2)
-        #erver.issue_motor_command(motor1, ("set_speed",1300))
-        #print("here")
+      
         
-        
-        
-        # server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
+    
             
             server.issue_motor_command(motor1, ("go_to_position",500))
             #time.sleep(0.1)
@@ -675,43 +643,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
             server.issue_motor_command(motor1, ("go_to_position",200))
             # time.sleep(0.1)
             server.issue_motor_command(motor2, ("go_to_position",200))
-        #
-        
-        #server.issue_motor_command(motor3, ("calibrate",))
-        
-        
-        
-        #server.issue_motor_command(motor3, ("go_to_position",0))
-        
-        # server.issue_motor_command(motor2, ("go_to_position",0))#this command is lost when the one before took too long
-        
-        #server.issue_motor_command(motor1, ("go_to_position",0))
-        
-        # server.issue_motor_command(motor1, ("go_to_position",100))
-        
-        # server.issue_motor_command(motor2, ("go_to_position",100))
-        
-        
-        
-        #server.issue_motor_command(command_queue, ("move_left", 5000))
-        #server.issue_motor_command(command_queue, ("move_right",20000))
-        
-        # time.sleep(0.1)
-        
-        # speed = server.issue_motor_command(motor1, ("get_speed",), isreturn = 1)
-        # print(speed)
-        
-        
-        #server.issue_motor_command(command_queue, ("stop_move",))
-        #server.issue_motor_command(command_queue, ("set_brake",))
-        #command_queue.put(("stop_move",))
-        #command_queue.put(("set_brake",))
-        #time.sleep(10)
        
-        
-        #command_queue.put(("stop",))
-        #server.issue_motor_command(command_queue, ("stop",))
-        #time.sleep(30) #give the thread some time before the connection is closed...
         status1 = motor1.pv_motor_status.get()
         status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
