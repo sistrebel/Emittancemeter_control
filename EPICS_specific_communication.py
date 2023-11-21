@@ -355,7 +355,7 @@ class MotorClient(): #i don't know if Thread is necessary
                         else:
                             print("else")
                             res = self.ex_command(command)
-                            print(res)
+                            res = "done"
                             time.sleep(0.1)
                         
                         if res == "done":
