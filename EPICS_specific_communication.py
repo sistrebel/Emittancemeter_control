@@ -359,12 +359,13 @@ class MotorClient(): #i don't know if Thread is necessary
                         #print("is busy, try again later")
                         #print(self.Get(server.pv_status))
                         #print(self.Get(self.pv_motor_status))
-                        pass
-                        #time.sleep(0.2)
+                        
+                        time.sleep(0.1)
                     
                 except:
                         if self.command_queue.empty():
                             #print("isempty")
+                            time.sleep(0.1)
                             pass
                         else: print("something worse happened")
                     
@@ -679,8 +680,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #status2 = motor2.pv_motor_status.get()
         status3 = motor3.pv_motor_status.get()
         print(status3)
-        motor1.stop_motor()
-        motor2.stop_motor()
+        #motor1.stop_motor()
+        #motor2.stop_motor()
         motor3.stop_motor()
         #print(status1,status2,status3)
         #if status1 == 0xC or status1 == 0xD or status1 == 0xF and status2 == 0xC or status2 == 0xD or status2 == 0xF and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
