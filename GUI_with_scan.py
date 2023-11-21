@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         
     
         #initialize the moving axis with the first motor
-        self.movingmotor_queue = self.motor1_queue
+        self.movingmotor = self.motor1
         
         #load and connect the GUI
         self.LoadGuis()
@@ -273,8 +273,8 @@ class MainWindow(QMainWindow):
     
         """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
         self.ScanButton.clicked.connect(self.retrieve_numberofpoints) #gets data and starts scan script
-        self.PauseScanButton.clicked.connect(scan_script.pause_scan)
-        self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
+        # self.PauseScanButton.clicked.connect(scan_script.pause_scan)
+        # self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
         
         
     def save_plot(self):
