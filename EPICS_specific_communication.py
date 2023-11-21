@@ -12,7 +12,7 @@ import queue
 from multiprocessing import Manager
 
 import time
-
+import scan_script as scan
 
 
 
@@ -620,27 +620,33 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
-   
-        server.issue_motor_command(motor1, ("calibrate",))
-        server.issue_motor_command(motor2, ("calibrate",))
-        #time.sleep(5)
-        server.issue_motor_command(motor3, ("calibrate",))
         
-        for i in range(0,2):
+        num_points = 6  # Number of measurement points
+        x_length = 21700  # Length of the x-axis
+        y_length = 104000
+   
+        scan.start_scan(motor1,motor2,motor3,num_points,x_length,y_length,server)    
+       
+        # server.issue_motor_command(motor1, ("calibrate",))
+        # server.issue_motor_command(motor2, ("calibrate",))
+        # #time.sleep(5)
+        # server.issue_motor_command(motor3, ("calibrate",))
+        
+        # for i in range(0,2):
       
         
     
             
-            server.issue_motor_command(motor1, ("go_to_position",500))
-            #time.sleep(0.1)
-            server.issue_motor_command(motor2, ("go_to_position",500))
-            #time.sleep(0.1)
-            server.issue_motor_command(motor3, ("go_to_position",500))
+        #     server.issue_motor_command(motor1, ("go_to_position",500))
+        #     #time.sleep(0.1)
+        #     server.issue_motor_command(motor2, ("go_to_position",500))
+        #     #time.sleep(0.1)
+        #     server.issue_motor_command(motor3, ("go_to_position",500))
                   
-            server.issue_motor_command(motor3, ("go_to_position",200))
-            server.issue_motor_command(motor1, ("go_to_position",200))
-            # time.sleep(0.1)
-            server.issue_motor_command(motor2, ("go_to_position",200))
+        #     server.issue_motor_command(motor3, ("go_to_position",200))
+        #     server.issue_motor_command(motor1, ("go_to_position",200))
+        #     # time.sleep(0.1)
+        #     server.issue_motor_command(motor2, ("go_to_position",200))
        
         status1 = motor1.pv_motor_status.get()
         status2 = motor2.pv_motor_status.get()
