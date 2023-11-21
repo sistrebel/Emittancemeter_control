@@ -16,6 +16,7 @@ import numpy as np
 
 
 def distribute_measurement_points(num_points, x_length, y_length):
+    """old function"""
     if num_points <= 0:
         return []
     points_distribution = []
@@ -114,15 +115,15 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     #start with recalibration of the motors:
     server.issue_motor_command(motor1,("calibrate",),isreturn = 0)
-    wait_for_server(server)
-    time.sleep(0.1)
+    #wait_for_server(server)
+    #time.sleep(0.1)
     server.issue_motor_command(motor2,("calibrate",),isreturn = 0)
-    time.sleep(0.1)
-    wait_for_server(server)
+    #time.sleep(0.1)
+    #wait_for_server(server)
     server.issue_motor_command(motor3,("calibrate",),isreturn = 0)
-    time.sleep(0.1)
+    #time.sleep(0.1)
     
-    while motor1.iscalibrating == True or motor2.iscalibrating == True: #or motor3.iscalibrating == True: #wait for calibration to be done
+    while motor1.iscalibrating == True or motor2.iscalibrating == True or motor3.iscalibrating == True: #wait for calibration to be done
         time.sleep(0.1)
         print("is calibrating")
     #axis length in steps, parameters to adjust for specific situation...
@@ -163,6 +164,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     server.issue_motor_command(motor2,("go_to_position",point_y),isreturn = 0) #moves motor on thread two
                     time.sleep(0.2)
                     moving = True
+                    print("starts to move")
                     time.sleep(0.1)
                 else: time.sleep(0.1)
                       
@@ -176,14 +178,14 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     print("arrived at point")
            
             
-            result = start_readout(motor3,server)
+            #result = start_readout(motor3,server)
             
-            print(result)
+            #print(result)
             
             #return to initial position
             time.sleep(0.1)
-            return_speed = 1000
-            server.issue_motor_command(motor3,("go_to_position",return_speed),isreturn = 0)
+            return_position = 0
+            server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
             time.sleep(0.1)
             #old_point = new_point 
             
@@ -248,7 +250,10 @@ def get_signal():
     
 def pause_scan():
     """when the pause button is clicked on the GUI the scan procedure should pause and not go to the next point"""
-    ...
+    pause = True
+def continue_scan():
+    """continue scan after a pause"""
+    pause = False
     
     
 def steps_to_mm(steps,axis): 
