@@ -307,22 +307,22 @@ class MotorClient(): #i don't know if Thread is necessary
              #make sure that this critical section can only be accessed when the motor lock is free
                 
                 try:
-                    isfree = False
+                    # isfree = False
                     status = self.Get(self.pv_motor_status)
-                    if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
-                        if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
-                            #print("third")
-                            isfree = True
-                    if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
-                        if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
-                            isfree = True
-                            #print("first")
-                    if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
-                        if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
-                            isfree = True
-                            #print("second")
-                   # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
-                    if isfree == True:
+                    # if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
+                    #     if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
+                    #         #print("third")
+                    #         isfree = True
+                    # if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
+                    #     if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
+                    #         isfree = True
+                    #         #print("first")
+                    # if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
+                    #     if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
+                    #         isfree = True
+                    #         #print("second")
+                    if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  : 
+                    #if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if command[0] == "get_position":
                             #with port_lock: #make sure that this function is also blocked
