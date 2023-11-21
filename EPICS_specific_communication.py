@@ -54,9 +54,9 @@ class MotorServer:
         return motor
 
     def issue_motor_command(self,motor,command_data, isreturn = 0):
-        while self.issending == True:
-            print("is waiting to send")
-            time.sleep(0.1)
+        # while self.issending == True:
+        #     print("is waiting to send")
+        #     time.sleep(0.1)
         self.issending = True
         result_queue = queue.Queue()
         
@@ -375,8 +375,8 @@ class MotorClient(): #i don't know if Thread is necessary
                     
                 except:
                         if self.command_queue.empty():
-                            #print("isempty")
-                            time.sleep(0.1)
+                            print("isempty")
+                            time.sleep(0.4)
                             pass
                         else: print("something worse happened")
                     
