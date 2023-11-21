@@ -606,58 +606,58 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
     
-if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
-    #try:
-        # Initialize the server
-        server = MotorServer()
+# if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
+#     #try:
+#         # Initialize the server
+#         server = MotorServer()
         
-        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        command_queue2 = queue.Queue()
-        command_queue3 = queue.Queue()
+#         command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+#         command_queue2 = queue.Queue()
+#         command_queue3 = queue.Queue()
         
      
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
+#         motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+#         motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
+#         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
    
-        server.issue_motor_command(motor1, ("calibrate",))
-        server.issue_motor_command(motor2, ("calibrate",))
-        #time.sleep(5)
-        server.issue_motor_command(motor3, ("calibrate",))
+#         server.issue_motor_command(motor1, ("calibrate",))
+#         server.issue_motor_command(motor2, ("calibrate",))
+#         #time.sleep(5)
+#         server.issue_motor_command(motor3, ("calibrate",))
         
-        for i in range(0,2):
+#         for i in range(0,2):
       
         
     
             
-            server.issue_motor_command(motor1, ("go_to_position",500))
-            #time.sleep(0.1)
-            server.issue_motor_command(motor2, ("go_to_position",500))
-            #time.sleep(0.1)
-            server.issue_motor_command(motor3, ("go_to_position",500))
+#             server.issue_motor_command(motor1, ("go_to_position",500))
+#             #time.sleep(0.1)
+#             server.issue_motor_command(motor2, ("go_to_position",500))
+#             #time.sleep(0.1)
+#             server.issue_motor_command(motor3, ("go_to_position",500))
                   
-            server.issue_motor_command(motor3, ("go_to_position",200))
-            server.issue_motor_command(motor1, ("go_to_position",200))
-            # time.sleep(0.1)
-            server.issue_motor_command(motor2, ("go_to_position",200))
+#             server.issue_motor_command(motor3, ("go_to_position",200))
+#             server.issue_motor_command(motor1, ("go_to_position",200))
+#             # time.sleep(0.1)
+#             server.issue_motor_command(motor2, ("go_to_position",200))
        
-        status1 = motor1.pv_motor_status.get()
-        status2 = motor2.pv_motor_status.get()
-        status3 = motor3.pv_motor_status.get()
-        #print(status3)
-        # motor1.stop_motor()
-        # motor2.stop_motor()
-        # motor3.stop_motor()
-        print(status1,status2,status3)
-        if status1 == 0x8 or status1 == 0x9 or status1 == 0xA and status2 == 0x8 or status2 == 0x9 or status2 == 0xA and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
-            motor1.stop_motor()
-            motor2.stop_motor()
-            motor3.stop_motor()
-            #stop server after series of commands, listening thread keeps running otherwise
+#         status1 = motor1.pv_motor_status.get()
+#         status2 = motor2.pv_motor_status.get()
+#         status3 = motor3.pv_motor_status.get()
+#         #print(status3)
+#         # motor1.stop_motor()
+#         # motor2.stop_motor()
+#         # motor3.stop_motor()
+#         print(status1,status2,status3)
+#         if status1 == 0x8 or status1 == 0x9 or status1 == 0xA and status2 == 0x8 or status2 == 0x9 or status2 == 0xA and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
+#             motor1.stop_motor()
+#             motor2.stop_motor()
+#             motor3.stop_motor()
+#             #stop server after series of commands, listening thread keeps running otherwise
        
-    #except KeyboardInterrupt:
-        #erver.stop_server()
-        #print("KeyboardInterrupt, the server has stopped")
+#     #except KeyboardInterrupt:
+#         #erver.stop_server()
+#         #print("KeyboardInterrupt, the server has stopped")
