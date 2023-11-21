@@ -621,7 +621,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
+        #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
         #print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
         # print("cmdstatus of 1 is", motor1.Get(motor1.pv_CMD_status))
