@@ -304,16 +304,16 @@ class MotorClient(): #i don't know if Thread is necessary
                     status = self.Get(self.pv_motor_status)
                     if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
                         if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
-                            #print("third")
+                            print("third")
                             isfree = True
                     if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
-                           # print("first")
+                            print("first")
                     if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
                         if status == 0xC or status == 0xD or status == 0xF:# and self.Get(server.pv_status) != 1  :
                             isfree = True
-                            #print("second")
+                            print("second")
                    # if status == 0x8 or status == 0xA or status == 0x9 and self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1 or status == 0xC or status == 0xD or status == 0xF and self.Get(server.pv_status) != 1  : 
                     if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
@@ -353,10 +353,10 @@ class MotorClient(): #i don't know if Thread is necessary
                         
                     
                     else:
-                        print("is busy, try again later")
-                        print(self.Get(server.pv_status))
-                        print(self.Get(self.pv_motor_status))
-                        
+                        #print("is busy, try again later")
+                        #print(self.Get(server.pv_status))
+                        #print(self.Get(self.pv_motor_status))
+                        pass
                         #time.sleep(0.2)
                     
                 except:
