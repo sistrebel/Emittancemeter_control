@@ -648,20 +648,20 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #     # time.sleep(0.1)
         #     server.issue_motor_command(motor2, ("go_to_position",200))
        
-        status1 = motor1.pv_motor_status.get()
-        status2 = motor2.pv_motor_status.get()
-        status3 = motor3.pv_motor_status.get()
-        #print(status3)
-        # motor1.stop_motor()
-        # motor2.stop_motor()
-        # motor3.stop_motor()
-        print(status1,status2,status3)
-        if status1 == 0x8 or status1 == 0x9 or status1 == 0xA and status2 == 0x8 or status2 == 0x9 or status2 == 0xA and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
-            motor1.stop_motor()
-            motor2.stop_motor()
-            motor3.stop_motor()
-            #stop server after series of commands, listening thread keeps running otherwise
+    #     status1 = motor1.pv_motor_status.get()
+    #     status2 = motor2.pv_motor_status.get()
+    #     status3 = motor3.pv_motor_status.get()
+    #     #print(status3)
+    #     # motor1.stop_motor()
+    #     # motor2.stop_motor()
+    #     # motor3.stop_motor()
+    #     print(status1,status2,status3)
+    #     if status1 == 0x8 or status1 == 0x9 or status1 == 0xA and status2 == 0x8 or status2 == 0x9 or status2 == 0xA and status3 == 0x8 or status3 == 0x9 or status3 == 0xA:
+    #         motor1.stop_motor()
+    #         motor2.stop_motor()
+    #         motor3.stop_motor()
+    #         #stop server after series of commands, listening thread keeps running otherwise
        
-    #except KeyboardInterrupt:
-        #erver.stop_server()
-        #print("KeyboardInterrupt, the server has stopped")
+    # #except KeyboardInterrupt:
+    #     #erver.stop_server()
+    #     #print("KeyboardInterrupt, the server has stopped")
