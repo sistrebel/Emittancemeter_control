@@ -642,8 +642,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #motor2.calibration()
         #motor3.calibration()
         # Example: Move motor 1 by 1000 steps
-        server.issue_motor_command(motor2, ("calibrate",))
         server.issue_motor_command(motor1, ("calibrate",))
+        server.issue_motor_command(motor2, ("calibrate",))
         #time.sleep(5)
         #server.issue_motor_command(motor3, ("calibrate",))
         # time.sleep(0.1)
