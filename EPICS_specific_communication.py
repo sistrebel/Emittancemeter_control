@@ -326,23 +326,21 @@ class MotorClient(): #i don't know if Thread is necessary
                     #     if status == 0xC or status == 0xD or status == 0xF or status == 0x1:# and self.Get(server.pv_status) != 1  :
                             #isfree = True
                             #print("second")
-                    if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(server.pv_status) != 1  : 
+                            
+                            
+                   
+                     # if command[0] == "position_reached":
+                     #       #with port_lock: #make sure that this function is also blocked
+                     #           isreached = self.position_reached()
+                     #           if isreached is not None:
+                     #               result_queue.put(isreached)
+                     #               res = "done"
+                            
+                    if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1  : 
                     
                     #if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                        if command[0] == "get_position":
-                            #with port_lock: #make sure that this function is also blocked
-                                position = self.get_position()
-                                if position is not None:
-                                    self.position = position
-                                    result_queue.put(position)
-                                    res = "done"
-                        if command[0] == "position_reached":
-                              #with port_lock: #make sure that this function is also blocked
-                                  isreached = self.position_reached()
-                                  if isreached is not None:
-                                      result_queue.put(isreached)
-                                      res = "done"
+                       
                         #if command[0] == "go_to_position":
                            # self.ex_command(command) #excecute the command
                            # while self.ismoving == True:
@@ -360,7 +358,7 @@ class MotorClient(): #i don't know if Thread is necessary
                             time.sleep(0.1)
                         
                         if res == "done":
-                            server.issending = False
+                            self.server.issending = False
                             time.sleep(0.1)
                             print("free again")
                         
@@ -381,9 +379,9 @@ class MotorClient(): #i don't know if Thread is necessary
                             time.sleep(0.1)
                             pass
                         else: 
+                            
                             time.sleep(0.1)
-                            print("command")
-                                
+                        
                             print("something worse happened")
                     
             

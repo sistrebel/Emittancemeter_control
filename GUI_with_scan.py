@@ -105,9 +105,9 @@ class MainWindow(QMainWindow):
         self.timer.start(100) #updates every 100ms
         
         #initialize the update timer for the xy-plot
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_plot_xy)
-        self.timer.start(100) #updates every 100ms
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_plot_xy)
+        # self.timer.start(100) #updates every 100ms
         
         #initialize the ready-message for status-message-window
         self.messagetimer = QTimer(self)
@@ -210,7 +210,8 @@ class MainWindow(QMainWindow):
         
         self.position = self.position[1:]  # Remove the first
         
-        newposition = self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition = self.movingmotor.get_position()#self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        
         
         
         self.position.append(newposition)
