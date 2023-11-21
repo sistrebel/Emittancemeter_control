@@ -493,7 +493,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if self.Get(self.pv_speed_get) == None:
             return
         
-        self.pv_command.put(6) #enumerated calCCW to 1 i think , 6 is calCCW2
+        self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
             
         
         self.iscalibrating = True
