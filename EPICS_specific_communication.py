@@ -23,6 +23,7 @@ class MotorServer:
     def __init__(self):
        self.running = True
        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
+       self.issending = False
     def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
         
