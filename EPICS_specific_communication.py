@@ -596,15 +596,15 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         # Initialize the server
         server = MotorServer()
         
-        # command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        # command_queue2 = queue.Queue()
-        # command_queue3 = queue.Queue()
+        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+        command_queue2 = queue.Queue()
+        command_queue3 = queue.Queue()
         
-        manager = Manager()
+        # manager = Manager()
         
-        command_queue = manager.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        command_queue2 = manager.Queue()
-        command_queue3 = manager.Queue()
+        # command_queue = manager.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+        # command_queue2 = manager.Queue()
+        # command_queue3 = manager.Queue()
            
         # Initialize the motor client and start it up in an extra thread.
         
@@ -644,11 +644,11 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         
         
-        server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
+        # server.issue_motor_command(motor3, ("go_to_position",2000)) #do not return from this;((()))
         
-        server.issue_motor_command(motor2, ("go_to_position",2000))
-        #time.sleep(0.1)
-        server.issue_motor_command(motor1, ("go_to_position",2000))
+        # server.issue_motor_command(motor2, ("go_to_position",2000))
+        # #time.sleep(0.1)
+        # server.issue_motor_command(motor1, ("go_to_position",2000))
         #time.sleep(0.1)
               
         # server.issue_motor_command(motor3, ("go_to_position",400))
