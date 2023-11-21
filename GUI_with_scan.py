@@ -210,7 +210,7 @@ class MainWindow(QMainWindow):
         
         self.position = self.position[1:]  # Remove the first
         
-        newposition = self.movingmotor.get_position()#self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition = self.movingmotor.get_position() #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
         
         
         
@@ -331,17 +331,17 @@ class MainWindow(QMainWindow):
     
     def move_backwards(self): #backwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-        self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor_queue, ("move_backwards",self.speed))
+        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
+        self.server.issue_motor_command(self.movingmotor, ("move_backwards",self.speed))
         
     
     def move_forwards(self): #forwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-        self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor_queue, ("move_forwards",self.speed))
+        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
+        self.server.issue_motor_command(self.movingmotor, ("move_forwards",self.speed))
         
     def stop(self):
-        self.server.issue_motor_command(self.movingmotor_queue, ("stop_move",))
+        self.server.issue_motor_command(self.movingmotor, ("stop_move",))
         self.show_message("motor stopped")
         return
    
@@ -352,26 +352,26 @@ class MainWindow(QMainWindow):
         # position = float(Target)*steps_per_cm #translate cm position into steps
         
         
-        self.server.issue_motor_command(self.movingmotor_queue,("release_brake",))
+        self.server.issue_motor_command(self.movingmoto,("release_brake",))
         time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor_queue, ("go_to_position",Target))
+        self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
         # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
         #     time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor_queue, ("set_brake",))
+        self.server.issue_motor_command(self.movingmotor, ("set_brake",))
         #self.show_message("position reached")
     
     def go_home(self,stop = False):
         """moves motor to initial position and if stop == True the server connection is stopped and port closed"""
        
         
-        self.server.issue_motor_command(self.movingmotor_queue, ("release_brake",))
+        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
         
         time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor_queue, ("go_to_position",0))
+        self.server.issue_motor_command(self.movingmotor, ("go_to_position",0))
         # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
         #     time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor_queue, ("set_brake",))
+        self.server.issue_motor_command(self.movingmotor, ("set_brake",))
         
         time.sleep(0.2) #wait until the command was processed
         
@@ -388,7 +388,7 @@ class MainWindow(QMainWindow):
     def get_reference(self):
         self.show_message("reference search ongoing")
         #self.movingmotor_queue.put(("reference_search",))
-        self.server.issue_motor_command(self.movingmotor_queue, ("reference_search",))
+        self.server.issue_motor_command(self.movingmotor, ("reference_search",))
         #self.movingmotor.reference_search()
         self.show_message("reference search done")
         
