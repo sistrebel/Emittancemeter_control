@@ -156,7 +156,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     # time.sleep(0.1)
     server.issue_motor_command(motor2, ("go_to_position",200))
     
-    return
+    
     
     for i in range(len(point_distribution)):
         if server.running == True:  #check that QtApplication has not been closed
