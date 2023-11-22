@@ -202,13 +202,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             #result = start_readout(motor3,server)
             
             #print(result)
-            
-            #return to initial position
-            time.sleep(0.1)
-            return_position = 0
-            server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
-            time.sleep(0.1)
-            #old_point = new_point 
+        
+       
             
             
             print("go again")
@@ -218,8 +213,13 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     print("scan is done")
     
-    
-    
+     #return to initial position
+    time.sleep(0.1)
+    return_position = 0
+    server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
+    time.sleep(0.1)
+    #old_point = new_point 
+
     
 def start_readout(motor3,server,port_lock):
     """does readout stuff"""
