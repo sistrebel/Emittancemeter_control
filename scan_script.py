@@ -136,133 +136,133 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
 def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread"""
     
-    #start with recalibration of the motors:
-    server.issue_motor_command(motor1,("calibrate",),isreturn = 0)
-    #wait_for_server(server)
-    #time.sleep(0.1)
-    server.issue_motor_command(motor2,("calibrate",),isreturn = 0)
-    #time.sleep(0.1)
-    #wait_for_server(server)
-    server.issue_motor_command(motor3,("calibrate",),isreturn = 0)
-    #time.sleep(0.1)
+    estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length)
     
-    while motor1.iscalibrating == True or motor2.iscalibrating == True or motor3.iscalibrating == True: #wait for calibration to be done
-        time.sleep(0.1)
-        print("is calibrating")
-    #axis length in steps, parameters to adjust for specific situation...
-    # x_length = 40000
-    # y_length = 5000
-   
-    
-    #set the desired scan speed
-    x_speed = 1800
-    y_speed = 1800
-    server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
-    # wait_for_server(server)
-    
-    server.issue_motor_command(motor2,("set_speed",y_speed),isreturn = 0)
-    # wait_for_server(server)
-    
-    number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
-    
-    print("number of points", number_of_points)
-    
-    point_distribution = snake_grid(number_of_points,x_length,y_length)
-    print(point_distribution)
-    
-    endposition_x = point_distribution[-1][0]
-    endposition_y = point_distribution[-1][1]
-    endposition_z = z_length
-    start_position_z = 0
-    
-
-    for i in range(len(point_distribution)):
-        if server.running == True:  #check that QtApplication has not been closed
-            point_x = point_distribution[i][0]
-            point_y = point_distribution[i][1]
-            
-            
-            print(point_x,point_y)
-            
-            
-            #estimate the time it takes to move from current position to target position here
-            #time_needed = time_estimation(old_point, new_point, x_speed, y_speed)
-          
-            moving = False
-            while moving == False: #wait till motors are free and stopped
-                
-                status1 = motor1.Get(motor1.pv_motor_status)
-                status2 = motor2.Get(motor2.pv_motor_status)
-                status3 = motor3.Get(motor3.pv_motor_status)
-                if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
-                  if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
-                      if status3 == 0x9 or motor3.Get(motor3.pv_SOLRB) == endposition_z  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
-                        #time.sleep(5) #wait a little for returning motor...
-                # if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
-                        server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
-                        #time.sleep(0.2) #safety
-                        server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two
-                        #time.sleep(0.2)
-                        moving = True
-                        print("starts to move")
-                      else: time.sleep(0.1)
-                  else: time.sleep(0.1)
-                else: time.sleep(0.1)
-                      
-            #time.sleep(time_needed)
-            status2 = motor2.Get(motor2.pv_motor_status)
-            while status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0: #wait till it actually started moving
-                time.sleep(0.05)
-                status2 = motor2.Get(motor2.pv_motor_status)
-            
-            while moving == True: #wait until motors are done moving
-                status1 = motor1.Get(motor1.pv_motor_status)
-                status2 = motor2.Get(motor2.pv_motor_status)
-                if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : 
-                  if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1  : 
-                #if motor1.ismoving == True or motor2.ismoving == True:  #check that motors are actually free to move
-                    moving = False 
-                    print("arrived at point")
-                  
-                  else:
-                    time.sleep(0.1)
-                    print("still moving")
-                else:
-                    time.sleep(0.1)
-                    print("still moving")
-           
-            while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y:
-                time.sleep(0.1)
-                print("waiting to set position")
-            
-            #time.sleep(1)
-            
-            result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,server)
-            
-            #time.sleep(1)
-            print(result)
+    print("the scan will take approx.", estimated_time, "min")
+    answer = input("do you want to proceed? (y/n")
+    if answer == "y":
         
-       
-            
-            
-            print("go again")
-        else:
-            print("ERROR: GUI/server has been closed")
-            
+        #start with recalibration of the motors:
+        server.issue_motor_command(motor1,("calibrate",),isreturn = 0)
+        #wait_for_server(server)
+        #time.sleep(0.1)
+        server.issue_motor_command(motor2,("calibrate",),isreturn = 0)
+        #time.sleep(0.1)
+        #wait_for_server(server)
+        server.issue_motor_command(motor3,("calibrate",),isreturn = 0)
+        #time.sleep(0.1)
+        
+        while motor1.iscalibrating == True or motor2.iscalibrating == True or motor3.iscalibrating == True: #wait for calibration to be done
+            time.sleep(0.1)
+            print("is calibrating")
+ 
+        #set the desired scan speed
+        x_speed = 1800
+        y_speed = 1800
+        server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
+        
+        
+        server.issue_motor_command(motor2,("set_speed",y_speed),isreturn = 0)
+        
+        
+        number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
+        
+        print("number of points", number_of_points)
+        
+        point_distribution = snake_grid(number_of_points,x_length,y_length)
+        print(point_distribution)
+        
+        endposition_x = point_distribution[-1][0]
+        endposition_y = point_distribution[-1][1]
+        endposition_z = z_length
+        start_position_z = 0
+        
     
-    
-    while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
-        time.sleep(0.05)
-    print("scan is done")
-    
-    #  #return to initial position
-    # time.sleep(0.1)
-    # return_position = 0
-    # server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
-    # time.sleep(0.1)
-    # #old_point = new_point 
+        for i in range(len(point_distribution)):
+            if server.running == True:  #check that QtApplication has not been closed
+                point_x = point_distribution[i][0]
+                point_y = point_distribution[i][1]
+                
+                
+                print(point_x,point_y)
+                
+                
+                #estimate the time it takes to move from current position to target position here
+                #time_needed = time_estimation(old_point, new_point, x_speed, y_speed)
+              
+                moving = False
+                while moving == False: #wait till motors are free and stopped
+                    
+                    status1 = motor1.Get(motor1.pv_motor_status)
+                    status2 = motor2.Get(motor2.pv_motor_status)
+                    status3 = motor3.Get(motor3.pv_motor_status)
+                    if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
+                      if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
+                          if status3 == 0x9 or motor3.Get(motor3.pv_SOLRB) == endposition_z  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
+                            #time.sleep(5) #wait a little for returning motor...
+                    # if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
+                            server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
+                            #time.sleep(0.2) #safety
+                            server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two
+                            #time.sleep(0.2)
+                            moving = True
+                            print("starts to move")
+                          else: time.sleep(0.1)
+                      else: time.sleep(0.1)
+                    else: time.sleep(0.1)
+                          
+                #time.sleep(time_needed)
+                status2 = motor2.Get(motor2.pv_motor_status)
+                while status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0: #wait till it actually started moving
+                    time.sleep(0.05)
+                    status2 = motor2.Get(motor2.pv_motor_status)
+                
+                while moving == True: #wait until motors are done moving
+                    status1 = motor1.Get(motor1.pv_motor_status)
+                    status2 = motor2.Get(motor2.pv_motor_status)
+                    if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : 
+                      if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1  : 
+                    #if motor1.ismoving == True or motor2.ismoving == True:  #check that motors are actually free to move
+                        moving = False 
+                        print("arrived at point")
+                      
+                      else:
+                        time.sleep(0.1)
+                        print("still moving")
+                    else:
+                        time.sleep(0.1)
+                        print("still moving")
+               
+                while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y:
+                    time.sleep(0.1)
+                    print("waiting to set position")
+                
+                #time.sleep(1)
+                
+                result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,server)
+                
+                #time.sleep(1)
+                print(result)
+            
+           
+                
+                
+                print("go again")
+            else:
+                print("ERROR: GUI/server has been closed")
+                
+        
+        
+        while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
+            time.sleep(0.05)
+        print("scan is done")
+        
+        return
+    else:
+        print("abort scan script")
+        return
 
-    
+
 def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
     """does readout stuff"""
     print("start readout")
@@ -332,14 +332,40 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
     
 
     
-def time_estimation(old_points, new_points, x_speed,y_speed):
-        time_needed_x = abs(new_points[0] - old_points[0])/x_speed
-        time_needed_y = abs(new_points[1] - old_points[1])/y_speed
+def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_length,x_speed, y_speed, z_speed):
+   
+    """
+    Estimate the time for a scan through a mesh of points. Sum the time it takes to go through all the points if there was no parallel movement, though not taking into account the processing time
+     
+    Parameters:
+    - mesh_size_x (float): The size of the mesh in the x-dimension.
+    - mesh_size_y (float): The size of the mesh in the y-dimension.
+    - mesh_size_z (float): The size of the mesh in the z-dimension.
+    - x_length (float): The overall length of the scan in the x-dimension.
+    - y_length (float): The overall length of the scan in the y-dimension.
+    - z_length (float): The overall length of the scan in the z-dimension.
+    - x_speed (float): The speed of the scan in the x-dimension.
+    - y_speed (float): The speed of the scan in the y-dimension.
+    - z_speed (float): The speed of the scan in the z-dimension.
+     
+    Returns:
+    - float: The estimated time for the scan.
+    """
+   
+    # Calculate the total distance in each dimension
+    total_distance_x = x_length + (mesh_size_x - x_length % mesh_size_x)  # Ensure it covers the last row
+    total_distance_y = y_length + (mesh_size_y - y_length % mesh_size_y)  # Ensure it covers the last column
+    total_distance_z = z_length + (mesh_size_z - z_length % mesh_size_z)  # Ensure it covers the last depth
+
+    # Calculate the time for the scan in each dimension
+    time_x = total_distance_x / x_speed
+    time_y = total_distance_y / y_speed
+    time_z = total_distance_z / z_speed
+ 
+    total_time = time_x + time_y + time_z
+    # Return the maximum time as it determines the overall scan time
+    return total_time
         
-        if time_needed_x > time_needed_y:
-            return time_needed_x + 0.5 #add artificial value for safety...
-        else:
-            return time_needed_y + 0.5
         
         
 def get_signal():
