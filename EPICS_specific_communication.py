@@ -145,6 +145,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_COM_status = PV('T-MWE1X:COM:2')
                 self.pv_position = PV('T-MWE1X:IST:1')  #in steps
                 self.pv_targetposition_steps = PV('T-MWE1X:SOL:1') #in steps
+                self.pv_SOLRB = PV('T-MWE1X:SOLRB:1')
                 self.pv_move_rel = PV('T-MWE1X:SMMS:2') #move relative 
                 self.pv_move_abs = PV('T-MWE1X:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
@@ -189,6 +190,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_COM_status = PV('T-MWE1Y:COM:2')
                 self.pv_position = PV('T-MWE1Y:IST:1')  #in steps
                 self.pv_targetposition_steps = PV('T-MWE1Y:SOL:1') #in steps
+                self.pv_SOLRB = PV('T-MWE1Y:SOLRB:1')
                 self.pv_move_rel = PV('T-MWE1Y:SMMS:2') #move relative 
                 self.pv_move_abs = PV('T-MWE1Y:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
@@ -235,6 +237,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_COM_status = PV('T-MWE2Y:COM:2')
                 self.pv_position = PV('T-MWE2Y:IST:1')  #in steps
                 self.pv_targetposition_steps = PV('T-MWE2Y:SOL:1') #in steps
+                self.pv_SOLRB = PV('T-MWE2Y:SOLRB:1')
                 self.pv_move_rel = PV('T-MWE2Y:SMMS:2') #move relative 
                 self.pv_move_abs = PV('T-MWE2Y:SMAP:2') #move absolute
                 self.pv_targetreached = PV('XXX:m1.VAL')
