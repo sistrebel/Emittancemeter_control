@@ -197,6 +197,9 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
                 moving = False
                 while moving == False: #wait till motors are free and stopped
                                  # Check the pause flag
+                    if server.running == False:
+                        print("server closed")
+                        return
                     while pause_flag:
                         print("Pausing...")
                         time.sleep(0.5)  # Adjust the sleep time based on your requirements
@@ -293,7 +296,10 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
         moving = False
         while moving == False: #wait till motors are free and stopped
             
-                # Check the pause flag
+            if server.running == False:
+                return
+            
+            # Check the pause flag
             while pause_flag:
                print("Pausing...")
                time.sleep(0.5)  # Adjust the sleep time based on your requirements
