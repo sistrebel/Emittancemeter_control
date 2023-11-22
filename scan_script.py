@@ -13,7 +13,7 @@ import time
 from random import random
 import numpy as np
 
-
+pause_flag = False
 
 def distribute_measurement_points(num_points, x_length, y_length):
     """old function"""
@@ -135,7 +135,9 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
 
 def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread"""
-  
+    global pause_flag
+    
+    
     x_speed = 1800
     y_speed = 1800
     z_speed = 1000
@@ -193,6 +195,10 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
               
                 moving = False
                 while moving == False: #wait till motors are free and stopped
+                                 # Check the pause flag
+                    while pause_flag:
+                        print("Pausing...")
+                        time.sleep(0.5)  # Adjust the sleep time based on your requirements
                     
                     status1 = motor1.Get(motor1.pv_motor_status)
                     status2 = motor2.Get(motor2.pv_motor_status)
@@ -283,6 +289,11 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
         current_position += meshsize_z
         moving = False
         while moving == False: #wait till motors are free and stopped
+            
+                # Check the pause flag
+            while pause_flag:
+               print("Pausing...")
+               time.sleep(0.5)  # Adjust the sleep time based on your requirements
             # status3 = motor3.Get(motor3.pv_motor_status)
             # if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :   #check that motors are actually free to move, readjusting takes time as well
             status1 = motor1.Get(motor1.pv_motor_status)
@@ -317,6 +328,10 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
             else:
                 time.sleep(0.05)
                  #simulate the readout while the motor is moving
+     # Check the pause flag
+    while pause_flag:
+        print("Pausing...")
+        time.sleep(1)  # Adjust the sleep time based on your requirements
     server.issue_motor_command(motor3,("go_to_position",end_point))
     server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
     # while moving == True: #wait until motors are done moving, wait for last step and go back 
@@ -378,10 +393,12 @@ def get_signal():
     
 def pause_scan():
     """when the pause button is clicked on the GUI the scan procedure should pause and not go to the next point"""
-    pause = True
+    global pause_flag
+    pause_flag = True
 def continue_scan():
     """continue scan after a pause"""
-    pause = False
+    global pause_flag
+    pause_flag = False
     
     
 def steps_to_mm(steps,axis): 
