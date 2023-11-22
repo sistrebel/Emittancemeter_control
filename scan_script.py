@@ -230,7 +230,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     #old_point = new_point 
 
     
-def start_readout(motor3,server,port_lock):
+def start_readout(motor3,server):
     """does readout stuff"""
     readout_speed = 1000
     time.sleep(0.1)
