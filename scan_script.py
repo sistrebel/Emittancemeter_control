@@ -218,6 +218,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 time.sleep(0.1)
                 print("waiting to set position")
             
+            time.sleep(1)
             result = start_readout(motor3,server)
             
             time.sleep(1)
