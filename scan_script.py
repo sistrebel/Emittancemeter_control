@@ -262,7 +262,7 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
         
         
         while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
-            time.sleep(0.05)
+            pass
         print("scan is done")
         
         return
@@ -275,7 +275,7 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
     print("start readout")
     readout_speed = z_speed
-    time.sleep(0.1)
+    #time.sleep(0.1)
     server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
 
     end_point = z_length
@@ -284,6 +284,8 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     steps = int((z_length-start_point)/meshsize_z) #rounded down number of steps to take to next int
     
     current_position = start_point
+    
+    """like this it is in steps but i can also make it moving continuously as rudolf said... readout of the 32 channels can be done in parallel"""
     
     #time_needed = time_estimation(start_point, end_point, readout_speed,readout_speed)
     for i in range(0,steps):
@@ -322,8 +324,8 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
             status3 = motor3.Get(motor3.pv_motor_status)
             if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                 moving = False 
-                print("arrived at point")
-                print(get_signal())
+                #print("arrived at point")
+                #print(get_signal())
                 #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
             else: pass
                 #time.sleep(0.05)
@@ -378,7 +380,11 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     time_y = total_distance_y / y_speed
     time_z = total_distance_z / z_speed
  
-    total_time = time_x + time_y + time_z #in seconds
+    # estimate of processing time...
+    proc = max(x_length,y_length,z_length)/min(mesh_size_x,mesh_size_y,mesh_size_z)
+    proc_time = proc*0.1
+    
+    total_time = time_x + time_y + time_z + proc_time #in seconds
     minutes = total_time/60
     # Return the maximum time as it determines the overall scan time
     return minutes
@@ -386,11 +392,15 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
         
         
 def get_signal():
-    """returns a dummy signal for a certain amount of time"""
+    """returns a dummy signal for a certain amount of time
+    
+    -if signal drops below a certain value the scan must be paused
+    -all 32 channels can be readout at the same time so continuous movement is OK"""
+    
+    
     return np.random.randint(1000)
     
-    
-    
+
 def pause_scan():
     """when the pause button is clicked on the GUI the scan procedure should pause and not go to the next point"""
     global pause_flag

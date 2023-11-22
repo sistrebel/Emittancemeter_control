@@ -195,14 +195,20 @@ class MainWindow(QMainWindow):
         styles = {'color':'r', 'font-size':'20px'}
         self.graphWidget.setLabel('left', 'Position [cm]', **styles)
         self.graphWidget.setLabel('bottom', 'Time [s]', **styles)
-        pen = pg.mkPen("r") #red line pen
+        pen1 = pg.mkPen("r") #red line pen
+        pen2 = pg.mkPen("g")
+        pen3 = pg.mkPen("b")
         self.graphWidget.setBackground("w") #make white background
         
         #create the plot
         self.time = [0 for _ in range(100)] #list(range(100))  # 100 time points
-        self.position = [0 for _ in range(100)]  # 100 data points
+        self.position_1 = [0 for _ in range(100)]  # 100 data points
+        self.position_2 = [0 for _ in range(100)]
+        self.position_3 = [0 for _ in range(100)]
         
-        self.data_line =  self.graphWidget.plot(np.array(self.time), self.position, pen=pen) #divide time by 1000 to get seconds instead of ms
+        self.data_line1 =  self.graphWidget.plot(np.array(self.time), self.position_1, pen=pen1) #divide time by 1000 to get seconds instead of ms
+        self.data_line2 =  self.graphWidget.plot(np.array(self.time), self.position_2, pen=pen2) #divide time by 1000 to get seconds instead of ms
+        self.data_line3 =  self.graphWidget.plot(np.array(self.time), self.position_3, pen=pen3) #divide time by 1000 to get seconds instead of ms
         
     def update_plot_data(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
         """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
@@ -210,28 +216,31 @@ class MainWindow(QMainWindow):
         self.time = self.time[1:] #remove first
         self.time.append(self.time[-1] + 100) #add a new value which is 100ms larger (advanced time)
         
-        self.position = self.position[1:]  # Remove the first
+        self.position_1 = self.position_1[1:]  # Remove the first
         
-        newposition = self.movingmotor.get_position() #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition_1 = self.motor1.get_position() #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition_2 = self.motor2.get_position()
+        newposition_3 = self.motor3.get_position()
         
-        
-        
-        self.position.append(newposition)
+        self.position_1.append(newposition_1)
+        self.position_2.append(newposition_2)
+        self.position_3.append(newposition_3)
     
-        self.data_line.setData(np.array(self.time)/1000,self.position) #update the values , divided by 1000 to get seconds
-        
+        self.data_line1.setData(np.array(self.time)/1000,self.position_1) #update the values , divided by 1000 to get seconds
+        self.data_line2.setData(np.array(self.time)/1000,self.position_2)
+        self.data_line3.setData(np.array(self.time)/1000,self.position_3)
         
         """use this data to determine when to change the displays"""
         
         leftend = 0
         rightend = 30 #measured by moving the sled there!!! #not right probably more like 34 (?)....
         
-        if newposition <= leftend+0.1: #display the endstop status
+        if newposition_1 <= leftend+0.1: #display the endstop status
             self.left_endstop_display()
             if self.sent == False:
                 self.show_message("left end reached! reverse now")
                 self.sent = True
-        elif newposition >= rightend-0.1:
+        elif newposition_1 >= rightend-0.1:
             self.right_endstop_display() 
             if self.sent == False:
                 self.show_message("right end reached! reverse now")
@@ -241,7 +250,9 @@ class MainWindow(QMainWindow):
             self.sent = False
             
         #save all data in a list for when plot is created later.
-        self.all_positions.append(newposition)
+        self.all_positions1.append(newposition_1)
+        self.all_positions2.append(newposition_2)
+        self.all_positions3.append(newposition_3)
         self.all_times.append(self.time[-1])
         
     def createStatusBar(self):
@@ -289,7 +300,9 @@ class MainWindow(QMainWindow):
         plt.xlabel("Time [s]")
         plt.ylabel("Position [cm]")
         plt.grid()
-        plt.plot(self.all_times, self.all_positions)
+        plt.plot(self.all_times, self.all_positions1)
+        plt.plot(self.all_times, self.all_positions2)
+        plt.plot(self.all_times, self.all_positions3)
         
         if directory != None:
             fig.savefig(directory + '/graph.png')
@@ -360,24 +373,17 @@ class MainWindow(QMainWindow):
    
     def goto_position(self,Target):
         """motor moves to specified Target-position given in cm"""
-        # onestep_incm = 1.1/100000 # 0.5/51200 #this is not accurate...
-        # steps_per_cm = 100000/1.1 #51200/0.5
-        # position = float(Target)*steps_per_cm #translate cm position into steps
-        
-        
-        self.server.issue_motor_command(self.movingmotor,("release_brake",))
-        time.sleep(0.1)
+    
+        #self.server.issue_motor_command(self.movingmotor,("release_brake",))
+      
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
-        # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
-        #     time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor, ("set_brake",))
-        #self.show_message("position reached")
+        #self.server.issue_motor_command(self.movingmotor, ("set_brake",))
+      
     
     def go_home(self,stop = False):
         """moves motor to initial position and if stop == True the server connection is stopped and port closed"""
        
-        
         self.server.issue_motor_command(self.movingmotor, ("release_brake",))
         
         time.sleep(0.1)

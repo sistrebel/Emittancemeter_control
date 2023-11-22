@@ -99,7 +99,6 @@ class MotorClient(): #i don't know if Thread is necessary
             "right_endstop": self.endstop_status,
             "position_reached": self.position_reached,
             "calibrate": self.calibration,
-            
         }
         
         
@@ -453,29 +452,22 @@ class MotorClient(): #i don't know if Thread is necessary
                 print("stepcount is:", self.stepcount)  
                 print("time needed", self.time_needed)
             else:
-                #self.ismoving = True
+                
                 print("WARNING: velocity is 0 or None")
-                #self.time_needed = 3
-                #self.start_timer_thread(time_needed)
-        
-         #wait with other commands during that time as well
-    
-            #self.ismoving = False
-        
+                
             return
        
       
     def get_position(self):
         """ return the position value. Define the LEFT endstop as "position 0"
-        then count the revolutions for figuring out the actual position."""
+        then count the revolutions for figuring out the actual position.
+        -for the graph..."""
         
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
         self.Set(self.pv_speed_set, speed)
-        # with self.port_lock:
-        #     self.pv_speed_set.put(speed)
-        
+    
     
     def get_speed(self):
         
@@ -499,7 +491,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
     def position_reached(self):
         """returns True or False, maybe do it by using the 'busy' PV """
-        ...
+        
         #return self.Get(self.pv_targetreached)
        
         
