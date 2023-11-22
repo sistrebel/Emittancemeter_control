@@ -145,6 +145,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     endposition_x = point_distribution[-1][0]
     endposition_y = point_distribution[-1][1]
+    
+    start_position_z = 0
     #old_point = [0,0] #starting point, both motors parked at '0'
     
     #server.issue_motor_command(motor1, ("go_to_position",100))
@@ -188,6 +190,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     moving = True
                     print("starts to move")
                     #time.sleep(0.1)
+                  else: time.sleep(0.1)
+                    
                 else: time.sleep(0.1)
                       
             #time.sleep(time_needed)
@@ -196,14 +200,13 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 status1 = motor1.Get(motor1.pv_motor_status)
                 status2 = motor2.Get(motor2.pv_motor_status)
                 if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : 
-                  if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1  : 
+                  if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 and motor3.Get(motor3.pv_SOLRB) == start_position_z : 
                 #if motor1.ismoving == True or motor2.ismoving == True:  #check that motors are actually free to move
                     moving = False 
                     print("arrived at point")
                   else:
                     time.sleep(0.1)
                     print("still moving")
-                
                 else:
                     time.sleep(0.1)
                     print("still moving")
@@ -211,6 +214,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y:
                 time.sleep(0.1)
                 print("waiting to set position")
+            
             result = start_readout(motor3,server)
             
             print(result)
