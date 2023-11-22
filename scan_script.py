@@ -107,7 +107,6 @@ def wait_for_server(server):
     """i can do this with a 'status' variable"""
     while server.issending == True:
         pass
-   
     return "done"
 
 
@@ -336,9 +335,9 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
          status3 = motor3.Get(motor3.pv_motor_status)
          if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
              moving = False 
-             print("arrived at point")
-             print(get_signal())
-             server.issue_motor_command(motor3,("go_to_position",start_point))#go back directly
+             #print("arrived at point")
+             #print(get_signal())
+             server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly
          else:
              time.sleep(0.05)
               #simulate the readout while the motor is moving
