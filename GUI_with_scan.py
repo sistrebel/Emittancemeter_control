@@ -126,7 +126,9 @@ class MainWindow(QMainWindow):
         #self.get_reference() 
         
         #empty lists for saving position plot
-        self.all_positions = []
+        self.all_positions1 = []
+        self.all_positions2 = []
+        self.all_positions3 = []
         self.all_times = []
         
         
