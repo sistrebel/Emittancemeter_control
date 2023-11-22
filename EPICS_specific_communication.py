@@ -627,7 +627,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         #num_points = 6  # Number of measurement points
         x_length = 21000  # Length of the x-axis
         y_length = 104000
-        z_length = 9000
+        z_length = 6000
         meshsize_x = 5000
         meshsize_y = 20000
         meshsize_z = 2000
