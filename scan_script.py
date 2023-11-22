@@ -363,9 +363,10 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     time_y = total_distance_y / y_speed
     time_z = total_distance_z / z_speed
  
-    total_time = time_x + time_y + time_z
+    total_time = time_x + time_y + time_z #in seconds
+    minutes = total_time/60
     # Return the maximum time as it determines the overall scan time
-    return total_time
+    return minutes
         
         
         
