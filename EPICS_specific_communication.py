@@ -630,7 +630,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         z_length = 9000
         meshsize_x = 5000
         meshsize_y = 20000
-        meshsize_z = 4000
+        meshsize_z = 40
     
        
         scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
