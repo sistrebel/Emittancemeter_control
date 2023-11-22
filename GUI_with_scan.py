@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
         meshsize_z = 2000
         
         if points > 0:
-            scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,points,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
+            scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
         else:
             self.show_message("INVALID VALUE")
     def retrieve_directory(self):
