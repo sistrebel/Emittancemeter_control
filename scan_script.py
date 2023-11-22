@@ -172,24 +172,10 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
     
     endposition_x = point_distribution[-1][0]
     endposition_y = point_distribution[-1][1]
-    endposition_z = 9000
+    endposition_z = z_length
     start_position_z = 0
-    #old_point = [0,0] #starting point, both motors parked at '0'
     
-    #server.issue_motor_command(motor1, ("go_to_position",100))
-    # #time.sleep(0.1)
-    #server.issue_motor_command(motor2, ("go_to_position",100))
-    # #time.sleep(0.1)
-    #server.issue_motor_command(motor3, ("go_to_position",400))
-    
-         
-    # server.issue_motor_command(motor3, ("go_to_position",200))
-    #server.issue_motor_command(motor1, ("go_to_position",0))
-    # # time.sleep(0.1)
-    #server.issue_motor_command(motor2, ("go_to_position",0))
-    
-    
-    
+
     for i in range(len(point_distribution)):
         if server.running == True:  #check that QtApplication has not been closed
             point_x = point_distribution[i][0]
@@ -284,10 +270,10 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
     time.sleep(0.1)
     server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
 
-    end_point = 9000
+    end_point = z_length
     start_point = 0
     
-    steps = int((end_point-start_point)/meshsize_z) #rounded down number of steps to take to next int
+    steps = int((z_length-start_point)/meshsize_z) #rounded down number of steps to take to next int
     
     current_position = start_point
     
@@ -330,6 +316,7 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
             else:
                 time.sleep(0.05)
                  #simulate the readout while the motor is moving
+    server.issue_motor_command(motor3,("go_to_position",end_point))
     server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
     # while moving == True: #wait until motors are done moving, wait for last step and go back 
     #      status3 = motor3.Get(motor3.pv_motor_status)
