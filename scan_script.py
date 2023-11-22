@@ -135,8 +135,11 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
 
 def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread"""
-    
-    estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length)
+  
+    x_speed = 1800
+    y_speed = 1800
+    z_speed = 1000
+    estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
     
     print("the scan will take approx.", estimated_time, "min")
     answer = input("do you want to proceed? (y/n")
@@ -156,9 +159,7 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
             time.sleep(0.1)
             print("is calibrating")
  
-        #set the desired scan speed
-        x_speed = 1800
-        y_speed = 1800
+     
         server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
         
         
@@ -239,7 +240,7 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
                 
                 #time.sleep(1)
                 
-                result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,server)
+                result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
                 
                 #time.sleep(1)
                 print(result)
@@ -263,10 +264,10 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
         return
 
 
-def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
+def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
     print("start readout")
-    readout_speed = 1000
+    readout_speed = z_speed
     time.sleep(0.1)
     server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
 
