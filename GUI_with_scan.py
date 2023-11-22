@@ -274,8 +274,8 @@ class MainWindow(QMainWindow):
     
         """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
         self.ScanButton.clicked.connect(self.retrieve_numberofpoints) #gets data and starts scan script
-        # self.PauseScanButton.clicked.connect(scan_script.pause_scan)
-        # self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
+        self.PauseScanButton.clicked.connect(scan_script.pause_scan)
+        self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
         
         
     def save_plot(self):
@@ -297,9 +297,18 @@ class MainWindow(QMainWindow):
             
     def retrieve_numberofpoints(self):
         """get number of points for scan"""
+        
         points = int(self.textEdit_Points.toPlainText()) #maybe this is wrong
+        x_length = 21000
+        y_length = 104000
+        z_length = 9000
+        
+        meshsize_x = 2000
+        meshsize_y = 2000
+        meshsize_z = 2000
+        
         if points > 0:
-            scan_script.start_scan(self.motor1,self.motor2,self.motor3,points,self.x_length,self.y_length,self.server) #starts the scan with #points measurementpoints in the grid 
+            scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,points,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
         else:
             self.show_message("INVALID VALUE")
     def retrieve_directory(self):
