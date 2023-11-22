@@ -260,7 +260,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_set.put(1000)
                 self.pv_min_speed_set.put(0)
                 self.pv_speed_dist.put(200)
-                self.pv_ramp_set.put(230) #long enough ramp
+                self.pv_ramp_set.put(300) #long enough ramp
                 self.pv_brake_off.put(500) #time before busy 
                 self.pv_brake_on.put(1000) #time after busy
                 #print(self.pv_speed_set.get())

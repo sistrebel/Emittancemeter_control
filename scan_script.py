@@ -151,7 +151,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     # #time.sleep(0.1)
     #server.issue_motor_command(motor2, ("go_to_position",100))
     # #time.sleep(0.1)
-    server.issue_motor_command(motor3, ("go_to_position",400))
+    #server.issue_motor_command(motor3, ("go_to_position",400))
     
          
     # server.issue_motor_command(motor3, ("go_to_position",200))
@@ -193,6 +193,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             #time.sleep(time_needed)
             
             while moving == True: #wait until motors are done moving
+                status1 = motor1.Get(motor1.pv_motor_status)
+                status2 = motor2.Get(motor2.pv_motor_status)
                 if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : 
                   if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1  : 
                 #if motor1.ismoving == True or motor2.ismoving == True:  #check that motors are actually free to move
@@ -203,9 +205,9 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     print("still moving")
            
             
-            #result = start_readout(motor3,server)
+            result = start_readout(motor3,server)
             
-            #print(result)
+            print(result)
         
        
             
@@ -216,7 +218,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
             
     
     
-    while motor1.get_position() != endposition_x and motor2.get_position() != endposition_y:
+    while motor1.pv_SOLRB != endposition_x and motor2.pv_SOLRB != endposition_y:
         time.sleep(0.1)
     print("scan is done")
     
@@ -241,7 +243,8 @@ def start_readout(motor3,server,port_lock):
     
     moving = False
     while moving == False: #wait till motors are free and stopped
-        if motor3.ismoving == False:  #check that motors are actually free to move, readjusting takes time as well
+        status3 = motor3.Get(motor3.pv_motor_status)
+        if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :   #check that motors are actually free to move, readjusting takes time as well
             time.sleep(0.2)
             server.issue_motor_command(motor3,("go_to_position",end_point),isreturn = 0)
             moving = True
@@ -249,12 +252,16 @@ def start_readout(motor3,server,port_lock):
     #time.sleep(time_needed)
     
     while moving == True: #wait until motors are done moving
-        if motor3.ismoving == True:  #check that motors are actually free to move
-            time.sleep(0.05)
-            print(get_signal()) #simulate the readout while the motor is moving
-        else:
+        
+        status3 = motor3.Get(motor3.pv_motor_status)
+        if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
             moving = False 
             print("arrived at point")
+            
+        else:
+            time.sleep(0.05)
+            print(get_signal()) #simulate the readout while the motor is moving
+       
     
     return "readout done"
     
