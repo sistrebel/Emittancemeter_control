@@ -331,7 +331,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="PauseScanButton">
     <property name="geometry">
      <rect>
       <x>520</x>
@@ -344,7 +344,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Pause</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="ContinueScanButton">
     <property name="geometry">
      <rect>
       <x>520</x>
