@@ -204,7 +204,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                     time.sleep(0.1)
                     print("still moving")
            
-            
+            while motor1.pv_SOLRB != point_x and motor2.pv_SOLRB != point_y:
+                time.sleep(0.1)
             result = start_readout(motor3,server)
             
             print(result)
