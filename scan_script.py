@@ -234,6 +234,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
 def start_readout(motor3,server):
     """does readout stuff"""
+    print("start readout")
     readout_speed = 1000
     time.sleep(0.1)
     server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
