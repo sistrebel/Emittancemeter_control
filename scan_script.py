@@ -132,14 +132,14 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     print("number of points", number_of_points)
     
     #set the desired scan speed
-    x_speed = 1700
-    y_speed = 1700
+    x_speed = 1800
+    y_speed = 1800
     server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
-    wait_for_server(server)
-    time.sleep(0.2)
+    # wait_for_server(server)
+    time.sleep(0.1)
     server.issue_motor_command(motor2,("set_speed",y_speed),isreturn = 0)
-    wait_for_server(server)
-    time.sleep(0.2)
+    # wait_for_server(server)
+    time.sleep(0.1)
     point_distribution = snake_grid(number_of_points,x_length,y_length)
     print(point_distribution)
     
@@ -222,11 +222,11 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 time.sleep(0.1)
                 print("waiting to set position")
             
-            time.sleep(1)
+            #time.sleep(1)
             
             result = start_readout(motor1,motor2,motor3,server)
             
-            time.sleep(1)
+            #time.sleep(1)
             print(result)
         
        
@@ -239,7 +239,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     
     while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
-        time.sleep(0.1)
+        time.sleep(0.05)
     print("scan is done")
     
     #  #return to initial position
