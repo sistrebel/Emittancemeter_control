@@ -358,32 +358,32 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("else")
                             res = self.ex_command(command)
                             res = "done"
-                            time.sleep(0.1)
+                            #time.sleep(0.1)
                         
                         if res == "done":
                             self.server.issending = False
-                            time.sleep(0.1)
+                            #time.sleep(0.1)
                             print("free again")
                         
                         
                         
                     
-                    else:
+                    else: pass
                         #print("is busy, try again later")
                         #print(self.Get(server.pv_status))
                         #print(self.Get(self.pv_motor_status))
                         # if status == 0x0:
                         #     print("not calibrated")
-                        time.sleep(0.1)
+                        #time.sleep(0.1)
                     
                 except:
                         if self.command_queue.empty():
                             #print("isempty")
-                            time.sleep(0.1)
+                            #time.sleep(0.1)
                             pass
                         else: 
                             
-                            time.sleep(0.1)
+                            #time.sleep(0.1)
                         
                             print("something worse happened")
                     

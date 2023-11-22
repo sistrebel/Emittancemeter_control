@@ -307,27 +307,26 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
                     server.issue_motor_command(motor3,("go_to_position",current_position),)
                     moving = True
                     
-                  else: time.sleep(0.2)
-              else: time.sleep(0.2)
-            else: time.sleep(0.2)
+                  else: pass #time.sleep(0.2)
+              else: pass #time.sleep(0.2)
+            else: pass #time.sleep(0.2)
         #time.sleep(time_needed)
         
         #time.sleep(time_needed)
         status3 = motor3.Get(motor3.pv_motor_status)
         while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
-            time.sleep(0.05)
+            #time.sleep(0.05)
             status3 = motor3.Get(motor3.pv_motor_status)
         
         while moving == True: #wait until motors are done moving
-            
             status3 = motor3.Get(motor3.pv_motor_status)
             if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                 moving = False 
                 print("arrived at point")
                 print(get_signal())
                 #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
-            else:
-                time.sleep(0.05)
+            else: pass
+                #time.sleep(0.05)
                  #simulate the readout while the motor is moving
      # Check the pause flag
     while pause_flag:
