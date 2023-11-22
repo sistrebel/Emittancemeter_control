@@ -174,7 +174,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
                     server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
                     #time.sleep(0.2) #safety
-                    #server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two
+                    server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two
                     time.sleep(0.2)
                     moving = True
                     print("starts to move")
