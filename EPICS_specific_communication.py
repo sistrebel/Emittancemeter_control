@@ -637,16 +637,16 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
     
             
-        #     server.issue_motor_command(motor1, ("go_to_position",500))
-        #     #time.sleep(0.1)
-        #     server.issue_motor_command(motor2, ("go_to_position",500))
-        #     #time.sleep(0.1)
-        #     server.issue_motor_command(motor3, ("go_to_position",500))
+            # server.issue_motor_command(motor1, ("go_to_position",500))
+            # #time.sleep(0.1)
+            # server.issue_motor_command(motor2, ("go_to_position",500))
+            # #time.sleep(0.1)
+            # server.issue_motor_command(motor3, ("go_to_position",500))
                   
-        #     server.issue_motor_command(motor3, ("go_to_position",200))
-        #     server.issue_motor_command(motor1, ("go_to_position",200))
-        #     # time.sleep(0.1)
-        #     server.issue_motor_command(motor2, ("go_to_position",200))
+            # server.issue_motor_command(motor3, ("go_to_position",200))
+            # server.issue_motor_command(motor1, ("go_to_position",200))
+            # # time.sleep(0.1)
+            # server.issue_motor_command(motor2, ("go_to_position",200))
        
     #     status1 = motor1.pv_motor_status.get()
     #     status2 = motor2.pv_motor_status.get()
