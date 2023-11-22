@@ -265,7 +265,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(300) #long enough ramp
                 self.pv_brake_off.put(500) #time before busy 
-                self.pv_brake_on.put(4000) #time after busy
+                self.pv_brake_on.put(5000) #time after busy
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
@@ -630,7 +630,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         z_length = 9000
         meshsize_x = 5000
         meshsize_y = 20000
-        meshsize_z = 1000
+        meshsize_z = 2000
     
        
         scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
