@@ -55,6 +55,8 @@ from PyQt5 import QtCore, QtWidgets, uic, QtGui
 
 from threading import Lock
 
+import threading
+
 import scan_script
 
 class MainWindow(QMainWindow): 
@@ -273,7 +275,7 @@ class MainWindow(QMainWindow):
         self.SubmitAxis.clicked.connect(self.get_axis)
     
         """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
-        self.ScanButton.clicked.connect(self.retrieve_numberofpoints) #gets data and starts scan script
+        self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
         self.PauseScanButton.clicked.connect(scan_script.pause_scan)
         self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
         
@@ -295,10 +297,10 @@ class MainWindow(QMainWindow):
             
     """might put the retrieve data methods into its own file/class"""
             
-    def retrieve_numberofpoints(self):
+    def start_scan_thread(self):
         """get number of points for scan"""
         
-        points = int(self.textEdit_Points.toPlainText()) #maybe this is wrong
+        points = int(self.textEdit_Points.toPlainText()) #retrieve parameters...
         x_length = 21000
         y_length = 104000
         z_length = 9000
@@ -308,7 +310,9 @@ class MainWindow(QMainWindow):
         meshsize_z = 2000
         
         if points > 0:
-            scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
+            #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
+            scan_thread.start()
         else:
             self.show_message("INVALID VALUE")
     def retrieve_directory(self):
