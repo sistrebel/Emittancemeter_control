@@ -636,9 +636,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        
         
-        time.sleep(30)
+        time.sleep(60)
         scan.pause_flag()
-        time.sleep(10)
+        time.sleep(20)
         scan.continue_scan()
         
         # server.issue_motor_command(motor1, ("calibrate",))
