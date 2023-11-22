@@ -132,8 +132,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     print("number of points", number_of_points)
     
     #set the desired scan speed
-    x_speed = 1500
-    y_speed = 1500
+    x_speed = 1700
+    y_speed = 1700
     server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
     wait_for_server(server)
     time.sleep(0.2)
@@ -145,11 +145,11 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     #old_point = [0,0] #starting point, both motors parked at '0'
     
-    server.issue_motor_command(motor1, ("go_to_position",100))
+    #server.issue_motor_command(motor1, ("go_to_position",100))
     # #time.sleep(0.1)
-    server.issue_motor_command(motor2, ("go_to_position",100))
+    #server.issue_motor_command(motor2, ("go_to_position",100))
     # #time.sleep(0.1)
-    # server.issue_motor_command(motor3, ("go_to_position",500))
+    server.issue_motor_command(motor3, ("go_to_position",500))
          
     # server.issue_motor_command(motor3, ("go_to_position",200))
     #server.issue_motor_command(motor1, ("go_to_position",0))
