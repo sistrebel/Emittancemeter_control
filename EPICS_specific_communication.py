@@ -622,8 +622,8 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
         num_points = 6  # Number of measurement points
-        x_length = 21700  # Length of the x-axis
-        y_length = 104000
+        x_length = 2000  # Length of the x-axis
+        y_length = 2000
    
         scan.start_scan(motor1,motor2,motor3,num_points,x_length,y_length,server)    
        

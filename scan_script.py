@@ -149,7 +149,8 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     # #time.sleep(0.1)
     #server.issue_motor_command(motor2, ("go_to_position",100))
     # #time.sleep(0.1)
-    server.issue_motor_command(motor3, ("go_to_position",500))
+    server.issue_motor_command(motor3, ("go_to_position",400))
+    
          
     # server.issue_motor_command(motor3, ("go_to_position",200))
     #server.issue_motor_command(motor1, ("go_to_position",0))
