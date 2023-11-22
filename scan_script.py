@@ -145,7 +145,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
     
     endposition_x = point_distribution[-1][0]
     endposition_y = point_distribution[-1][1]
-    
+    endposition_z = 9000
     start_position_z = 0
     #old_point = [0,0] #starting point, both motors parked at '0'
     
@@ -183,7 +183,7 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 status3 = motor3.Get(motor3.pv_motor_status)
                 if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
                   if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
-                      if status3 == 0x9 and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
+                      if status3 == 0x9 or motor2.Get(motor2.pv_SOLRB) == endposition_z  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
                       
                 # if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
                         server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
