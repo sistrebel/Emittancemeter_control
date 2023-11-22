@@ -40,7 +40,7 @@ def distribute_measurement_points(num_points, x_length, y_length):
     return new_points_distribution
 
 
-def snake_grid(num_points, x_lenght,y_length):
+def snake_grid(num_points, x_length,y_length):
     # Calculate the number of rows and columns required to fit all the points
     num_rows = int(np.ceil(np.sqrt(num_points)))
     num_cols = int(np.ceil(num_points / num_rows))
@@ -304,10 +304,10 @@ def mm_to_steps(mm,axis):
 
 
 
-# # # Example usage:
-num_points = 6  # Number of measurement points
-x_length = 21700  # Length of the x-axis
-y_length = 104000 # Length of the y-axis
+# # # # Example usage:
+# num_points = 6  # Number of measurement points
+# x_length = 21700  # Length of the x-axis
+# y_length = 104000 # Length of the y-axis
 
 #measurement_points = distribute_measurement_points(num_points, x_length, y_length)
 #points_distribution = snake_grid(num_points,x_length, y_length)
