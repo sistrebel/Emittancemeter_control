@@ -222,12 +222,12 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
         time.sleep(0.1)
     print("scan is done")
     
-     #return to initial position
-    time.sleep(0.1)
-    return_position = 0
-    server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
-    time.sleep(0.1)
-    #old_point = new_point 
+    #  #return to initial position
+    # time.sleep(0.1)
+    # return_position = 0
+    # server.issue_motor_command(motor3,("go_to_position",return_position),isreturn = 0)
+    # time.sleep(0.1)
+    # #old_point = new_point 
 
     
 def start_readout(motor3,server):
@@ -257,6 +257,7 @@ def start_readout(motor3,server):
         if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
             moving = False 
             print("arrived at point")
+            server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
             
         else:
             time.sleep(0.05)
