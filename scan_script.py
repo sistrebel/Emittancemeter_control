@@ -278,7 +278,7 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
     # #old_point = new_point 
 
     
-def start_readout(motor1,motor2,motor3,meshsize_z,server):
+def start_readout(motor1,motor2,motor3,z_length,meshsize_z,server):
     """does readout stuff"""
     print("start readout")
     readout_speed = 1000
