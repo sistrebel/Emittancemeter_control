@@ -217,6 +217,9 @@ class MainWindow(QMainWindow):
         self.time.append(self.time[-1] + 100) #add a new value which is 100ms larger (advanced time)
         
         self.position_1 = self.position_1[1:]  # Remove the first
+        self.position_2 = self.position_2[1:]  # Remove the first
+        self.position_3 = self.position_3[1:]  # Remove the first
+        
         
         newposition_1 = self.motor1.get_position() #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
         newposition_2 = self.motor2.get_position()
