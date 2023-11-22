@@ -200,6 +200,10 @@ def start_scan(motor1,motor2,motor3,number_of_points,x_length,y_length,server): 
                 #if motor1.ismoving == True or motor2.ismoving == True:  #check that motors are actually free to move
                     moving = False 
                     print("arrived at point")
+                  else:
+                    time.sleep(0.1)
+                    print("still moving")
+                
                 else:
                     time.sleep(0.1)
                     print("still moving")
