@@ -432,6 +432,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Calibrate All</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="StopScanButton">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>160</y>
+      <width>80</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop Scan</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
