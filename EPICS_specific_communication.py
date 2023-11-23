@@ -317,7 +317,7 @@ class MotorClient(): #i don't know if Thread is necessary
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
              #make sure that this critical section can only be accessed when the motor lock is free
-                if not server.running:
+                if not self.server.running:
                     break
                     
                 try:
