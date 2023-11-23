@@ -514,6 +514,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.pv_COM_status.put(0)
         
         self.iscalibrating = True
+        self.ismoving = True
         time.sleep(1)
         #print("hi")
         status = self.Get(self.pv_motor_status)
@@ -527,6 +528,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.iscalibrating = False
         print("done calibrating")
         self.position = 0
+        self.stepcount = 0
         self.ismoving = False
         
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
@@ -561,7 +563,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 velocity = self.Get(self.pv_speed_get)
                 #print(velocity)
                 if velocity != None:
-                    looptime = 0.05
+                    looptime = 0.1
                     if self.direction == "pos":
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
@@ -571,7 +573,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 #print(self.position)
             if not self.ismoving:   
                 self.position = self.stepcount
-            time.sleep(0.05)  # Adjust the sleep time as needed
+            time.sleep(0.1)  # Adjust the sleep time as needed
 
         self.ismoving = False
         
