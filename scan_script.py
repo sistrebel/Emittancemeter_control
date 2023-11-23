@@ -256,7 +256,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                 
                 #time.sleep(1)
                 
-                result = start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
+                result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
                 
                 #time.sleep(1)
                 print(result)
