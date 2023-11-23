@@ -74,9 +74,9 @@ class MainWindow(QMainWindow):
         self.MOTOR_NUMBER_2 = 2 #vertical collimator
         self.MOTOR_NUMBER_3 = 3 #vertical readout
         
-        #total grid dimensions in steps
-        self.x_length = 50000
-        self.y_length = 4000
+        # #total grid dimensions in steps
+        # self.x_length = 50000
+        # self.y_length = 4000
         
         #initialize the motor queues
         self.motor1_queue =  queue.Queue()
@@ -347,11 +347,11 @@ class MainWindow(QMainWindow):
     
     def retrieve_speed(self):
         """get the speed from the MainWindow and set the global variable speed to its value"""
-        speed = int(self.textEdit_speed.toPlainText()) #in mm/s
+        speed = float(self.textEdit_speed.toPlainText()) #in mm/s
         self.speed = self.mm_to_steps(speed,self.Axis) #in steps/s
         
         self.server.issue_motor_command(self.movingmotor,("set_speed",self.speed))
-        self.show_message("new speed:"+ self.speed)
+        self.show_message("new speed:" + str(self.speed) + "[steps/s]" + str(speed) + "[mm/s]")
     
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
