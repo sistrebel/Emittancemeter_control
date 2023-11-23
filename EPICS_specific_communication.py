@@ -579,8 +579,8 @@ class MotorClient(): #i don't know if Thread is necessary
         
     def lock_for_time(self):
         while True:
-            #status = self.Get(self.pv_motor_status)
-            if self.time_needed > 0 :#and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
+            status = self.Get(self.pv_motor_status)
+            if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
                 start = time.time()
                 print("start counting")
                 if self.direction == "pos":
@@ -589,7 +589,9 @@ class MotorClient(): #i don't know if Thread is necessary
                 if self.direction == "neg":
                     while self.position > self.stepcount:#time.time() - start < self.time_needed :
                         pass
-                    
+            if self.iscalibrating:
+                while self.position != 0:
+                    pass
                 #status = self.Get(self.pv_motor_status)
                 #while status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0: #wait till it actually stopped
                  #   pass
