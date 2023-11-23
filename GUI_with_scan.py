@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
         """get the Axis which the user wants to move in;
         assuming 3 Motorclients between which the user selects in the comboBox"""
         self.Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
-        self.show_message("selected " + Axis)
+        self.show_message("selected " + self.Axis)
         
         if self.Axis == "Axis 1":
             self.movingmotor = self.motor1
