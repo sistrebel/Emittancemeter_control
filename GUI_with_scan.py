@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
     
         #initialize the moving axis with the first motor
         self.movingmotor = self.motor1
-        self.Axis = "Axis 1"
+        self.Axis = "1X"
         
         #load and connect the GUI
         self.LoadGuis()
@@ -146,11 +146,11 @@ class MainWindow(QMainWindow):
         self.Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
         self.show_message("selected " + self.Axis)
         
-        if self.Axis == "Axis 1":
+        if self.Axis == "1X":
             self.movingmotor = self.motor1
-        if self.Axis == "Axis 2":
+        if self.Axis == "1Y":
             self.movingmotor = self.motor2
-        if self.Axis == "Axis 3":
+        if self.Axis == "2Y":
             self.movingmotor = self.motor3
         
     
@@ -328,9 +328,9 @@ class MainWindow(QMainWindow):
         y_length = 104000
         z_length = 9000
         
-        meshsize_x = self.mm_to_steps(resolution_x,"Axis 1")
-        meshsize_y = self.mm_to_steps(resolution_y,"Axis 2")
-        meshsize_z = self.mm_to_steps(resolution_z,"Axis 3")
+        meshsize_x = self.mm_to_steps(resolution_x,"1X")
+        meshsize_y = self.mm_to_steps(resolution_y,"1Y")
+        meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
@@ -351,7 +351,8 @@ class MainWindow(QMainWindow):
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
         self.Targetposition = int(self.textEdit_position.toPlainText()) #input in mm
-        self.Targetposition = self.mm_to_steps(self.Targetposition,self.Axis) #convert to steps
+        axis = self.Axis
+        self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
         self.goto_position(self.Targetposition)
         
     def leftbuttonclick(self):
@@ -381,11 +382,11 @@ class MainWindow(QMainWindow):
     def mm_to_steps(self,mm,axis):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
         print(axis)
-        if axis == "Axis 1":
+        if axis == "1X":
             steps = mm/535
-        if axis == "Axis 2":
+        if axis == "1Y":
             steps = mm/800
-        if axis == "Axis 3":
+        if axis == "2Y":
             steps = mm/50
         else: print("ERROR, NO VALID AXIS")
         
