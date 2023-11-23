@@ -355,6 +355,7 @@ class MainWindow(QMainWindow):
         self.Targetposition = int(self.textEdit_position.toPlainText()) #input in mm
         axis = self.Axis
         self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
+        print(self.Targetposition)
         self.goto_position(self.Targetposition)
         
     def leftbuttonclick(self):
@@ -385,11 +386,11 @@ class MainWindow(QMainWindow):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
         
         if axis == "1X":
-            steps = mm/535
+            steps = mm*535
         elif axis == "1Y":
-            steps = mm/800
+            steps = mm*800
         elif axis == "2Y":
-            steps = mm/50
+            steps = mm*50
         else: print("ERROR, NO VALID AXIS")
         
         return steps
