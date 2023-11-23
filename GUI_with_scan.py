@@ -460,6 +460,7 @@ class MainWindow(QMainWindow):
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
         #self.go_home(stop = True) #go home and stop the conection 
+        self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
             self.server.stop_server()
