@@ -566,7 +566,8 @@ class MotorClient(): #i don't know if Thread is necessary
                     if self.direction == "none":
                         pass
                 #print(self.position)
-            self.position = self.stepcount
+            if not self.ismoving:   
+                self.position = self.stepcount
             time.sleep(0.05)  # Adjust the sleep time as needed
 
         self.ismoving = False
