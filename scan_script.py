@@ -136,7 +136,7 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
 
 def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread"""
-    global pause_flag
+    global pause_flag, scanstop
     
     
     x_speed = 1800
@@ -201,6 +201,9 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                                  # Check the pause flag
                     if server.running == False:
                         print("server closed")
+                        return
+                    if scanstop:
+                        show_message(">> scan stopped")
                         return
                     while pause_flag:
                         print("Pausing...")
@@ -419,6 +422,10 @@ def continue_scan():
     """continue scan after a pause"""
     global pause_flag
     pause_flag = False
+    
+def stop_scan():
+    global scanstop
+    scanstop = True
     
     
 def steps_to_mm(steps,axis): 

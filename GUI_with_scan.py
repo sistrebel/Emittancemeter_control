@@ -301,6 +301,8 @@ class MainWindow(QMainWindow):
         self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
         self.PauseScanButton.clicked.connect(scan_script.pause_scan)
         self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
+        self.StopScanButton.clicked.connect(scan_script.stop_scan)
+        
         self.CalibrateButton.clicked.connect(self.calibration)
         
     def save_plot(self):
