@@ -276,12 +276,15 @@ class MainWindow(QMainWindow):
         
     def connectwidgets(self):
         """Connecting the buttons"""
-        self.GoleftButton.clicked.connect(self.leftbuttonclick)
-        self.GorightButton.clicked.connect(self.rightbuttonclick)
-        self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
-        self.GorightButton.pressed.connect(self.move_forwards)
-        self.GoleftButton.released.connect(self.stop)
-        self.GorightButton.released.connect(self.stop)
+        # self.GoleftButton.clicked.connect(self.leftbuttonclick)
+        # self.GorightButton.clicked.connect(self.rightbuttonclick)
+        # self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
+        # self.GorightButton.pressed.connect(self.move_forwards)
+        # self.GoleftButton.released.connect(self.stop)
+        # self.GorightButton.released.connect(self.stop)
+        
+        self.StopButton.clicked.connect(self.stopmotor)
+        self.RunButton.clicked.connect(self.runmotor)
         
         self.EndConnectionButton.clicked.connect(self.stop_connection)
         
