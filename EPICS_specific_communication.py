@@ -428,11 +428,14 @@ class MotorClient(): #i don't know if Thread is necessary
     def goto_position(self,position_steps):
         #position_steps = self.position_to_steps(position)
         #with self.port_lock:
-            print(position_steps)
+            #print(position_steps)
             if position_steps > self.stepcount:
                 self.direction = "pos"
             if position_steps < self.stepcount: 
                 self.direction = "neg"
+            if position_steps == self.stepcount:
+                self.direction = "none"
+            
             
             velocity = self.pv_speed_get.get()#self.Get(self.pv_speed_get)
             
@@ -448,7 +451,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 #print(res)
                 self.ismoving = True 
-                self.time_needed = abs(self.stepcount - position_steps)/velocity  
+                self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
         
                 self.stepcount = position_steps #new position in steps #SOL position
@@ -560,6 +563,8 @@ class MotorClient(): #i don't know if Thread is necessary
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
                         self.position -= velocity*looptime
+                    if self.direction == "none"
+                        pass
                 #print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
 
