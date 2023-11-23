@@ -459,8 +459,10 @@ class MainWindow(QMainWindow):
        
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
-        self.go_home(stop = True) #go home and stop the conection 
+        #self.go_home(stop = True) #go home and stop the conection 
         self.server.stop_server()
+        self.calibration()
+        time.sleep(1)
         QApplication.quit()
         QApplication.closeAllWindows()
         return
