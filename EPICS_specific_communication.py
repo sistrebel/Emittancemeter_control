@@ -563,7 +563,7 @@ class MotorClient(): #i don't know if Thread is necessary
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
                         self.position -= velocity*looptime
-                    if self.direction == "none"
+                    if self.direction == "none":
                         pass
                 #print(self.position)
             time.sleep(0.1)  # Adjust the sleep time as needed
