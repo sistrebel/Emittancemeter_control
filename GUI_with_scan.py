@@ -93,6 +93,8 @@ class MainWindow(QMainWindow):
         self.movingmotor = self.motor1
         self.Axis = "1X"
         
+        print("is it true?", self.Axis == "1X")
+        
         #load and connect the GUI
         self.LoadGuis()
         self.connectwidgets()   
@@ -369,11 +371,11 @@ class MainWindow(QMainWindow):
     def steps_to_mm(self,steps,axis): 
         """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
         
-        if axis == "Axis 1": #1X
+        if axis == "1X": #1X
             mm = steps/535
-        if axis == "Axis 2": #1Y
+        if axis == "1Y": #1Y
             mm = steps/800
-        if axis == "Axis 3": #2Y
+        if axis == "2Y": #2Y
             mm = steps/50
         else: print("ERROR, NO VALID AXIS")
         
@@ -381,7 +383,7 @@ class MainWindow(QMainWindow):
             
     def mm_to_steps(self,mm,axis):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
-        print(axis)
+        
         if axis == "1X":
             steps = mm/535
         if axis == "1Y":
