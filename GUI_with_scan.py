@@ -419,9 +419,9 @@ class MainWindow(QMainWindow):
         return
     
     def stopmotor(self):
-        self.movingmotor.Set(self.pv_stopstatus,1)
+        self.movingmotor.Set(self.movingmotor.pv_stopstatus,1)
     def runmotor(self):
-        self.movingmotor.Set(self.pv_stopstatus,0)
+        self.movingmotor.Set(self.movingmotor.pv_stopstatus,0)
    
     def goto_position(self,Target):
         """motor moves to specified Target-position given in cm"""
