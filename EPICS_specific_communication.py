@@ -524,6 +524,7 @@ class MotorClient(): #i don't know if Thread is necessary
              
         self.iscalibrating = False
         print("done calibrating")
+        self.position = 0
         self.ismoving = False
         
     def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
