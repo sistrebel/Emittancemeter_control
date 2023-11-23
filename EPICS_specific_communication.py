@@ -589,9 +589,10 @@ class MotorClient(): #i don't know if Thread is necessary
                 if self.direction == "neg":
                     while self.position > self.stepcount:#time.time() - start < self.time_needed :
                         pass
-            if self.iscalibrating:
-                while self.position != 0:
-                    pass
+                if self.iscalibrating:
+                    self.direction == "neg"
+                    while self.position != 0:
+                        pass
                 #status = self.Get(self.pv_motor_status)
                 #while status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0: #wait till it actually stopped
                  #   pass
