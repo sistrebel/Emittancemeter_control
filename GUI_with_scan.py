@@ -312,11 +312,12 @@ class MainWindow(QMainWindow):
         plt.plot(self.all_times, self.all_positions1)
         plt.plot(self.all_times, self.all_positions2)
         plt.plot(self.all_times, self.all_positions3)
-        
-        if directory != None:
+        try:
+        #if directory != None:
             fig.savefig(directory + '/graph.png')
             self.show_message("Plot saved to "+ directory+ "as 'graph.png' ")
-            
+        except:
+            self.show_message("No valid directory ")
     """might put the retrieve data methods into its own file/class"""
             
     def start_scan_thread(self):
