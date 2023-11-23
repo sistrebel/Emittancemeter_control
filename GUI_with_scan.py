@@ -420,6 +420,7 @@ class MainWindow(QMainWindow):
     
     def stopmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,1)
+        self.movingmotor.ismoving = False
     def runmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,0)
    
