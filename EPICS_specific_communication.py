@@ -168,7 +168,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_ramp_set.put(25)
                 #print(self.pv_speed_set.get())
                 self.pv_MAXCW.put(21766)
-                self.pv_SPAD.put(752) #don't part. about this value...
+                #self.pv_SPAD.put(752) #don't part. about this value...
                 
                 self.pv_targetposition_DRVL.put(0) #check what happens
                 self.pv_targetposition_DRVH.put(21766)
@@ -211,7 +211,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_ramp_set.put(25)
                 #print(self.pv_speed_get.get())
                 self.pv_MAXCW.put(104172)  
-                self.pv_SPAD.put(752) #don't part. about this value...
+                #self.pv_SPAD.put(752) #don't part. about this value...
             
 
                 self.pv_targetposition_DRVL.put(0)
@@ -271,7 +271,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 #print(self.pv_speed_set.get())
                 #time.sleep(0.1)
                 self.pv_MAXCW.put(9600)  
-                self.pv_SPAD.put(752) #don't part. about this value...
+                #self.pv_SPAD.put(752) #don't part. about this value...
                 
                 self.pv_targetposition_DRVL.put(0)
                 self.pv_targetposition_DRVH.put(9600)

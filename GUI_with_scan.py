@@ -347,7 +347,7 @@ class MainWindow(QMainWindow):
     
     def retrieve_speed(self):
         """get the speed from the MainWindow and set the global variable speed to its value"""
-        self.speed = self.textEdit_speed.toPlainText() #in mm/s
+        self.speed = int(self.textEdit_speed.toPlainText()) #in mm/s
         self.speed = self.mm_to_steps(self.speed,self.Axis)
         
         self.server.issue_motor_command(self.movingmotor,("set_speed",self.speed))
