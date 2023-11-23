@@ -429,9 +429,9 @@ class MotorClient(): #i don't know if Thread is necessary
         #position_steps = self.position_to_steps(position)
         #with self.port_lock:
             print(position_steps)
-            if position_steps > 0:
+            if position_steps > self.stepcount:
                 self.direction = "pos"
-            if position_steps < 0: 
+            if position_steps < self.stepcount: 
                 self.direction = "neg"
             
             velocity = self.pv_speed_get.get()#self.Get(self.pv_speed_get)
