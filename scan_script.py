@@ -256,7 +256,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                 
                 #time.sleep(1)
                 
-                result = start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
+                result = start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
                 
                 #time.sleep(1)
                 print(result)
@@ -281,7 +281,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
         return
 
 
-def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
+def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
     print("start readout")
     readout_speed = z_speed
@@ -310,6 +310,9 @@ def start_readout(motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
             while pause_flag:
                print("Pausing...")
                time.sleep(0.5)  # Adjust the sleep time based on your requirements
+            if scanstop:
+                 show_message(">> scan stopped")
+                 return
             # status3 = motor3.Get(motor3.pv_motor_status)
             # if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :   #check that motors are actually free to move, readjusting takes time as well
             status1 = motor1.Get(motor1.pv_motor_status)
