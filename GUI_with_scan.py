@@ -225,9 +225,9 @@ class MainWindow(QMainWindow):
         self.position_3 = self.position_3[1:]  # Remove the first
         
         
-        newposition_1 = self.motor1.get_position() #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
-        newposition_2 = self.motor2.get_position()
-        newposition_3 = self.motor3.get_position()
+        newposition_1 = self.steps_to_mm(self.motor1.get_position(),"1X") #in mm #self.server.issue_motor_command(self.movingmotor, ("get_position",),1)#self.motor1_queue.put(("get_position",))
+        newposition_2 = self.steps_to_mm(self.motor2.get_position(),"1Y")
+        newposition_3 = self.steps_to_mm(self.motor3.get_position(),"2Y")
         
         self.position_1.append(newposition_1)
         self.position_2.append(newposition_2)
@@ -355,7 +355,6 @@ class MainWindow(QMainWindow):
         self.Targetposition = int(self.textEdit_position.toPlainText()) #input in mm
         axis = self.Axis
         self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
-        print(self.Targetposition)
         self.goto_position(self.Targetposition)
         
     def leftbuttonclick(self):
