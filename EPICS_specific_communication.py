@@ -550,7 +550,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
     
-    def move_device_position(self):
+    def move_device_position(self):  #fix this.... not good...
         while True:
             #print(self.ismoving)
     
@@ -558,7 +558,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 velocity = self.Get(self.pv_speed_get)
                 #print(velocity)
                 if velocity != None:
-                    looptime = 0.1
+                    looptime = 0.05
                     if self.direction == "pos":
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
@@ -566,7 +566,8 @@ class MotorClient(): #i don't know if Thread is necessary
                     if self.direction == "none":
                         pass
                 #print(self.position)
-            time.sleep(0.1)  # Adjust the sleep time as needed
+            self.position = self.stepcount
+            time.sleep(0.05)  # Adjust the sleep time as needed
 
         self.ismoving = False
         
