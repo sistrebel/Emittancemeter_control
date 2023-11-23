@@ -445,21 +445,21 @@ class MainWindow(QMainWindow):
         #self.server.issue_motor_command(self.movingmotor, ("set_brake",))
       
     
-    def go_home(self,stop = False):
-        """moves motor to initial position and if stop == True the server connection is stopped and port closed"""
+    # def go_home(self,stop = False):
+    #     """moves motor to initial position and if stop == True the server connection is stopped and port closed"""
        
-        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
+    #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
         
-        time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor, ("go_to_position",0))
-        # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
-        #     time.sleep(0.1)
-        self.server.issue_motor_command(self.movingmotor, ("set_brake",))
+    #     time.sleep(0.1)
+    #     self.server.issue_motor_command(self.movingmotor, ("go_to_position",0))
+    #     # while not self.server.issue_motor_command(self.movingmotor_queue, ("position_reached",),1):
+    #     #     time.sleep(0.1)
+    #     self.server.issue_motor_command(self.movingmotor, ("set_brake",))
         
-        time.sleep(0.2) #wait until the command was processed
+    #     time.sleep(0.2) #wait until the command was processed
         
-        if stop == True:
-            self.server.stop_server()
+    #     if stop == True:
+    #         self.server.stop_server()
        
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
@@ -472,12 +472,12 @@ class MainWindow(QMainWindow):
             QApplication.closeAllWindows()
         return
   
-    def get_reference(self):
-        self.show_message("reference search ongoing")
-        #self.movingmotor_queue.put(("reference_search",))
-        self.server.issue_motor_command(self.movingmotor, ("reference_search",))
-        #self.movingmotor.reference_search()
-        self.show_message("reference search done")
+    # def get_reference(self):
+    #     self.show_message("reference search ongoing")
+    #     #self.movingmotor_queue.put(("reference_search",))
+    #     self.server.issue_motor_command(self.movingmotor, ("reference_search",))
+    #     #self.movingmotor.reference_search()
+    #     self.show_message("reference search done")
         
     def right_endstop_display(self):
         self.RightstopDisplay.display(1)

@@ -24,27 +24,29 @@ class MotorServer:
        self.running = True
        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
        self.issending = False
-    def stop_server(self): #make sure that when running it again the port is accessible
-        self.running = False
-        print(" closed")
+       
+    """not necessary part here i think...
+    # def stop_server(self): #make sure that when running it again the port is accessible
+    #     self.running = False
+    #     print(" closed")
         
        
-    def start(self): #sends everything that is put into the queue
-        try:
-            while self.running:
-                print("is reading:", self.isreading)
-                if not self.command_queue.empty():# and self.isreading:
-                    print("is reading:", self.isreading)
-                    command = self.command_queue.get() #command_item = self.command_queue.get()#
+    # def start(self): #sends everything that is put into the queue
+    #     try:
+    #         while self.running:
+    #             print("is reading:", self.isreading)
+    #             if not self.command_queue.empty():# and self.isreading:
+    #                 print("is reading:", self.isreading)
+    #                 command = self.command_queue.get() #command_item = self.command_queue.get()#
                   
-                    self.send_command(command)
+    #                 self.send_command(command)
                    
 
                     
-        except KeyboardInterrupt:
-            self.serial_port.close()
-            print("Exiting...")
-    
+    #     except KeyboardInterrupt:
+    #         self.serial_port.close()
+    #         print("Exiting...")
+    """
     def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue):
         motor = MotorClient(server, MOTOR_NUMBER, command_queue) #pass the general port lock to each motor thread
         motor.start_motor()
@@ -161,7 +163,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 #set initial parameters and calibrate
                
                 #self.calibration() #i do calibrate!!!
-                #time.sleep(0.5)
+    
                 self.pv_speed_set.put(1500)
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
@@ -219,7 +221,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_targetposition_LOPR.put(0)
                 self.pv_targetposition_HOPR.put(104172)
                 
-                #time.sleep(0.5)
+            
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
@@ -257,19 +259,17 @@ class MotorClient(): #i don't know if Thread is necessary
                     print("setting brake")
                     self.pv_brake.put(1)
                     time.sleep(0.1)
-                    #time.sleep(0.05)
-                #time.sleep(0.2)
+               
                 
                 
-                #time.sleep(0.5)
+              
                 self.pv_speed_set.put(1000)
                 self.pv_min_speed_set.put(0)
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(300) #long enough ramp
                 self.pv_brake_off.put(500) #time before busy 
                 self.pv_brake_on.put(2000) #time after busy
-                #print(self.pv_speed_set.get())
-                #time.sleep(0.1)
+                
                 self.pv_MAXCW.put(9600)  
                 #self.pv_SPAD.put(752) #don't part. about this value...
                 
@@ -364,28 +364,20 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("else")
                             res = self.ex_command(command)
                             res = "done"
-                            #time.sleep(0.1)
+                          
                         
                         if res == "done":
                             self.server.issending = False
-                            #time.sleep(0.1)
                             print("free again")
                         
                         
                         
                     
                     else: pass
-                        #print("is busy, try again later")
-                        #print(self.Get(server.pv_status))
-                        #print(self.Get(self.pv_motor_status))
-                        # if status == 0x0:
-                        #     print("not calibrated")
-                        #time.sleep(0.1)
-                    
+
                 except:
                         if self.command_queue.empty():
-                            #print("isempty")
-                            #time.sleep(0.1)
+
                             pass
                         else: 
                             
@@ -396,10 +388,8 @@ class MotorClient(): #i don't know if Thread is necessary
     
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
-        #with self.port_lock:
         print("set")
         pv.put(value)
-        #time.sleep(0.2) #safety
         return "has been set"
 
     def Get(self,pv):
