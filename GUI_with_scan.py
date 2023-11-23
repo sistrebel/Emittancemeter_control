@@ -318,7 +318,7 @@ class MainWindow(QMainWindow):
         try:
         #if directory != None:
             fig.savefig(directory + '/graph.png')
-            self.show_message("Plot saved to "+ directory+ "as 'graph.png' ")
+            self.show_message(">> Plot saved to "+ directory+ "as 'graph.png' ")
         except:
             self.show_message("No valid directory ")
     """might put the retrieve data methods into its own file/class"""
@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:

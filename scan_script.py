@@ -134,7 +134,7 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
     return total_points
 
 
-def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
+def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread"""
     global pause_flag
     
@@ -144,8 +144,10 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
     z_speed = 1000
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
     
-    print("the scan will take approx.", estimated_time, "min")
-    answer = input("do you want to proceed? (y/n")
+    show_message(">> the scan will take approx." + str(estimated_time) + "min")
+    
+    #print("the scan will take approx.", estimated_time, "min")
+    answer = "y" #input("do you want to proceed? (y/n")
     if answer == "y":
         
         #start with recalibration of the motors:
