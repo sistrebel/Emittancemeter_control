@@ -278,7 +278,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     else:
         print("abort scan script")
         return
-
+    scanstop = False
 
 def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
