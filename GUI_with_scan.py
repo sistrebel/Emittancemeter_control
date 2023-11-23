@@ -238,19 +238,16 @@ class MainWindow(QMainWindow):
         self.data_line3.setData(np.array(self.time)/1000,self.position_3)
         
         """use this data to determine when to change the displays"""
-        
-        leftend = 0
-        rightend = 30 #measured by moving the sled there!!! #not right probably more like 34 (?)....
-        
-        if newposition_1 <= leftend+0.1: #display the endstop status
+        status = self.movingmotor.Get(self.movingmotor.pv_motor_status)
+        if status == 0x9: #display the endstop status
             self.left_endstop_display()
             if self.sent == False:
-                self.show_message("left end reached! reverse now")
+                self.show_message("upper end reached!")
                 self.sent = True
-        elif newposition_1 >= rightend-0.1:
+        elif status == 0xA:
             self.right_endstop_display() 
             if self.sent == False:
-                self.show_message("right end reached! reverse now")
+                self.show_message("lower end reached!")
                 self.sent = True
         else:   #reset the endstop status
             self.reset_endstop_display()

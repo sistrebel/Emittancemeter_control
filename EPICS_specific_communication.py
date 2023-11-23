@@ -563,7 +563,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 velocity = self.Get(self.pv_speed_get)
                 #print(velocity)
                 if velocity != None:
-                    looptime = 0.02
+                    looptime = 0.02 #small to make sure it does not overshoot...
                     if self.direction == "pos":
                         self.position +=  velocity*looptime
                     if self.direction == "neg":
