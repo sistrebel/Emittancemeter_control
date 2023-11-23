@@ -255,10 +255,12 @@ class MainWindow(QMainWindow):
             self.sent = False
             
         #save all data in a list for when plot is created later.
-        self.all_positions1.append(newposition_1)
-        self.all_positions2.append(newposition_2)
-        self.all_positions3.append(newposition_3)
-        self.all_times.append(self.time[-1])
+        
+        while len(self.all_times) < 100000: #safe space... 
+            self.all_positions1.append(newposition_1)
+            self.all_positions2.append(newposition_2)
+            self.all_positions3.append(newposition_3)
+            self.all_times.append(self.time[-1])
         
     def createStatusBar(self):
         self.statusbar = QStatusBar()
@@ -378,6 +380,7 @@ class MainWindow(QMainWindow):
             
     def mm_to_steps(self,mm,axis):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
+        print(axis)
         if axis == "Axis 1":
             steps = mm/535
         if axis == "Axis 2":
