@@ -276,17 +276,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
     </property>
     <item>
      <property name="text">
-      <string>Axis 1</string>
+      <string>1X</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Axis 2</string>
+      <string>1Y</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Axis 3</string>
+      <string>2Y</string>
      </property>
     </item>
     <item>
