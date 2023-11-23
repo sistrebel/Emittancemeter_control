@@ -261,6 +261,7 @@ def start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_
                 print("go again")
             else:
                 print("ERROR: GUI/server has been closed")
+                return
                 
         
         
