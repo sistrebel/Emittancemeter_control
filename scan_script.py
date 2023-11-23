@@ -354,7 +354,9 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
         print("Pausing...")
         show_message("Pauseing...")
         time.sleep(1)  # Adjust the sleep time based on your requirements
+    
     server.issue_motor_command(motor3,("go_to_position",end_point))
+    print("i am heeeeeeeeeeereeeeeeee")
     server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
     # while moving == True: #wait until motors are done moving, wait for last step and go back 
     #      status3 = motor3.Get(motor3.pv_motor_status)
