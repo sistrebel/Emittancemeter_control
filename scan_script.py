@@ -15,6 +15,7 @@ import numpy as np
 
 
 pause_flag = False
+scanstop = False
 
 def distribute_measurement_points(num_points, x_length, y_length):
     """old function"""
