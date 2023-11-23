@@ -417,6 +417,11 @@ class MainWindow(QMainWindow):
         self.server.issue_motor_command(self.movingmotor, ("stop_move",))
         self.show_message("motor stopped")
         return
+    
+    def stopmotor(self):
+        self.movingmotor.Set(self.pv_stopstatus,1)
+    def runmotor(self):
+        self.movingmotor.Set(self.pv_stopstatus,0)
    
     def goto_position(self,Target):
         """motor moves to specified Target-position given in cm"""
