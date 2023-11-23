@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
         self.graphWidget.showGrid(x=True, y=True)
         self.graphWidget.setTitle("Position-plot")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget.setLabel('left', 'Position [cm]', **styles)
+        self.graphWidget.setLabel('left', 'Position [mm]', **styles)
         self.graphWidget.setLabel('bottom', 'Time [s]', **styles)
         pen1 = pg.mkPen("r") #red line pen
         pen2 = pg.mkPen("g")
