@@ -121,7 +121,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.start_position_thread()
         
         #start the thread to time ismoving variable...
-        self.start_timer_thread()
+        
         
         self.locked = False
         #depending on MOTOR_NUMBER this will be different
@@ -283,6 +283,8 @@ class MotorClient(): #i don't know if Thread is necessary
                 time.sleep(0.5)
         if self.iscalibrating == False:
             self.initializing = False
+            
+        self.start_timer_thread()
        
     def start_motor(self):
         self.is_running = True
