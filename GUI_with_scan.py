@@ -93,7 +93,7 @@ class MainWindow(QMainWindow):
         self.movingmotor = self.motor1
         self.Axis = "1X"
         
-        print("is it true?", self.Axis == "1X")
+        
         
         #load and connect the GUI
         self.LoadGuis()
@@ -373,9 +373,9 @@ class MainWindow(QMainWindow):
         
         if axis == "1X": #1X
             mm = steps/535
-        if axis == "1Y": #1Y
+        elif axis == "1Y": #1Y
             mm = steps/800
-        if axis == "2Y": #2Y
+        elif axis == "2Y": #2Y
             mm = steps/50
         else: print("ERROR, NO VALID AXIS")
         
@@ -386,9 +386,9 @@ class MainWindow(QMainWindow):
         
         if axis == "1X":
             steps = mm/535
-        if axis == "1Y":
+        elif axis == "1Y":
             steps = mm/800
-        if axis == "2Y":
+        elif axis == "2Y":
             steps = mm/50
         else: print("ERROR, NO VALID AXIS")
         
