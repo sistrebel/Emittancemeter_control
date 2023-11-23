@@ -134,7 +134,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 
                 self.pv_CHS_SBNT = PV('T-MWE1X:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
-                self.pv_motor_status = PV('T-MWE1X:CHS:1') #motor staus!!!
+                self.pv_motor_status = PV('T-MWE1X:CHS:1') #motor status!!!
                 self.pv_brake = PV('XXX:m1.VAL') #has none
                 self.pv_speed_set = PV('T-MWE1X:SMMAX:2')
                 self.pv_min_speed_set = PV('T-MWE1X:SMMIN:2')
