@@ -421,6 +421,7 @@ def pause_scan():
     """when the pause button is clicked on the GUI the scan procedure should pause and not go to the next point"""
     global pause_flag
     pause_flag = True
+    return
 
 def continue_scan():
     """continue scan after a pause"""
