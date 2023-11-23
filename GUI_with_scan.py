@@ -123,7 +123,7 @@ class MainWindow(QMainWindow):
         self.speed = self.movingmotor.Get(self.movingmotor.pv_speed_get)#set initial speed if none is selected
         self.Targetposition = 0 #set initial position
         self.sent = False
-        
+        self.allcalibrated = False
         
         #do a reference search as soon as the applications starts
         #self.get_reference() 
