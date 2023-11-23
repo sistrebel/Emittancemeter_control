@@ -401,8 +401,8 @@ def get_signal():
     """returns a dummy signal for a certain amount of time
     
     -if signal drops below a certain value the scan must be paused
-    -all 32 channels can be readout at the same time so continuous movement is OK"""
-    
+    -all 32 channels can be readout at the same time so continuous movement is OK
+    -at every point the values are stored in a frequency below 5kHz"""
     
     return np.random.randint(1000)
     
@@ -411,6 +411,7 @@ def pause_scan():
     """when the pause button is clicked on the GUI the scan procedure should pause and not go to the next point"""
     global pause_flag
     pause_flag = True
+
 def continue_scan():
     """continue scan after a pause"""
     global pause_flag

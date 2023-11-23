@@ -564,7 +564,6 @@ class MotorClient(): #i don't know if Thread is necessary
         
     def lock_for_time(self):
         while True:
-            
             if self.time_needed > 0:  #only when it has been set true in another place!!!
                 start = time.time()
                 print("start counting")

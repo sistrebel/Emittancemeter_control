@@ -91,6 +91,7 @@ class MainWindow(QMainWindow):
     
         #initialize the moving axis with the first motor
         self.movingmotor = self.motor1
+        self.Axis = "Axis 1"
         
         #load and connect the GUI
         self.LoadGuis()
@@ -142,14 +143,14 @@ class MainWindow(QMainWindow):
     def get_axis(self):
         """get the Axis which the user wants to move in;
         assuming 3 Motorclients between which the user selects in the comboBox"""
-        Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
+        self.Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
         self.show_message("selected " + Axis)
         
-        if Axis == "Axis 1":
+        if self.Axis == "Axis 1":
             self.movingmotor = self.motor1
-        if Axis == "Axis 2":
+        if self.Axis == "Axis 2":
             self.movingmotor = self.motor2
-        if Axis == "Axis 3":
+        if self.Axis == "Axis 3":
             self.movingmotor = self.motor3
         
     
@@ -187,7 +188,6 @@ class MainWindow(QMainWindow):
         
 
         #self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
-        
         
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
@@ -318,16 +318,19 @@ class MainWindow(QMainWindow):
     def start_scan_thread(self):
         """get number of points for scan"""
         
-        points = int(self.textEdit_Points.toPlainText()) #retrieve parameters...
-        x_length = 21000
+        resolution_x = int(self.textEdit_Resolution_x.toPlainText()) #retrieve resolution in mm
+        resolution_y = int(self.textEdit_Resolution_y.toPlainText())
+        resolution_z = int(self.textEdit_Resolution_z.toPlainText())
+        
+        x_length = 21700
         y_length = 104000
         z_length = 9000
         
-        meshsize_x = 2000
-        meshsize_y = 2000
-        meshsize_z = 2000
+        meshsize_x = self.mm_to_steps(resolution_x,"Axis 1")
+        meshsize_y = self.mm_to_steps(resolution_y,"Axis 2")
+        meshsize_z = self.mm_to_steps(resolution_z,"Axis 3")
         
-        if points > 0:
+        if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
@@ -345,7 +348,8 @@ class MainWindow(QMainWindow):
     
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
-        self.Targetposition = int(self.textEdit_position.toPlainText())
+        self.Targetposition = int(self.textEdit_position.toPlainText()) #input in mm
+        self.Targetposition = self.mm_to_steps(self.Targetposition,self.Axis) #convert to steps
         self.goto_position(self.Targetposition)
         
     def leftbuttonclick(self):
@@ -358,7 +362,31 @@ class MainWindow(QMainWindow):
          #print("right button clicked")
          time.sleep(0.05)
     
-    """change the way i send commands, use the issue commands function instead of doing it directly!!!"""
+    
+    def steps_to_mm(self,steps,axis): 
+        """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
+        
+        if axis == "Axis 1": #1X
+            mm = steps/535
+        if axis == "Axis 2": #1Y
+            mm = steps/800
+        if axis == "Axis 3": #2Y
+            mm = steps/50
+        else: print("ERROR, NO VALID AXIS")
+        
+        return mm
+            
+    def mm_to_steps(self,mm,axis):
+        """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
+        if axis == "Axis 1":
+            steps = mm/535
+        if axis == "Axis 2":
+            steps = mm/800
+        if axis == "Axis 3":
+            steps = mm/50
+        else: print("ERROR, NO VALID AXIS")
+        
+        return steps
     
     def move_backwards(self): #backwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
