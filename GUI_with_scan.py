@@ -462,6 +462,7 @@ class MainWindow(QMainWindow):
         self.go_home(stop = True) #go home and stop the conection 
         self.server.stop_server()
         QApplication.quit()
+        QApplication.closeAllWindows()
         return
   
     def get_reference(self):
