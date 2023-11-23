@@ -132,7 +132,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #initialize the pv's i am using here 
             #with self.port_lock:
                 
-                
+                self.pv_CHS_SBNT = PV('T-MWE1X:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_motor_status = PV('T-MWE1X:CHS:1') #motor staus!!!
                 self.pv_brake = PV('XXX:m1.VAL') #has none
@@ -178,6 +178,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
            # with self.port_lock:
+                self.pv_CHS_SBNT = PV('T-MWE1Y:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE1Y:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_motor_status = PV('T-MWE1Y:CHS:1')
                 self.pv_brake = PV('XXX:m1.VAL') #has none
@@ -222,6 +223,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
             #with self.port_lock:
+                self.pv_CHS_SBNT = PV('T-MWE2Y:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status, if 0 then busy...can't be used...
                 self.pv_motor_status = PV('T-MWE2Y:CHS:1')
                 self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet

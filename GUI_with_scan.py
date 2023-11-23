@@ -294,7 +294,7 @@ class MainWindow(QMainWindow):
         self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
         self.PauseScanButton.clicked.connect(scan_script.pause_scan)
         self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
-        
+        self.CalibrateButton.clicked.connect(self.calibration)
         
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
@@ -387,6 +387,13 @@ class MainWindow(QMainWindow):
         else: print("ERROR, NO VALID AXIS")
         
         return steps
+    
+    def calibration(self):
+        """starts calibration for all three motors"""
+        
+        self.motor1.calibration()
+        self.motor2.calibration()
+        self.motor3.calibration()
     
     def move_backwards(self): #backwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
