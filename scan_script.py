@@ -217,7 +217,9 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                     if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
                       if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
                           if status3 == 0x9 or motor3.Get(motor3.pv_SOLRB) == endposition_z  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
-                            
+                            if motor3.Get(motor3.pv_SOLRB) == endposition_z:
+                                time.sleep(1) #give it time
+                                
                     # if motor1.ismoving == False and  motor2.ismoving == False:  #check that motors are actually free to move
                             server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
                            

@@ -405,9 +405,11 @@ class MainWindow(QMainWindow):
     def calibration(self):
         """starts calibration for all three motors"""
         
-        self.motor1.calibration()
-        self.motor2.calibration()
-        self.motor3.calibration()
+        self.server.issue_motor_command(self.motor1,("calibrate"))
+        self.server.issue_motor_command(self.motor2,("calibrate"))
+        self.server.issue_motor_command(self.motor3,("calibrate"))
+        # self.motor2.calibration()
+        # self.motor3.calibration()
         
         self.allcalibrated = True
     
