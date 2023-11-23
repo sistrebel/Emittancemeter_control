@@ -209,6 +209,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                     while pause_flag:
                         print("Pausing...")
                         time.sleep(0.5)  # Adjust the sleep time based on your requirements
+                        show_message("Pausing...")
                     
                     status1 = motor1.Get(motor1.pv_motor_status)
                     status2 = motor2.Get(motor2.pv_motor_status)
@@ -310,6 +311,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
             while pause_flag:
                print("Pausing...")
                time.sleep(0.5)  # Adjust the sleep time based on your requirements
+               show_message("Pauseing...")
             if scanstop:
                  show_message(">> scan stopped")
                  return "readout stopped"
@@ -349,6 +351,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
      # Check the pause flag
     while pause_flag:
         print("Pausing...")
+        show_message("Pauseing...")
         time.sleep(1)  # Adjust the sleep time based on your requirements
     server.issue_motor_command(motor3,("go_to_position",end_point))
     server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
