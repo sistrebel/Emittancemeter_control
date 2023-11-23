@@ -321,12 +321,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Submit Resolution &amp; start Scan</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_Points">
+   <widget class="QTextEdit" name="textEdit_Resolution_x">
     <property name="geometry">
      <rect>
       <x>360</x>
       <y>160</y>
-      <width>161</width>
+      <width>51</width>
       <height>31</height>
      </rect>
     </property>
@@ -344,7 +344,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Pause</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="ContinueScanButton">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
       <x>520</x>
@@ -355,6 +355,65 @@ li.checked::marker { content: &quot;\2612&quot;; }
     </property>
     <property name="text">
      <string>Continue</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_Resolution_y">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>160</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_Resolution_z">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>160</y>
+      <width>61</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>140</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;1X [mm]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>140</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;1Y [mm]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>140</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt; 2Y [mm]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
