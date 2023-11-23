@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
         self.messagetimer.start(20000) #updates every 20s
         
         
-        self.speed = 500 #set initial speed if none is selected
+        self.speed = self.movingmotor.Get(self.movingmotor.pv_speed_get)#set initial speed if none is selected
         self.Targetposition = 0 #set initial position
         self.sent = False
         
@@ -268,7 +268,10 @@ class MainWindow(QMainWindow):
         self.statusbar.addPermanentWidget(QLabel(f"Hello i am the Demo Project")) #example to see if it works...
     
     def ready_message(self):
-        self.MessageBox.append(">>"+ "module is ready")
+        if self.allcalibrated:
+            self.MessageBox.append(">>"+ "module is ready")
+        else:
+            self.MessageBox.append(">>"+ "calibrate first")
     
     def show_message(self, message):
         """displays the message in the messagebox one can see in the interface"""
@@ -351,7 +354,7 @@ class MainWindow(QMainWindow):
         self.speed = self.mm_to_steps(speed,self.Axis) #in steps/s
         
         self.server.issue_motor_command(self.movingmotor,("set_speed",self.speed))
-        self.show_message("new speed:" + str(self.speed) + "[steps/s]" + str(speed) + "[mm/s]")
+        self.show_message("new speed: " + str(self.speed) + " [steps/s] " + str(speed) + " [mm/s]")
     
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
@@ -359,7 +362,7 @@ class MainWindow(QMainWindow):
         axis = self.Axis
         self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
         self.goto_position(self.Targetposition)
-        
+
     def leftbuttonclick(self):
         self.show_message("left button clicked")
         #print("left button clicked")
@@ -403,6 +406,8 @@ class MainWindow(QMainWindow):
         self.motor1.calibration()
         self.motor2.calibration()
         self.motor3.calibration()
+        
+        self.allcalibrated = True
     
     def move_backwards(self): #backwards
         """starts the movement of "motor" (i.e. self.motor1,2 or 3) """

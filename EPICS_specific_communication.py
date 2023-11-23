@@ -50,6 +50,7 @@ class MotorServer:
         motor = MotorClient(server, MOTOR_NUMBER, command_queue) #pass the general port lock to each motor thread
         motor.start_motor()
         thread = threading.Thread(target=motor.run)
+        thread.daemon = True
         thread.start()
         return motor
 
