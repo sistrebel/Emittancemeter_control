@@ -184,6 +184,9 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
         
     
         for i in range(len(point_distribution)):
+            if scanstop:
+                 #show_message(">> scan stopped")
+                 break
             if server.running == True:  #check that QtApplication has not been closed
                 point_x = point_distribution[i][0]
                 point_y = point_distribution[i][1]
@@ -297,6 +300,9 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     for i in range(0,steps):
         current_position += meshsize_z
         moving = False
+        if scanstop:
+             #show_message(">> scan stopped")
+             break
         while moving == False: #wait till motors are free and stopped
             
             if server.running == False:
