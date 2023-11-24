@@ -17,6 +17,8 @@ import numpy as np
 pause_flag = False
 scanstop = False
 
+full_data = []
+
 def distribute_measurement_points(num_points, x_length, y_length):
     """old function"""
 
@@ -140,8 +142,6 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     global pause_flag, scanstop
     
     
-    full_data = []
-    
     x_speed = 1800
     y_speed = 1800
     z_speed = 1000
@@ -207,7 +207,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                         return
                     if scanstop:
                         show_message(">> scan stopped")
-                        break #this is a HUUUGE PROBLEMMM
+                        break 
                     while pause_flag:
                         print("Pausing...")
                         time.sleep(0.5)  # Adjust the sleep time based on your requirements
@@ -337,7 +337,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
         #time.sleep(0.05)
         status3 = motor3.Get(motor3.pv_motor_status)
     
-    data = get_signal(motor3) #start collecting data
+    get_signal(motor3) #start collecting data
     
     while moving == True: #wait until motors are done moving
         status3 = motor3.Get(motor3.pv_motor_status)
@@ -451,7 +451,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     #           #simulate the readout while the motor is moving
     
     """
-    return data
+    return 
     
 
     
@@ -507,7 +507,7 @@ def get_signal(motor3):
     while status3 != 0xA:
         data.append(np.random.randint(1000)) #this would correspond to a 
         time.sleep(0.1)  #10Hz measurement frequency
-    return data
+    full_data.append(data)
     
 
 def pause_scan():
