@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
         #initialize the update timer for the xy-plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_xy)
-        self.timer.start(100) #updates every 100ms
+        self.timer.start(200) #updates every 100ms
         
         #initialize the ready-message for status-message-window
         self.messagetimer = QTimer(self)
@@ -176,7 +176,7 @@ class MainWindow(QMainWindow):
         self.horizontal = [] #list(range(100))  # 100 time points
         self.vertical = []  # 100 data points
         
-        self.data_line =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) #divide time by 1000 to get secon
+        self.data_line =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
         
     
     def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
@@ -187,8 +187,8 @@ class MainWindow(QMainWindow):
         self.horizontal.append(newhorizontal) 
         self.vertical.append(newvertical)
         
-    
-        self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
+        if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
+            self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
         
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
