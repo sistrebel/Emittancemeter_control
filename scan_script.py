@@ -255,6 +255,9 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                
                 while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y and scanstop == False:
                     time.sleep(0.1)
+                    if point_x == endposition_x and point_y == endposition_y:
+                        break
+                        
                     print("waiting to set position")
      
                 
