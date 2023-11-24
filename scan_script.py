@@ -140,6 +140,8 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     global pause_flag, scanstop
     
     
+    full_data = []
+    
     x_speed = 1800
     y_speed = 1800
     z_speed = 1000
@@ -261,9 +263,9 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                     print("waiting to set position")
      
                 
-                result = start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
+                data = start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
             
-                print(result)
+                full_data.append(data)
             
            
                 
@@ -278,7 +280,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
         while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
             pass
         print("scan is done")
-        
+        print(full_data)
         return
     else:
         print("abort scan script")
@@ -288,6 +290,8 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
 def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
     print("start readout")
+    
+    
     readout_speed = z_speed
 
     server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
@@ -335,6 +339,8 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
         #time.sleep(0.05)
         status3 = motor3.Get(motor3.pv_motor_status)
     
+    data = get_signal() #start collecting data
+    full_data.append(data)
     while moving == True: #wait until motors are done moving
         status3 = motor3.Get(motor3.pv_motor_status)
         if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
@@ -447,7 +453,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     #           #simulate the readout while the motor is moving
     
     """
-    return "readout done"
+    return
     
 
     
@@ -492,14 +498,18 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
         
         
         
-def get_signal():
+def get_signal(motor3):
     """returns a dummy signal for a certain amount of time
     
     -if signal drops below a certain value the scan must be paused
     -all 32 channels can be readout at the same time so continuous movement is OK
     -at every point the values are stored in a frequency below 5kHz"""
-    
-    return np.random.randint(1000)
+    data = []
+    status3 = motor3.Get(motor3.pv_motor_status)
+    while status3 != 0xA:
+        data.append(np.random.randint(1000)) #this would correspond to a 
+        time.sleep(0.1)  #10Hz measurement frequency
+    return data
     
 
 def pause_scan():

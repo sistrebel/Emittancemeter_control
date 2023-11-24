@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
         
         #plotstyle
         self.graphWidget_3.showGrid(x=True, y=True)
-        self.graphWidget_3.setTitle("-plot")
+        self.graphWidget_3.setTitle("measurement-plot")
         styles = {'color':'r', 'font-size':'20px'}
         self.graphWidget_3.setLabel('left', 'Positoiin 2Y [mm]', **styles)
         self.graphWidget_3.setLabel('bottom', 'MWE2I [mA]', **styles)
