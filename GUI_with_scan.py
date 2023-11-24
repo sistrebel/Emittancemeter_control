@@ -167,16 +167,16 @@ class MainWindow(QMainWindow):
         self.graphWidget_2.showGrid(x=True, y=True)
         self.graphWidget_2.setTitle("xy-plot")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget.setLabel('left', 'Position 1X [mm]', **styles)
-        self.graphWidget.setLabel('bottom', 'Position 1Y [mm]', **styles)
+        self.graphWidget_2.setLabel('left', 'Position 1X [mm]', **styles)
+        self.graphWidget_2.setLabel('bottom', 'Position 1Y [mm]', **styles)
         pen = pg.mkPen("r") #red line pen
-        self.graphWidget.setBackground("w") #make white background
+        self.graphWidget_2.setBackground("w") #make white background
         
         #create the plot
         self.horizontal = [] #list(range(100))  # 100 time points
         self.vertical = []  # 100 data points
         
-        self.data_line =  self.graphWidget.plot(self.horizontal, self.vertical, pen=pen) #divide time by 1000 to get secon
+        self.data_line =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) #divide time by 1000 to get secon
         
     
     def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
