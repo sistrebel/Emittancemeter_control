@@ -190,8 +190,8 @@ class MainWindow(QMainWindow):
         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
             self.data_line.setData(self.horizontal,self.vertical) 
         else:
-            self.horizontal.append(0)
-            self.vertical.append(0)
+            self.horizontal = []
+            self.vertical = []
             
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
