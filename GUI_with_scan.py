@@ -184,7 +184,19 @@ class MainWindow(QMainWindow):
         
         self.data_line =  self.graphWidget_3.plot(self.measposition, self.current, pen=pen) 
         
-        
+    def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
+         """periodically (100ms) updates"""
+         
+         newmeasposition =  self.steps_to_mm(self.motor3.get_position(),"2Y")
+         newcurrent = 0
+         self.measposition.append(newmeasposition) 
+         self.current.append(newcurrent)
+         
+         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
+             self.data_line.setData(self.measposition,self.current) 
+         else:
+             self.horizontal = []
+             self.vertical = []
     
     def xy_plot(self):
         """make a 2D plot of the collimator position
@@ -209,7 +221,7 @@ class MainWindow(QMainWindow):
         
     
     def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
-        """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
+        """periodically (100ms) updates the position and time  """
         
         newhorizontal =  self.steps_to_mm(self.motor1.get_position(),"1X")
         newvertical = self.steps_to_mm(self.motor2.get_position(),"1Y")
