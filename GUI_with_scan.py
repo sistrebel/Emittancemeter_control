@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
         
         #make a plot 
         self.plot() 
+        self.xy_plot()
         self.createStatusBar()
         
         
