@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>738</width>
-    <height>557</height>
+    <width>915</width>
+    <height>961</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,8 +27,8 @@
    <widget class="QPushButton" name="RunButton">
     <property name="geometry">
      <rect>
-      <x>19</x>
-      <y>360</y>
+      <x>10</x>
+      <y>580</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -40,8 +40,8 @@
    <widget class="QPushButton" name="StopButton">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>360</y>
+      <x>140</x>
+      <y>580</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>470</y>
+      <y>700</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -80,7 +80,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>400</y>
+      <y>620</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -90,7 +90,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>430</y>
+      <y>650</y>
       <width>81</width>
       <height>24</height>
      </rect>
@@ -153,7 +153,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>400</y>
+      <y>620</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -173,7 +173,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>430</y>
+      <y>650</y>
       <width>131</width>
       <height>24</height>
      </rect>
@@ -186,7 +186,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>400</y>
+      <y>620</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -206,16 +206,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>350</y>
+      <y>360</y>
       <width>311</width>
-      <height>151</height>
+      <height>301</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="SavePlotButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>610</x>
       <y>250</y>
       <width>81</width>
       <height>31</height>
@@ -228,7 +228,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="QTextBrowser" name="MessageBox_3">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>400</x>
       <y>250</y>
       <width>81</width>
       <height>31</height>
@@ -248,7 +248,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="QTextEdit" name="textEdit_Directory">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>480</x>
       <y>250</y>
       <width>131</width>
       <height>31</height>
@@ -420,7 +420,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>470</y>
+      <y>700</y>
       <width>141</width>
       <height>31</height>
      </rect>
@@ -445,13 +445,23 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>Stop Scan</string>
     </property>
    </widget>
+   <widget class="PlotWidget" name="graphWidget_2" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>300</y>
+      <width>301</width>
+      <height>271</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>738</width>
+     <width>915</width>
      <height>21</height>
     </rect>
    </property>
