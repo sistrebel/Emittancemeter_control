@@ -248,12 +248,12 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                         moving = False 
                         print("arrived at point")
                       
-                      else:
-                        time.sleep(0.1)
-                        print("still moving")
-                    else:
-                        time.sleep(0.1)
-                        print("still moving")
+                      else: pass
+                        #time.sleep(0.05)
+                        #print("still moving")
+                    else: pass
+                        #time.sleep(0.1)
+                        #print("still moving")
                
                 while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y and scanstop == False:
                     time.sleep(0.1)
@@ -339,8 +339,8 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
         #time.sleep(0.05)
         status3 = motor3.Get(motor3.pv_motor_status)
     
-    data = get_signal() #start collecting data
-    full_data.append(data)
+    data = get_signal(motor3) #start collecting data
+    
     while moving == True: #wait until motors are done moving
         status3 = motor3.Get(motor3.pv_motor_status)
         if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
