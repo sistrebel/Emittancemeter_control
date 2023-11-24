@@ -25,12 +25,12 @@ class MotorServer:
        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
        self.issending = False
        
-    """not necessary part here i think...
-    # def stop_server(self): #make sure that when running it again the port is accessible
-    #     self.running = False
-    #     print(" closed")
+    
+    def stop_server(self): #make sure that when running it again the port is accessible
+        self.running = False
+        print(" closed")
         
-       
+    """not necessary part here i think...   
     # def start(self): #sends everything that is put into the queue
     #     try:
     #         while self.running:
