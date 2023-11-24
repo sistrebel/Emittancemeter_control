@@ -268,8 +268,6 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                 full_data.append(data)
             
            
-                
-                
                 print("go again")
             else:
                 print("ERROR: GUI/server has been closed")
@@ -453,7 +451,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     #           #simulate the readout while the motor is moving
     
     """
-    return
+    return data
     
 
     
