@@ -110,9 +110,9 @@ class MainWindow(QMainWindow):
         self.timer.start(100) #updates every 100ms
         
         #initialize the update timer for the xy-plot
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.update_plot_xy)
-        # self.timer.start(100) #updates every 100ms
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_plot_xy)
+        self.timer.start(100) #updates every 100ms
         
         #initialize the ready-message for status-message-window
         self.messagetimer = QTimer(self)
@@ -163,11 +163,11 @@ class MainWindow(QMainWindow):
         Should be displayed when a scan is started and forms a snake after a scan. """
         
         #plotstyle
-        self.graphWidget.showGrid(x=True, y=True)
-        self.graphWidget.setTitle("xy-plot")
+        self.graphWidget_2.showGrid(x=True, y=True)
+        self.graphWidget_2.setTitle("xy-plot")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget.setLabel('left', 'Position [cm]', **styles)
-        self.graphWidget.setLabel('bottom', 'Time [s]', **styles)
+        self.graphWidget.setLabel('left', 'Position 1X [mm]', **styles)
+        self.graphWidget.setLabel('bottom', 'Position 1Y [mm]', **styles)
         pen = pg.mkPen("r") #red line pen
         self.graphWidget.setBackground("w") #make white background
         
@@ -181,15 +181,13 @@ class MainWindow(QMainWindow):
     def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
         """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
         
+        newhorizontal =  self.steps_to_mm(self.motor1.get_position(),"1X")
+        newvertical = self.steps_to_mm(self.motor2.get_position(),"1Y")
+        self.horizontal.append(newhorizontal) 
+        self.vertical.append(newvertical)
         
-        #newhorizontal = ... """get current horizontal position"""
-        #newvertical = ... """get current verzital position"""
-        #self.horizontal.append(newhorizontal) 
-        #self.vertical.append(newvertical)
-        
-        
-
-        #self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
+    
+        self.data_line.setData(self.horizontal,self.vertical) #update the values , divided by 1000 to get seconds
         
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
