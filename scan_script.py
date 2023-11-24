@@ -523,9 +523,9 @@ def steps_to_mm(steps,axis):
     
     if axis == "1X":
         mm = steps/535
-    if axis == "1Y":
+    elif axis == "1Y":
         mm = steps/800
-    if axis == "2Y":
+    elif axis == "2Y":
         mm = steps/50
     else: print("ERROR, NO VALID AXIS")
     
@@ -535,9 +535,9 @@ def mm_to_steps(mm,axis):
     """converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
     if axis == "1X":
         steps = mm/535
-    if axis == "1Y":
+    elif axis == "1Y":
         steps = mm/800
-    if axis == "2Y":
+    elif axis == "2Y":
         steps = mm/50
     else: print("ERROR, NO VALID AXIS")
     
