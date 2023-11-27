@@ -321,6 +321,11 @@ class MainWindow(QMainWindow):
         """displays the message in the messagebox one can see in the interface"""
         self.MessageBox.append(">>"+ message)
         
+        
+    def show_scan_time(self,start_time,end_time):
+        self.MessageBox_StartTime(start_time)
+        self.MessageBox_EndTime(end_time)
+        
     def connectwidgets(self):
         """Connecting the buttons"""
         # self.GoleftButton.clicked.connect(self.leftbuttonclick)
@@ -351,8 +356,6 @@ class MainWindow(QMainWindow):
     
     
     
-        
-        
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
         
@@ -413,7 +416,7 @@ class MainWindow(QMainWindow):
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.show_scan_time,self.show_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:
