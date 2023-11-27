@@ -493,7 +493,7 @@ def get_signal(motor3,goinsteps):
     else:
         for i in range(0,10):
             data.append(np.random.randint(1000))
-            time.sleep(0.01)
+            time.sleep(0.001)
     full_data.append(data)
     #print(full_data)
     
