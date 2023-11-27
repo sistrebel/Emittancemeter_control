@@ -154,6 +154,15 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     y_length = y1_setup_val[1] - y1_setup_val[0]
     z_length = y2_setup_val[1] - y2_setup_val[0]
     
+    if x_speed == None or y_speed == None or z_speed == None:
+        x_speed = 1800
+        y_speed = 1800
+        z_speed = 1800
+    if x_length == None  or y_length == None or z_length == None:
+        x_length = 21700
+        y_length = 104000
+        z_length = 9000
+    
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
     
     show_message(">> the scan will take approx." + str(estimated_time) + "min")
