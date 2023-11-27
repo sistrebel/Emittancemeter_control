@@ -374,7 +374,17 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
         
         current_position = start_point
         
-        #time_needed = time_estimation(start_point, end_point, readout_speed,readout_speed)
+        #safety check if collimator is not moving
+        allgood = False
+        while allgood == False:
+            status1 = motor1.Get(motor1.pv_motor_status)
+            status2 = motor2.Get(motor2.pv_motor_status)
+            if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
+                    if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
+                        allgood = True
+                    else: allgood = False
+            else: allgood = False
+
         for i in range(0,steps+1):
             current_position += meshsize_z
             moving = False
@@ -395,20 +405,15 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                      show_message(">> scan stopped")
                      break 
                 
-                status1 = motor1.Get(motor1.pv_motor_status)
-                status2 = motor2.Get(motor2.pv_motor_status)
+            
                 status3 = motor3.Get(motor3.pv_motor_status)
                 command3stat = motor3.Get(motor3.pv_command_status)
-                if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
-                  if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
-                      #if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 or status3 == 0xC and motor3.Get(server.pv_status) != 1: #  and motor3.Get(motor3.pv_SOLRB) == start_point:
-                      if command3stat == 0x20 or command3stat == 0x0:
-                        print("here")
+              
+                if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1: #  and motor3.Get(motor3.pv_SOLRB) == start_point:
+                      #if command3stat == 0x20 or command3stat == 0x0:
+                      
                         server.issue_motor_command(motor3,("go_to_position",current_position))
-                        
                         moving = True
-                      else: pass 
-                  else: pass
                 else: pass 
    
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -428,7 +433,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
             show_message("Pauseing...")
             time.sleep(1)  # Adjust the sleep time based on your requirements
         
-        server.issue_motor_command(motor3,("go_to_position",end_point))
+        #server.issue_motor_command(motor3,("go_to_position",end_point))
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
 
     return 
