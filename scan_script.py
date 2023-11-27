@@ -137,14 +137,23 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
     return total_points
 
 
-def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server): #this will then issue the commands through the right command queue
-    """should start a scan preferably in an independent thread"""
+def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val,server): #this will then issue the commands through the right command queue
+    """should start a scan preferably in an independent thread
+    
+    -..._setup_val = (..min,..max,..speed) #use the max/min in an advanced version later... for now always go to the end...
+    """
     global pause_flag, scanstop
     
     
-    x_speed = 1800
-    y_speed = 1800
-    z_speed = 1000
+    
+    x_speed = x1_setup_val[2]
+    y_speed = y1_setup_val[2]
+    z_speed = y2_setup_val[2]
+    
+    x_length = x1_setup_val[1] - x1_setup_val[0]
+    y_length = y1_setup_val[1] - y1_setup_val[0]
+    z_length = y2_setup_val[1] - y2_setup_val[0]
+    
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
     
     show_message(">> the scan will take approx." + str(estimated_time) + "min")

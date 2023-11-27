@@ -347,6 +347,10 @@ class MainWindow(QMainWindow):
         self.StopScanButton.clicked.connect(scan_script.stop_scan)
         
         self.CalibrateButton.clicked.connect(self.calibration)
+    
+    
+    
+        
         
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
@@ -368,6 +372,27 @@ class MainWindow(QMainWindow):
             self.show_message("No valid directory ")
     """might put the retrieve data methods into its own file/class"""
             
+    
+    def get_setup_val(self):
+        x_min = self.textEdit_MWE1X_MIN.toPlainText()
+        x_max = self.textEdit_MWE1X_MAX.toPlainText()
+        x_speed = self.textEdit_MWE1X_SPEED.toPlainText()
+        
+        x_setup_val = (x_min,x_max,x_speed)
+        
+        y_min = self.textEdit_MWE1Y_MIN.toPlainText()
+        y_max = self.textEdit_MWE1Y_MAX.toPlainText()
+        y_speed = self.textEdit_MWE1Y_SPEED.toPlainText()
+        
+        y_setup_val = (y_min,y_max,y_speed)
+        
+        y2_min = self.textEdit_MWE2Y_MIN.toPlainText()
+        y2_max = self.textEdit_MWE2Y_MAX.toPlainText()
+        y2_speed = self.textEdit_MWE2Y_SPEED.toPlainText()
+        
+        y2_setup_val = [y2_min,y2_max,y2_speed]
+        return x_setup_val, y_setup_val, y2_setup_val
+    
     def start_scan_thread(self):
         """get number of points for scan"""
         
@@ -379,12 +404,14 @@ class MainWindow(QMainWindow):
         y_length = 104000
         z_length = 9000
         
+        x1_setup_val, y1_setup_val, y2_setup_val = self.get_setup_val()
+        
         meshsize_x = self.mm_to_steps(resolution_x,"1X")
         meshsize_y = self.mm_to_steps(resolution_y,"1Y")
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:
