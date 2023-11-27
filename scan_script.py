@@ -488,7 +488,7 @@ def get_signal(motor3,goinsteps):
             time.sleep(0.1)  #10Hz measurement frequency
             
     else:
-        for i in range(0,10):
+        for i in range(0,5):
             data.append(np.random.randint(1000))
             time.sleep(0.001)
     full_data.append(data)
