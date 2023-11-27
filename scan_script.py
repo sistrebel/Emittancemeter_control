@@ -493,7 +493,6 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     Returns:
     - float: The estimated time for the scan.
     """
-   
     # Calculate the total distance in each dimension
     total_distance_x = x_length + (mesh_size_x - x_length % mesh_size_x)  # Ensure it covers the last row
     total_distance_y = y_length + (mesh_size_y - y_length % mesh_size_y)  # Ensure it covers the last column
@@ -506,8 +505,8 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     time_z = total_distance_z / z_speed
  
     # estimate of processing time...
-    proc = max(x_length,y_length,z_length)/min(mesh_size_x,mesh_size_y,mesh_size_z)
-    proc_time = proc*0.1
+    proc = max(x_length,y_length)/min(mesh_size_x,mesh_size_y)
+    proc_time = proc*1
     
     total_time = time_x + time_y + time_z + proc_time #in seconds
     minutes = total_time/60
