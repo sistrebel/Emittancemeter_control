@@ -406,7 +406,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                      break 
                 
             
-                status3 = motor3.Get(motor3.pv_motor_status)
+                #status3 = motor3.Get(motor3.pv_motor_status)
                 command3stat = motor3.Get(motor3.pv_command_status)
               
                 #if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1: #  and motor3.Get(motor3.pv_SOLRB) == start_point:
