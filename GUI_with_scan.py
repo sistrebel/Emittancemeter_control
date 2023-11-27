@@ -393,8 +393,13 @@ class MainWindow(QMainWindow):
         y2_min = self.mm_to_steps(float(self.textEdit_MWE2Y_MIN.toPlainText()),"2Y")
         y2_max = self.mm_to_steps(float(self.textEdit_MWE2Y_MAX.toPlainText()),"2Y")
         y2_speed = self.mm_to_steps(float(self.textEdit_MWE2Y_SPEED.toPlainText()),"2Y")
+    
         
         y2_setup_val = [y2_min,y2_max,y2_speed]
+        
+        #get the voltages... would be set by this 
+        MWE1U = float(self.textEdit_MWE1U.toPlainText()) #set with ISEG power supply
+        MWE2U = float(self.textEdit_MWE2U.toPlainText()) #set to SEU-blende
         
         return x_setup_val, y_setup_val, y2_setup_val
     
