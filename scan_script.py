@@ -353,7 +353,6 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     status3 = motor3.Get(motor3.pv_motor_status)
     while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
         #time.sleep(0.05)
-        print("stuck")
         status3 = motor3.Get(motor3.pv_motor_status)
     
     get_signal(motor3) #start collecting data
@@ -365,7 +364,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
             #print("arrived at point")
             #print(get_signal())
             #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
-        else: print("stuck here")#pass
+        else: pass
             #time.sleep(0.05)
              #simulate the readout while the motor is moving
  # Check the pause flag
@@ -472,8 +471,6 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     """
     return 
     
-
-    
 def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_length,x_speed, y_speed, z_speed):
    
     """
@@ -528,6 +525,7 @@ def get_signal(motor3):
         data.append(np.random.randint(1000)) #this would correspond to a 
         time.sleep(0.1)  #10Hz measurement frequency
     full_data.append(data)
+    print(full_data)
     
 
 def pause_scan():

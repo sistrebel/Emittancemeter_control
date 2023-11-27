@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
         self.vertical.append(newvertical)
         
         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-            print("updating")
+            #print("updating")
             self.data_line_xy.setData(self.horizontal,self.vertical) 
         else:
             self.horizontal = []
