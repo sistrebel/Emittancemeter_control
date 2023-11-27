@@ -420,8 +420,10 @@ class MainWindow(QMainWindow):
         meshsize_y = self.mm_to_steps(resolution_y,"1Y")
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
+        goinsteps = True
+        
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(goinsteps,self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:
