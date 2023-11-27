@@ -321,7 +321,7 @@ class MotorClient(): #i don't know if Thread is necessary
                     
                 try:
                     # isfree = False
-                    status = self.Get(self.pv_motor_status)
+                    status = self.pv_motor_status.get()
                     # if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
                     #     if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
                     #         #print("third")
@@ -379,8 +379,7 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("something worse happened")
                     
             
-            
-    
+        
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
         print("set")
@@ -433,7 +432,7 @@ class MotorClient(): #i don't know if Thread is necessary
             #     time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
+                #time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  

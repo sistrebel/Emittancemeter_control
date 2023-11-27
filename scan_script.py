@@ -334,8 +334,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
              
                 
             
-            # status3 = motor3.Get(motor3.pv_motor_status)
-            # if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :   #check that motors are actually free to move, readjusting takes time as well
+         
             status1 = motor1.Get(motor1.pv_motor_status)
             status2 = motor2.Get(motor2.pv_motor_status)
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -346,15 +345,12 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                     server.issue_motor_command(motor3,("go_to_position",end_point))
                     moving = True
                     
-                  else: pass #time.sleep(0.2)
-              else: pass #time.sleep(0.2)
-            else: pass #time.sleep(0.2)
-        #time.sleep(time_needed)
-        
-        #time.sleep(time_needed)
+                  else: pass 
+              else: pass 
+            else: pass 
+       
         status3 = motor3.Get(motor3.pv_motor_status)
         while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
-            #time.sleep(0.05)
             status3 = motor3.Get(motor3.pv_motor_status)
         
         get_signal(motor3,goinsteps) #start collecting data
@@ -409,9 +405,9 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                         server.issue_motor_command(motor3,("go_to_position",current_position))
                         
                         moving = True
-                      else: pass #ti.sleep(0.2)
-                  else: pass #time.sleep(0.2)
-                else: pass #time.sleep(0.2)
+                      else: pass 
+                  else: pass
+                else: pass 
    
             status3 = motor3.Get(motor3.pv_motor_status)
             while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
