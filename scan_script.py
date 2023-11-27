@@ -188,10 +188,8 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
  
      
         server.issue_motor_command(motor1,("set_speed",x_speed),isreturn = 0)
-        
-        
         server.issue_motor_command(motor2,("set_speed",y_speed),isreturn = 0)
-        
+        server.issue_motor_command(motor3,("set_speed",z_speed),isreturn = 0)
         
         
         
@@ -270,18 +268,15 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
                         print("arrived at point")
                       
                       else: pass
-                        #time.sleep(0.05)
-                        #print("still moving")
                     else: pass
-                        #time.sleep(0.1)
-                        #print("still moving")
+                      
                
-                while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y and scanstop == False:
-                    time.sleep(0.1)
-                    if point_x == endposition_x and point_y == endposition_y:
-                        break
+                # while motor1.Get(motor1.pv_SOLRB) != point_x and motor2.Get(motor2.pv_SOLRB) != point_y and scanstop == False:
+                #     time.sleep(0.1)
+                #     if point_x == endposition_x and point_y == endposition_y:
+                #         break
                         
-                    print("waiting to set position")
+                #     print("waiting to set position")
      
                 
                 data = start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
@@ -312,7 +307,6 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     
     
     readout_speed = z_speed
-
     server.issue_motor_command(motor3,("set_speed",readout_speed))
 
     end_point = z_length
