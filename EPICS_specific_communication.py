@@ -99,7 +99,6 @@ class MotorClient(): #i don't know if Thread is necessary
             "go_to_position": self.goto_position,
             "get_position": self.get_position,
             "right_endstop": self.endstop_status,
-            "position_reached": self.position_reached,
             "calibrate": self.calibration,
         }
         
