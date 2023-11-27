@@ -487,24 +487,20 @@ class MotorClient(): #i don't know if Thread is necessary
             return None
         
             
-    def position_reached(self):
-        """returns True or False, maybe do it by using the 'busy' PV """
-        
-        #return self.Get(self.pv_targetreached)
-       
-        
+ 
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
              print("vel none")
              return
         
         #self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
-        print("aii")
+        #print("aii")
         
         self.pv_COM_status.put(0)
         
         self.iscalibrating = True
         self.ismoving = True
+        self.direction = "neg"
         time.sleep(1)
         #print("hi")
         status = self.Get(self.pv_motor_status)
