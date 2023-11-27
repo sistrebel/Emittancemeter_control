@@ -524,6 +524,7 @@ def get_signal(motor3):
     data = []
     status3 = motor3.Get(motor3.pv_motor_status)
     while status3 != 0xA:
+        print("stuck in this shit")
         data.append(np.random.randint(1000)) #this would correspond to a 
         time.sleep(0.1)  #10Hz measurement frequency
     full_data.append(data)
