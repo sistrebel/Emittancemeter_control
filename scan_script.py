@@ -357,37 +357,21 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
             #time.sleep(0.05)
             status3 = motor3.Get(motor3.pv_motor_status)
         
-        get_signal(motor3) #start collecting data
+        get_signal(motor3,goinsteps) #start collecting data
         
         while moving == True: #wait until motors are done moving
             status3 = motor3.Get(motor3.pv_motor_status)
             if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                 moving = False 
-                #print("arrived at point")
-                #print(get_signal())
-                #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
             else: pass
-                #time.sleep(0.05)
-                 #simulate the readout while the motor is moving
+               
      # Check the pause flag
         while pause_flag:
             print("Pausing...")
             show_message("Pauseing...")
             time.sleep(1)  # Adjust the sleep time based on your requirements
         
-        #server.issue_motor_command(motor3,("go_to_position",end_point))
-        #print("i am heeeeeeeeeeereeeeeeee")
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
-    # while moving == True: #wait until motors are done moving, wait for last step and go back 
-    #      status3 = motor3.Get(motor3.pv_motor_status)
-    #      if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
-    #          moving = False 
-    #          #print("arrived at point")
-    #          #print(get_signal())
-             
-    #      else:
-    #          time.sleep(0.05)
-    #           #simulate the readout while the motor is moving
 
     if goinsteps == True:
         steps = int((z_length-start_point)/meshsize_z) #rounded down number of steps to take to next int
@@ -395,7 +379,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
         current_position = start_point
         
         #time_needed = time_estimation(start_point, end_point, readout_speed,readout_speed)
-        for i in range(0,steps):
+        for i in range(0,steps+1):
             current_position += meshsize_z
             moving = False
             if scanstop:
@@ -414,27 +398,23 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                 if scanstop:
                      show_message(">> scan stopped")
                      break 
-                # status3 = motor3.Get(motor3.pv_motor_status)
-                # if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :   #check that motors are actually free to move, readjusting takes time as well
+                
                 status1 = motor1.Get(motor1.pv_motor_status)
                 status2 = motor2.Get(motor2.pv_motor_status)
                 status3 = motor3.Get(motor3.pv_motor_status)
                 if status1 == 0x9 or status1 == 0x8 or status1 == 0xA or status1 == 0x1 or status1 == 0x0 and motor1.Get(server.pv_status) != 1  : #not moving
                   if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
                       if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1: #  and motor3.Get(motor3.pv_SOLRB) == start_point:
-        
-                        server.issue_motor_command(motor3,("go_to_position",current_position))
-                        moving = True
                         
-                      else: pass #time.sleep(0.2)
+                        server.issue_motor_command(motor3,("go_to_position",current_position))
+                        
+                        moving = True
+                      else: pass #ti.sleep(0.2)
                   else: pass #time.sleep(0.2)
                 else: pass #time.sleep(0.2)
-            #time.sleep(time_needed)
-            
-            #time.sleep(time_needed)
+   
             status3 = motor3.Get(motor3.pv_motor_status)
             while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
-                #time.sleep(0.05)
                 status3 = motor3.Get(motor3.pv_motor_status)
             
             while moving == True: #wait until motors are done moving
@@ -442,11 +422,8 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                 if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                     moving = False 
                     #print("arrived at point")
-                    #print(get_signal())
-                    #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
+                    get_signal(motor3,goinsteps)
                 else: pass
-                    #time.sleep(0.05)
-                     #simulate the readout while the motor is moving
          # Check the pause flag
         while pause_flag:
             print("Pausing...")
@@ -454,19 +431,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
             time.sleep(1)  # Adjust the sleep time based on your requirements
         
         server.issue_motor_command(motor3,("go_to_position",end_point))
-        print("i am heeeeeeeeeeereeeeeeee")
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
-        # while moving == True: #wait until motors are done moving, wait for last step and go back 
-        #      status3 = motor3.Get(motor3.pv_motor_status)
-        #      if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
-        #          moving = False 
-        #          #print("arrived at point")
-        #          #print(get_signal())
-                 
-        #      else:
-        #          time.sleep(0.05)
-        #           #simulate the readout while the motor is moving
-        
 
     return 
     
@@ -511,7 +476,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
         
         
         
-def get_signal(motor3):
+def get_signal(motor3,goinsteps):
     """returns a dummy signal for a certain amount of time
     
     -if signal drops below a certain value the scan must be paused
@@ -519,12 +484,18 @@ def get_signal(motor3):
     -at every point the values are stored in a frequency below 5kHz"""
     data = []
     status3 = motor3.Get(motor3.pv_motor_status)
-    while status3 != 0xA:
-        status3 = motor3.Get(motor3.pv_motor_status)
-        data.append(np.random.randint(1000)) #this would correspond to a 
-        time.sleep(0.1)  #10Hz measurement frequency
+    if goinsteps == False:
+        while status3 != 0xA:
+            status3 = motor3.Get(motor3.pv_motor_status)
+            data.append(np.random.randint(1000)) #this would correspond to a 
+            time.sleep(0.1)  #10Hz measurement frequency
+            
+    else:
+        for i in range(0,10):
+            data.append(np.random.randint(1000))
+            time.sleep(0.01)
     full_data.append(data)
-    print(full_data)
+    #print(full_data)
     
 
 def pause_scan():
