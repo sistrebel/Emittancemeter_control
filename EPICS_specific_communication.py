@@ -454,10 +454,7 @@ class MotorClient(): #i don't know if Thread is necessary
        
       
     def get_position(self):
-        """ return the position value. Define the LEFT endstop as "position 0"
-        then count the revolutions for figuring out the actual position.
-        -for the graph..."""
-        
+
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
