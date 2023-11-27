@@ -374,23 +374,24 @@ class MainWindow(QMainWindow):
             
     
     def get_setup_val(self):
-        x_min = self.textEdit_MWE1X_MIN.toPlainText()
-        x_max = self.textEdit_MWE1X_MAX.toPlainText()
-        x_speed = self.textEdit_MWE1X_SPEED.toPlainText()
+        x_min = self.mm_to_steps(self.textEdit_MWE1X_MIN.toPlainText(),"1X")
+        x_max = self.mm_to_steps(self.textEdit_MWE1X_MAX.toPlainText(),"1X")
+        x_speed = self.mm_to_steps(self.textEdit_MWE1X_SPEED.toPlainText(),"1X")
         
         x_setup_val = (x_min,x_max,x_speed)
         
-        y_min = self.textEdit_MWE1Y_MIN.toPlainText()
-        y_max = self.textEdit_MWE1Y_MAX.toPlainText()
-        y_speed = self.textEdit_MWE1Y_SPEED.toPlainText()
+        y_min = self.mm_to_steps(self.textEdit_MWE1Y_MIN.toPlainText(),"1Y")
+        y_max = self.mm_to_steps(self.textEdit_MWE1Y_MAX.toPlainText(),"1Y")
+        y_speed = self.mm_to_steps(self.textEdit_MWE1Y_SPEED.toPlainText(),"1Y")
         
         y_setup_val = (y_min,y_max,y_speed)
         
-        y2_min = self.textEdit_MWE2Y_MIN.toPlainText()
-        y2_max = self.textEdit_MWE2Y_MAX.toPlainText()
-        y2_speed = self.textEdit_MWE2Y_SPEED.toPlainText()
+        y2_min = self.mm_to_steps(self.textEdit_MWE2Y_MIN.toPlainText(),"2Y")
+        y2_max = self.mm_to_steps(self.textEdit_MWE2Y_MAX.toPlainText(),"2Y")
+        y2_speed = self.mm_to_steps(self.textEdit_MWE2Y_SPEED.toPlainText(),"2Y")
         
         y2_setup_val = [y2_min,y2_max,y2_speed]
+        
         return x_setup_val, y_setup_val, y2_setup_val
     
     def start_scan_thread(self):
