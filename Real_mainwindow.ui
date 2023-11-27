@@ -449,7 +449,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>350</y>
+      <y>410</y>
       <width>361</width>
       <height>311</height>
      </rect>
@@ -771,7 +771,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <x>710</x>
       <y>320</y>
       <width>161</width>
-      <height>21</height>
+      <height>41</height>
      </rect>
     </property>
    </widget>
@@ -807,7 +807,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <x>870</x>
       <y>320</y>
       <width>171</width>
-      <height>21</height>
+      <height>41</height>
      </rect>
     </property>
    </widget>
@@ -853,8 +853,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="PlotWidget" name="graphWidget_3" native="true">
     <property name="geometry">
      <rect>
-      <x>1050</x>
-      <y>350</y>
+      <x>1060</x>
+      <y>410</y>
       <width>341</width>
       <height>311</height>
      </rect>
