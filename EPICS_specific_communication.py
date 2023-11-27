@@ -370,16 +370,12 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("free again")
                         
                         
-                        
-                    
                     else: pass
 
                 except:
                         if self.command_queue.empty():
-
                             pass
                         else: 
-                            
                             print("something worse happened")
                     
             
