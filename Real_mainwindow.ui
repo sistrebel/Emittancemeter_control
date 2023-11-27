@@ -770,7 +770,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <rect>
       <x>710</x>
       <y>320</y>
-      <width>71</width>
+      <width>161</width>
       <height>21</height>
      </rect>
     </property>
@@ -785,28 +785,28 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </rect>
     </property>
     <property name="text">
-     <string>Start-time</string>
+     <string>Start-time:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>780</x>
+      <x>870</x>
       <y>300</y>
       <width>71</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>End-time</string>
+     <string>End-time:</string>
     </property>
    </widget>
    <widget class="QTextBrowser" name="MessageBox_EndTime">
     <property name="geometry">
      <rect>
-      <x>780</x>
+      <x>870</x>
       <y>320</y>
-      <width>71</width>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
