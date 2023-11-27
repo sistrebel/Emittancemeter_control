@@ -155,15 +155,18 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     z_length = y2_setup_val[1] - y2_setup_val[0]
     
     if x_speed == None or y_speed == None or z_speed == None:
+        show_message(">> speed inputs not valid, use defaults")
         x_speed = 1800
         y_speed = 1800
         z_speed = 1800
     if x_length == None  or y_length == None or z_length == None:
+        show_message(">> speed inputs not valid, use defaults")
         x_length = 21700
         y_length = 104000
         z_length = 9600
+    number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
     
-    estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
+    estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed, number_of_points)
     
     show_message(">> the scan will take approx." + str(estimated_time) + "min")
     
@@ -190,7 +193,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
         server.issue_motor_command(motor2,("set_speed",y_speed),isreturn = 0)
         
         
-        number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
+        
         
         print("number of points", number_of_points)
         
@@ -471,7 +474,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     """
     return 
     
-def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_length,x_speed, y_speed, z_speed):
+def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_length,x_speed, y_speed, z_speed,number_of_points):
    
     """
     Estimate the time for a scan through a mesh of points. Sum the time it takes to go through all the points if there was no parallel movement, though not taking into account the processing time
@@ -494,7 +497,8 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     # Calculate the total distance in each dimension
     total_distance_x = x_length + (mesh_size_x - x_length % mesh_size_x)  # Ensure it covers the last row
     total_distance_y = y_length + (mesh_size_y - y_length % mesh_size_y)  # Ensure it covers the last column
-    total_distance_z = z_length + (mesh_size_z - z_length % mesh_size_z)  # Ensure it covers the last depth
+   
+    total_distance_z = number_of_points*(z_length + (mesh_size_z - z_length % mesh_size_z))  # Ensure it covers the last depth
 
     # Calculate the time for the scan in each dimension
     time_x = total_distance_x / x_speed
