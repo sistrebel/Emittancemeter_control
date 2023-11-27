@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
         self.measposition = []
         self.current = []
         
-        self.data_line =  self.graphWidget_3.plot(self.measposition, self.current, pen=pen) 
+        self.data_line3 =  self.graphWidget_3.plot(self.measposition, self.current, pen=pen) 
         
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
          """periodically (100ms) updates"""
@@ -193,7 +193,7 @@ class MainWindow(QMainWindow):
          self.current.append(newcurrent)
          
          if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-             self.data_line.setData(self.measposition,self.current) 
+             self.data_line3.setData(self.measposition,self.current) 
          else:
              self.horizontal = []
              self.vertical = []
@@ -217,7 +217,7 @@ class MainWindow(QMainWindow):
         self.horizontal = [] #list(range(100))  # 100 time points
         self.vertical = []  # 100 data points
         
-        self.data_line =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
+        self.data_line2 =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
         
     
     def update_plot_xy(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
         self.vertical.append(newvertical)
         
         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-            self.data_line.setData(self.horizontal,self.vertical) 
+            self.data_line2.setData(self.horizontal,self.vertical) 
         else:
             self.horizontal = []
             self.vertical = []
@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusbar)
         
-        self.statusbar.addPermanentWidget(QLabel(f"Hello i am the Demo Project")) #example to see if it works...
+        self.statusbar.addPermanentWidget(QLabel(f"Emittance Scan GUI")) #example to see if it works...
     
     def ready_message(self):
         if self.allcalibrated:
