@@ -313,7 +313,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     
     readout_speed = z_speed
 
-    server.issue_motor_command(motor3,("set_speed",readout_speed),isreturn = 0)
+    server.issue_motor_command(motor3,("set_speed",readout_speed))
 
     end_point = z_length
     start_point = 0
@@ -344,7 +344,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
           if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
               if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  and motor3.Get(motor3.pv_SOLRB) == start_point:
         
-                server.issue_motor_command(motor3,("go_to_position",end_point),)
+                server.issue_motor_command(motor3,("go_to_position",end_point))
                 moving = True
                 
               else: pass #time.sleep(0.2)

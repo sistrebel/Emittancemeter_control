@@ -439,9 +439,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
             if velocity !=0 and velocity!= None:
                 time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
-                #print(" i am here")
                 res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
-                #print(res)
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
@@ -486,8 +484,7 @@ class MotorClient(): #i don't know if Thread is necessary
             print("no endstop reached")
             return None
         
-            
- 
+        
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
              print("vel none")
@@ -501,7 +498,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.iscalibrating = True
         self.ismoving = True
         self.direction = "neg"
-        time.sleep(1)
+        #time.sleep(0.1)
         #print("hi")
         status = self.Get(self.pv_motor_status)
         #print("hello")
