@@ -566,7 +566,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit__MWE1X_SPEED">
+   <widget class="QTextEdit" name="textEdit_MWE1X_SPEED">
     <property name="geometry">
      <rect>
       <x>970</x>
