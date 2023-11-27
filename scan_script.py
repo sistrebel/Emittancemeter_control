@@ -353,6 +353,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
     status3 = motor3.Get(motor3.pv_motor_status)
     while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
         #time.sleep(0.05)
+        print("stuck")
         status3 = motor3.Get(motor3.pv_motor_status)
     
     get_signal(motor3) #start collecting data
@@ -364,7 +365,7 @@ def start_readout(show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,
             #print("arrived at point")
             #print(get_signal())
             #server.issue_motor_command(motor3,("go_to_position",start_point),isreturn = 0)
-        else: pass
+        else: print("stuck here")#pass
             #time.sleep(0.05)
              #simulate the readout while the motor is moving
  # Check the pause flag
