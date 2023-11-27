@@ -240,8 +240,9 @@ def start_scan(show_message,show_scan_time,motor1,motor2,motor3,meshsize_x,meshs
                       if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
                           z_pos = motor3.Get(motor3.pv_SOLRB) #only one read necessary
                           print("the position is", z_pos)
-                          linspace = np.linspace(endposition_z-5000,endposition_z,5000)
-                          if status3 == 0x9 or z_pos == endposition_z or z_pos in linspace  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
+                          #linspace = np.linspace(endposition_z-5000,endposition_z,5000)
+                          goingup = z_pos <= 9600 and z_pos >= 1000
+                          if status3 == 0x9 or z_pos == endposition_z or goingup  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
                             # if z_pos in linspace:
                             #     time.sleep(0.1) #give it time
                             
