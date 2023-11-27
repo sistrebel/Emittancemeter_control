@@ -161,7 +161,7 @@ def start_scan(show_message,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_
     if x_length == None  or y_length == None or z_length == None:
         x_length = 21700
         y_length = 104000
-        z_length = 9000
+        z_length = 9600
     
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed)
     
@@ -524,7 +524,7 @@ def get_signal(motor3):
     data = []
     status3 = motor3.Get(motor3.pv_motor_status)
     while status3 != 0xA:
-        print("stuck in this shit")
+        status3 = motor3.Get(motor3.pv_motor_status)
         data.append(np.random.randint(1000)) #this would correspond to a 
         time.sleep(0.1)  #10Hz measurement frequency
     full_data.append(data)
@@ -562,11 +562,11 @@ def steps_to_mm(steps,axis):
 def mm_to_steps(mm,axis):
     """converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
     if axis == "1X":
-        steps = mm/535
+        steps = mm*535
     elif axis == "1Y":
-        steps = mm/800
+        steps = mm*800
     elif axis == "2Y":
-        steps = mm/50
+        steps = mm*50
     else: print("ERROR, NO VALID AXIS")
     
     return steps
