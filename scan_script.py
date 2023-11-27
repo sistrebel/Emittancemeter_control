@@ -421,8 +421,10 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                 status3 = motor3.Get(motor3.pv_motor_status)
             
             while moving == True: #wait until motors are done moving
-                status3 = motor3.Get(motor3.pv_motor_status)
-                if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
+                command3stat = motor3.Get(motor3.pv_command_status)
+                #status3 = motor3.Get(motor3.pv_motor_status)
+                #if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
+                if command3stat == 0x100 or command3stat == 0x0 :
                     moving = False 
                     #print("arrived at point")
                     get_signal(motor3,goinsteps)
