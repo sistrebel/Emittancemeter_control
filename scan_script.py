@@ -426,7 +426,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                 #if command3stat == 0x100 or command3stat == 0x0:
                     moving = False 
                     #print("arrived at point")
-                    time.sleep(0.1)
+                    time.sleep(0.2)
                     get_signal(motor3,goinsteps)
                 else: pass
          # Check the pause flag
