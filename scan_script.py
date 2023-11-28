@@ -499,7 +499,7 @@ def get_signal(motor3,goinsteps,meas_freq):
     else:
         #for j in range(0,32): #fill the array
         for i in range(0,meas_freq): #measure frequency time for exactly one second 
-                allchannels_onepoint[:][i] = np.random.randint(1000) #10 point in a
+                allchannels_onepoint[1][i] = np.random.randint(1000) #only put data in one channel for now...
                 time.sleep(1/meas_freq)
     full_data.append(allchannels_onepoint)
     #print(full_data)
