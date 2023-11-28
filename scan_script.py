@@ -18,10 +18,8 @@ import datetime
 pause_flag = False
 scanstop = False
 
-full_data = []
-
 def distribute_measurement_points(num_points, x_length, y_length):
-    """old function"""
+    """old function, not in use anymore...  use snake_grid instead"""
 
     if num_points <= 0:
         return []
@@ -47,6 +45,8 @@ def distribute_measurement_points(num_points, x_length, y_length):
 
 
 def snake_grid(num_points, x_length,y_length):
+    """takes grid dimensions and number of points and return an array of tuple points arranged in a snake-like manner"""
+    
     # Calculate the number of rows and columns required to fit all the points
     num_rows = int(np.ceil(np.sqrt(num_points)))
     num_cols = int(np.ceil(num_points / num_rows))
@@ -77,13 +77,10 @@ def snake_grid(num_points, x_length,y_length):
     # Flatten the sequences and return the result
     xx = np.concatenate(seqs)
     
-    # print(xx)
-    # print(yy) #these are good 1D arrays! 
-    
     # Sort the points in a snake-like pattern
-    
     grid_points = np.column_stack((xx, yy))
     print(grid_points)
+    
     # Return the points as a 2D array
     return grid_points
 
@@ -106,13 +103,13 @@ def plot_measurement_points(points_distribution, x_length, y_length):
     # Display the plot
     plt.grid(True)
     plt.show()
-# Example usage:
 
-def wait_for_server(server):
-    """i can do this with a 'status' variable"""
-    while server.issending == True:
-        pass
-    return "done"
+
+# def wait_for_server(server):
+#     """i can do this with a 'status' variable"""
+#     while server.issending == True:
+#         pass
+#     return "done"
 
 
 def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, overall_dimension_y):
@@ -168,6 +165,7 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
         x_length = 21700
         y_length = 104000
         z_length = 9600
+    
     number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
     
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed, number_of_points)
@@ -284,11 +282,9 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
                 #     print("waiting to set position")
      
                 
-                data = start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
+                start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,point_x,point_y)
             
-                full_data.append(data)
-            
-           
+              
                 print("go again")
             else:
                 print("ERROR: GUI/server has been closed")
@@ -298,14 +294,16 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
         while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
             pass
         print("scan is done")
-        print(full_data)
-        return
+        
+        return []
     else:
         print("abort scan script")
-        return
+        return []
     scanstop = False
+    
+    return measurement.full_data
 
-def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement):
+def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x, point_y):
     """does readout stuff"""
     print("start readout")
     
@@ -356,7 +354,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
         while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
             status3 = motor3.Get(motor3.pv_motor_status)
         
-        measurement.get_signal(motor3,goinsteps,meas_freq) #start collecting data
+        measurement.get_signal(motor3,goinsteps,meas_freq,point_x, point_y) #start collecting data
         
         while moving == True: #wait until motors are done moving
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -430,9 +428,8 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
                 if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                 #if command3stat == 0x100 or command3stat == 0x0:
                     moving = False 
-                    #print("arrived at point")
-                    #time.sleep(0.2)
-                    measurement.get_signal(motor3,goinsteps,meas_freq,current_position)
+     
+                    measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y)
                 else: pass
          # Check the pause flag
         while pause_flag:

@@ -132,8 +132,7 @@ class MotorClient(): #i don't know if Thread is necessary
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
-            #with self.port_lock:
-                
+
                 self.pv_CHS_SBNT = PV('T-MWE1X:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE1X:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_motor_status = PV('T-MWE1X:CHS:1') #motor status!!!
@@ -179,7 +178,6 @@ class MotorClient(): #i don't know if Thread is necessary
                 
         if MOTOR_NUMBER == 2: #correct PV's
             #initialize the pv's i am using here 
-           # with self.port_lock:
                 self.pv_CHS_SBNT = PV('T-MWE1Y:CHS:1:SBNT')
                 self.pv_CMD_status = PV('T-MWE1Y:CMDS:1:SBNT') #command status, if 0 then busy
                 self.pv_motor_status = PV('T-MWE1Y:CHS:1')
@@ -224,7 +222,6 @@ class MotorClient(): #i don't know if Thread is necessary
             
         if MOTOR_NUMBER == 3: #correct PV's
             #initialize the pv's i am using here 
-            #with self.port_lock:
                 
                 self.pv_command_status = PV('T-MWE2Y:CMDE:1')
                 self.pv_CHS_SBNT = PV('T-MWE2Y:CHS:1:SBNT')
@@ -323,30 +320,8 @@ class MotorClient(): #i don't know if Thread is necessary
                     break
                     
                 try:
-                    # isfree = False
                     status = self.pv_motor_status.get()
-                    # if self.MOTOR_NUMBER == 3 and self.Get(server.pv_status) != 1:
-                    #     if status == 0x8 or status == 0xA or status == 0x9:#  and self.Get(server.pv_status) != 1:
-                    #         #print("third")
-                    #         isfree = True
-                    # if self.MOTOR_NUMBER == 1 and self.Get(server.pv_status) != 1: 
-                    #     if status == 0x8 or status == 0xA or status == 0x9 or status == 0x0:# and self.Get(server.pv_status) != 1  :
-                    #         isfree = True
-                    #         #print("first")
-                    # if self.MOTOR_NUMBER == 2 and self.Get(server.pv_status) != 1: 
-                    #     if status == 0xC or status == 0xD or status == 0xF or status == 0x1:# and self.Get(server.pv_status) != 1  :
-                            #isfree = True
-                            #print("second")
-                            
-                            
-                   
-                     # if command[0] == "position_reached":
-                     #       #with port_lock: #make sure that this function is also blocked
-                     #           isreached = self.position_reached()
-                     #           if isreached is not None:
-                     #               result_queue.put(isreached)
-                     #               res = "done"
-                            
+          
                     if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1  : 
                     
                     #if isfree == True:
@@ -358,7 +333,6 @@ class MotorClient(): #i don't know if Thread is necessary
                               #  time.sleep(0.05)
                             #Eresult_queue.put(self.ismoving)
                         if command[0] == "get_speed":
-                            #with port_lock: #make sure that this function is also blocked
                                 speed = self.get_speed()
                                 result_queue.put(speed)
                                 res = "done"
@@ -371,8 +345,7 @@ class MotorClient(): #i don't know if Thread is necessary
                         if res == "done":
                             self.server.issending = False
                             print("free again")
-                        
-                        
+                    
                     else: pass
 
                 except:
@@ -415,9 +388,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
     def goto_position(self,position_steps):
-        #position_steps = self.position_to_steps(position)
-        #with self.port_lock:
-            #print(position_steps)
+   
             if position_steps > self.stepcount:
                 self.direction = "pos"
             if position_steps < self.stepcount: 
@@ -430,9 +401,9 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            # while self.ismoving == True:
-            #     print("waiting")
-            #     time.sleep(0.1)
+            while self.ismoving == True:
+                print("waiting")
+                time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
                 #time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
@@ -492,13 +463,10 @@ class MotorClient(): #i don't know if Thread is necessary
         self.iscalibrating = True
         self.ismoving = True
         self.direction = "neg"
-        #time.sleep(0.1)
-        #print("hi")
+      
         status = self.Get(self.pv_motor_status)
-        #print("hello")
+       
         while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
-             #print(self.Get(self.pv_endstopstatus))
-             #print(status)
              time.sleep(0.01)
              status = self.Get(self.pv_motor_status)
              
@@ -520,14 +488,10 @@ class MotorClient(): #i don't know if Thread is necessary
             endstop = self.endstop_status() 
         self.stop_move()
        
-        #time.sleep(0.2) #make sure it actually stopped
         self.set_brake()
-        #self.axisparameter.set(1,0)
         
-        #position = self.axisparameter.actual_position
         print("endstop position initialized as '0'")
         self.stepcount = 0
-        #print("position:", position)
         return
 
 
@@ -609,7 +573,7 @@ class Measurement():
     
     def __init__(self, server): 
         """setup all the process variables that will be needed"""
-        self.full_data = []
+        self.full_data = [] #this grows during a measurement
         
         #waveform of the data
         self.pv_IA_wave = PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
@@ -619,7 +583,7 @@ class Measurement():
         #self.pv_IE_wave = PV('MWE2IE:PROF:1')
         
         
-    def get_signal(self,motor3,goinsteps,meas_freq,current_position):
+    def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y):
         """returns a dummy signal for a certain amount of time
     
         -if signal drops below a certain value the scan must be paused
@@ -638,24 +602,23 @@ class Measurement():
                 data.append(np.random.randint(1000)) #this would correspond to a 
                 time.sleep(0.1)  #10Hz measurement frequency
                 
-        else:
-            for i in range(0,meas_freq): #measure frequency time for exactly one second 
-                    waveform = self.pv_IA_wave.get() #is a list of 32 values
+        if goinsteps:
+            
+            current_position = [point_x,point_y,point_z]
+            for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
+                    #this needs to be done with all 5 cards!!! 
+                    waveform = self.pv_IA_wave.get() #is a list of 32 values
+                                
                     allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
                
                     time.sleep(1/meas_freq)
     
         self.full_data.append(allchannels_onepoint)
         
-        self.full_data_array = np.array(self.full_data)
         
         
-        print(np.array(self.full_data)[0][0][1])
-        print(self.full_data[0][0][0][1])
-        print(self.full_data_array.shape)
-        print(self.full_data)
-    
+        
     
     
     
