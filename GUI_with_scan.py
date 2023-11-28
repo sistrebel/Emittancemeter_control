@@ -406,9 +406,9 @@ class MainWindow(QMainWindow):
     def start_scan_thread(self):
         """get number of points for scan"""
         
-        resolution_x = int(self.textEdit_Resolution_x.toPlainText()) #retrieve resolution in mm
-        resolution_y = int(self.textEdit_Resolution_y.toPlainText())
-        resolution_z = int(self.textEdit_Resolution_z.toPlainText())
+        resolution_x = float(self.textEdit_Resolution_x.toPlainText()) #retrieve resolution in mm
+        resolution_y = float(self.textEdit_Resolution_y.toPlainText())
+        resolution_z = float(self.textEdit_Resolution_z.toPlainText())
         
         x_length = 21700
         y_length = 104000
@@ -422,8 +422,10 @@ class MainWindow(QMainWindow):
         
         goinsteps = True
         
+        meas_freq = int(self.textEdit_MeasFreq.toPlainText()) #get measurement frequency
+        
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(goinsteps,self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(meas_freq,goinsteps,self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:

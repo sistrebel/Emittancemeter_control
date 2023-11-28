@@ -138,7 +138,7 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
     return total_points
 
 
-def start_scan(goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val,server): #this will then issue the commands through the right command queue
+def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread
     
     -..._setup_val = (..min,..max,..speed) #use the max/min in an advanced version later... for now always go to the end...
@@ -281,7 +281,7 @@ def start_scan(goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshs
                 #     print("waiting to set position")
      
                 
-                data = start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
+                data = start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server)
             
                 full_data.append(data)
             
@@ -303,7 +303,7 @@ def start_scan(goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshs
         return
     scanstop = False
 
-def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
+def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server):
     """does readout stuff"""
     print("start readout")
     
@@ -352,7 +352,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
         while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
             status3 = motor3.Get(motor3.pv_motor_status)
         
-        get_signal(motor3,goinsteps) #start collecting data
+        get_signal(motor3,goinsteps,meas_freq) #start collecting data
         
         while moving == True: #wait until motors are done moving
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -427,7 +427,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                     moving = False 
                     #print("arrived at point")
                     #time.sleep(0.2)
-                    get_signal(motor3,goinsteps)
+                    get_signal(motor3,goinsteps,meas_freq)
                 else: pass
          # Check the pause flag
         while pause_flag:
@@ -481,7 +481,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
         
         
         
-def get_signal(motor3,goinsteps):
+def get_signal(motor3,goinsteps,meas_freq):
     """returns a dummy signal for a certain amount of time
     
     -if signal drops below a certain value the scan must be paused
@@ -498,9 +498,9 @@ def get_signal(motor3,goinsteps):
             
     else:
         for j in range(0,32): #fill the array
-            for i in range(0,10):
+            for i in range(0,meas_freq): #measure frequency time for exactly one second 
                 allchannels_onepoint[j][i] = np.random.randint(1000) #10 point in a
-                #time.sleep(0.001)
+                time.sleep(1/meas_freq)
     full_data.append(allchannels_onepoint)
     #print(full_data)
     
