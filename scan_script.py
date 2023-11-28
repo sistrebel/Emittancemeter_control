@@ -358,7 +358,8 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
         while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
             status3 = motor3.Get(motor3.pv_motor_status)
         
-        measurement.get_signal(motor3,goinsteps,meas_freq,point_x, point_y) #start collecting data
+        current_position = 0 #whaterver
+        measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y) #start collecting data
         
         while moving == True: #wait until motors are done moving
             status3 = motor3.Get(motor3.pv_motor_status)
