@@ -487,7 +487,7 @@ def get_signal(motor3,goinsteps,meas_freq):
     -if signal drops below a certain value the scan must be paused
     -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
     -at every point the values are stored in a frequency below 5kHz"""
-    allchannels_onepoint = np.zeros((32,10)) #10 points for all 32 channels
+    allchannels_onepoint = np.zeros((32,meas_freq)) #10 points for all 32 channels
     data = []
     status3 = motor3.Get(motor3.pv_motor_status)
     if goinsteps == False:
