@@ -15,7 +15,7 @@ import numpy as np
 import time
 import scan_script as scan
 
-
+import j
 
 #Define a global lock for the port such that only one thread at a time can use it
 #port_lock = threading.Lock() 
@@ -542,7 +542,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.ismoving = False
                 self.time_needed = 0 
                 
-                #self.thread.join()
+        self.stop_timer_thread()
             #self.stop_timer_thread()
         
     def start_position_thread(self):
@@ -608,15 +608,32 @@ class Measurement():
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
-                    waveform = self.pv_IA_wave.get() #is a list of 32 values
+                    waveform = [444,444,444,444,444]#self.pv_IA_wave.get() #is a list of 32 values
                                 
                     allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
                
                     time.sleep(1/meas_freq)
     
         self.full_data.append(allchannels_onepoint)
+    
+    
+    def handle_and_save_data(self):
+        """saves the full_data array into a file and handles the format
         
+        self.full_data.shape == (#positions,#measurements,[[32 values],[px,py,pz]])
         
+        """
+        larger_nested_array = self.full_data
+        # Save the larger nested array to a .npy file
+        file_path = 'larger_nested_array.npy'
+        np.save(file_path, larger_nested_array)
+
+        # Load the array back
+        loaded_nested_array = np.load(file_path)
+
+        # Print the shape of the loaded array
+        print("Shape of the loaded array:", loaded_nested_array)
+
         
         
     
@@ -633,7 +650,9 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         goinsteps = True
         meas_freq = 10
-        current_position = 3333
+        point_z= 3333
+        point_x = 11
+        point_y = 222
         #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
         #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
@@ -651,8 +670,10 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     
         measurement = Measurement(server)
         
-        measurement.get_signal(1, goinsteps, meas_freq, current_position)
+        measurement.get_signal(1, goinsteps, meas_freq, point_z,point_x,point_y)
+        measurement.get_signal(1, goinsteps, meas_freq, point_z+10,point_x+177,point_y+133)
         
+        print(len(measurement.full_data))
     
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        

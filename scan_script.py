@@ -135,7 +135,7 @@ def calculate_mesh_points_2d(mesh_size_x, mesh_size_y, overall_dimension_x, over
     return total_points
 
 
-def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val,server): #this will then issue the commands through the right command queue
+def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val,server): #this will then issue the commands through the right command queue
     """should start a scan preferably in an independent thread
     
     -..._setup_val = (..min,..max,..speed) #use the max/min in an advanced version later... for now always go to the end...
@@ -288,20 +288,24 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
                 print("go again")
             else:
                 print("ERROR: GUI/server has been closed")
-                return
+                return 
                 
         
         while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
             pass
         print("scan is done")
         
-        return []
+        return 
     else:
         print("abort scan script")
-        return []
+        return 
     scanstop = False
     
-    return measurement.full_data
+    
+    if saveit == True:
+        measurement.handle_and_save_data()
+    
+    return 
 
 def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x, point_y):
     """does readout stuff"""
