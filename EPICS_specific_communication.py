@@ -658,7 +658,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         command_queue3 = queue.Queue()
         
         goinsteps = True
-        meas_freq = 10
+        meas_freq = 1
         current_position = 3333
         #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
