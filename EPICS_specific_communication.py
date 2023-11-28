@@ -598,7 +598,7 @@ class Measurement():
         
             
             while status3 != 0xA:
-                
+                print("stuck here")
                 status3 = motor3.Get(motor3.pv_motor_status)
                 waveform = self.pv_IA_wave.get() #is a list of 32 values
                             
