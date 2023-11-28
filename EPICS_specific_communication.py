@@ -645,7 +645,8 @@ class Measurement():
                     allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
                
                     time.sleep(1/meas_freq)
-        
+        print(self.full_data[0][0][1])
+        print(self.full_data[0][0][0][1])
         self.full_data.append(allchannels_onepoint)
         print(np.array(self.full_data).shape)
         print(self.full_data)
