@@ -145,6 +145,7 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
     """
     global pause_flag, scanstop
     
+    scanstop = False
     
     
     x_speed = x1_setup_val[2]
