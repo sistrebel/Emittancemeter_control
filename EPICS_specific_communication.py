@@ -15,7 +15,7 @@ import numpy as np
 import time
 import scan_script as scan
 
-import j
+
 
 #Define a global lock for the port such that only one thread at a time can use it
 #port_lock = threading.Lock() 
