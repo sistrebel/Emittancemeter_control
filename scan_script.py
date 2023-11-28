@@ -228,7 +228,7 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
                         return
                     if scanstop:
                         show_message(">> scan stopped")
-                        break 
+                        break  
                     while pause_flag:
                         print("Pausing...")
                         time.sleep(0.5)  # Adjust the sleep time based on your requirements

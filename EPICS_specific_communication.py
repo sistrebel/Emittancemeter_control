@@ -596,11 +596,17 @@ class Measurement():
         if goinsteps == False:
             status3 = motor3.Get(motor3.pv_motor_status)
         
-            data = []
+            
             while status3 != 0xA:
+                
                 status3 = motor3.Get(motor3.pv_motor_status)
-                data.append(np.random.randint(1000)) #this would correspond to a 
-                time.sleep(0.1)  #10Hz measurement frequency
+                waveform = self.pv_IA_wave.get() #is a list of 32 values
+                            
+                current_position = [point_x,point_y,motor3.Get(motor3.pv_SOLRB)]
+                
+                allchannels_onepoint.append([waveform,current_position])
+                
+                time.sleep(1/meas_freq)  #10Hz measurement frequency
                 
         if goinsteps:
             
