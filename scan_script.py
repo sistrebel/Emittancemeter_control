@@ -422,11 +422,11 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
             while moving == True: #wait until motors are done moving
                 #command3stat = motor3.Get(motor3.pv_command_status)
                 status3 = motor3.Get(motor3.pv_motor_status)                                                 #maybe this one is good enough to make it go faster?
-                if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 or status3 == 0xC and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
+                if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
                 #if command3stat == 0x100 or command3stat == 0x0:
                     moving = False 
                     #print("arrived at point")
-                    time.sleep(0.2)
+                    #time.sleep(0.2)
                     get_signal(motor3,goinsteps)
                 else: pass
          # Check the pause flag
