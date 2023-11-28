@@ -59,6 +59,8 @@ import threading
 
 import scan_script
 
+from epics import PV
+
 class MainWindow(QMainWindow): 
     
     def __init__(self): #initializing the class
@@ -179,7 +181,7 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.setBackground("w") #make white background
         
         #create the plot
-        self.measposition = []
+        self.channel = [1 for _ in range(33)]
         self.current = []
         
         self.data_line_meas =  self.graphWidget_3.plot(self.measposition, self.current, pen=pen) 
@@ -187,16 +189,16 @@ class MainWindow(QMainWindow):
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
          """periodically (100ms) updates"""
          
-         newmeasposition =  self.steps_to_mm(self.motor3.get_position(),"2Y")
-         newcurrent = 0
-         self.measposition.append(newmeasposition) 
-         self.current.append(newcurrent)
          
-         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-             self.data_line_meas.setData(self.measposition,self.current) 
-         else:
-             self.horizontal = []
-             self.vertical = []
+         #sorry this is hardhcoded BS....
+         pv_IA_wave = PV('T-MWE2IA:PROF:1')
+         newcurrent_array = pv_IA_wave.get() #32 values long
+          
+         self.current = newcurrent_array
+         
+         
+         self.data_line_meas.setData(self.channel,self.current) 
+    
     
     def xy_plot(self):
         """make a 2D plot of the collimator position

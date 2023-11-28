@@ -576,7 +576,7 @@ class Measurement():
         self.full_data = [] #this grows during a measurement
         
         #waveform of the data
-        self.pv_IA_wave = PV('T-MWE2Y:COM:2')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
+        self.pv_IA_wave = PV('T-MWE2IA:PROF:1')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
         #self.pv_IB_wave = PV('MWE2IB:PROF:1')
         #self.pv_IC_wave = PV('MWE2IC:PROF:1')
         #self.pv_ID_wave = PV('MWE2ID:PROF:1')
@@ -608,13 +608,15 @@ class Measurement():
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
-                    waveform = [444,444,444,444,444]#self.pv_IA_wave.get() #is a list of 32 values
+                    waveform = self.pv_IA_wave.get() #is a list of 32 values
                                 
                     allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
                
                     time.sleep(1/meas_freq)
     
         self.full_data.append(allchannels_onepoint)
+    
+    
     
     
     def handle_and_save_data(self):
