@@ -108,10 +108,10 @@ class MainWindow(QMainWindow):
         self.createStatusBar()
         
         
-        #initialize the update timer for the position plot
+        #initialize the update timer for meas plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_meas)
-        self.timer.start(100) #updates every 100ms
+        self.timer.start(1000) #updates every 100ms
         
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
@@ -425,8 +425,8 @@ class MainWindow(QMainWindow):
         meshsize_y = self.mm_to_steps(resolution_y,"1Y")
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
-        goinsteps = True
-        saveit = False
+        goinsteps = False
+        saveit = True
         
         meas_freq = int(self.textEdit_MeasFreq.toPlainText()) #get measurement frequency
         
