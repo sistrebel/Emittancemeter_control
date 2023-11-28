@@ -11,6 +11,7 @@ import threading
 import queue 
 from multiprocessing import Manager
 
+import numpy as np
 import time
 import scan_script as scan
 
@@ -604,29 +605,63 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
 class Measurement():
+    """is the measurement device for all LogIV cards. """
     
-    def __init__(self, server, command_queue): 
-    
+    def __init__(self, server): 
         """setup all the process variables that will be needed"""
+        self.full_data = []
         
-        """if there is a stream of data i could have a function which is triggered when at a position and then i would read the numbers of the stream for a desired amount of time"""
+        #waveform of the data
+        self.pv_IA_wave = PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
+        #self.pv_IB_wave = PV('MWE2IB:PROF:1')
+        #self.pv_IC_wave = PV('MWE2IC:PROF:1')
+        #self.pv_ID_wave = PV('MWE2ID:PROF:1')
+        #self.pv_IE_wave = PV('MWE2IE:PROF:1')
         
         
+    def get_signal(self,motor3,goinsteps,meas_freq,current_position):
+        """returns a dummy signal for a certain amount of time
+    
+        -if signal drops below a certain value the scan must be paused
+        -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
+        -at every point the values are stored in a frequency below 5kHz"""
+        
+        allchannels_onepoint = np.zeros((32,meas_freq)) 
+        data = []
+        status3 = motor3.Get(motor3.pv_motor_status)
+        if goinsteps == False:
+            while status3 != 0xA:
+                status3 = motor3.Get(motor3.pv_motor_status)
+                data.append(np.random.randint(1000)) #this would correspond to a 
+                time.sleep(0.1)  #10Hz measurement frequency
+                
+        else:
+            for i in range(0,meas_freq): #measure frequency time for exactly one second 
+                    waveform = self.pv_IA_wave.get()
+                    print(waveform)
+                    #llchannels_onepoint[1][i] = np.random.randint(1000) #only put data in one channel for now...
+                    time.sleep(1/meas_freq)
+        #self.full_data.append([allchannels_onepoint,current_position])
+        #print(full_data)
+    
+    
+    
     
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     #try:
         # Initialize the server
         server = MotorServer()
         
-        command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        command_queue2 = queue.Queue()
+        #command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
+        #command_queue2 = queue.Queue()
         command_queue3 = queue.Queue()
         
-     
+        goinsteps = True
+        meas_freq = 10
+        current_position = 3333
+        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
-        motor1 = server.create_and_start_motor_client(server, 1, command_queue)
-        
-        motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
+        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
         motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
@@ -638,14 +673,16 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         meshsize_y = 20000
         meshsize_z = 40
     
-       
-        scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
+    
+        measurement = Measurement(server)
+        
+        measurement.get_signal(motor3, goinsteps, meas_freq, current_position)
+        
+    
+        #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        
         
-        time.sleep(60)
-        scan.pause_flag()
-        time.sleep(20)
-        scan.continue_scan()
+     
         
         # server.issue_motor_command(motor1, ("calibrate",))
         # server.issue_motor_command(motor2, ("calibrate",))
