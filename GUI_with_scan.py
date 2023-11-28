@@ -323,8 +323,9 @@ class MainWindow(QMainWindow):
         
         
     def show_scan_time(self,start_time,end_time):
-        self.MessageBox_StartTime.append(str(start_time))
-        self.MessageBox_EndTime.append(str(end_time))
+        
+        self.MessageBox_StartTime.setText(str(start_time))
+        self.MessageBox_EndTime.setText(str(end_time))
         
     def connectwidgets(self):
         """Connecting the buttons"""
