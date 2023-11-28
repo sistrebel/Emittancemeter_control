@@ -181,10 +181,10 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.setBackground("w") #make white background
         
         #create the plot
-        self.channel = [1 for _ in range(33)]
+        self.channels = [1 for _ in range(33)]
         self.current = []
         
-        self.data_line_meas =  self.graphWidget_3.plot(self.measposition, self.current, pen=pen) 
+        self.data_line_meas =  self.graphWidget_3.plot(self.channels, self.current, pen=pen) 
         
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
          """periodically (100ms) updates"""
@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
          self.current = newcurrent_array
          
          
-         self.data_line_meas.setData(self.channel,self.current) 
+         self.data_line_meas.setData(self.channels,self.current) 
     
     
     def xy_plot(self):
