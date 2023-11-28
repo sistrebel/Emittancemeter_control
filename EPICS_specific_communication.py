@@ -639,7 +639,7 @@ class Measurement():
         else:
             for i in range(0,meas_freq): #measure frequency time for exactly one second 
                     waveform = self.pv_IA_wave.get()
-                    print(waveform)
+                    print(waveform[0],waveform[-1])
                     #llchannels_onepoint[1][i] = np.random.randint(1000) #only put data in one channel for now...
                     time.sleep(1/meas_freq)
         #self.full_data.append([allchannels_onepoint,current_position])
