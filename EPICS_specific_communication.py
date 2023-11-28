@@ -576,7 +576,7 @@ class Measurement():
         self.full_data = [] #this grows during a measurement
         
         #waveform of the data
-        self.pv_IA_wave = PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
+        self.pv_IA_wave = PV('T-MWE2Y:COM:2')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
         #self.pv_IB_wave = PV('MWE2IB:PROF:1')
         #self.pv_IC_wave = PV('MWE2IC:PROF:1')
         #self.pv_ID_wave = PV('MWE2ID:PROF:1')

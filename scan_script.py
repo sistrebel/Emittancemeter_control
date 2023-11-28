@@ -282,7 +282,7 @@ def start_scan(meas_freq,goinsteps, show_message,show_scan_time,motor1,motor2,mo
                 #     print("waiting to set position")
      
                 
-                start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,point_x,point_y)
+                start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x,point_y)
             
               
                 print("go again")
