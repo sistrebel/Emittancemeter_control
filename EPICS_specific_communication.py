@@ -628,12 +628,13 @@ class Measurement():
         
         allchannels_onepoint = np.zeros((32,meas_freq)) 
         data = []
-        status3 = motor3.Get(motor3.pv_motor_status)
+        #status3 = motor3.Get(motor3.pv_motor_status)
         if goinsteps == False:
-            while status3 != 0xA:
-                status3 = motor3.Get(motor3.pv_motor_status)
-                data.append(np.random.randint(1000)) #this would correspond to a 
-                time.sleep(0.1)  #10Hz measurement frequency
+            pass
+            #while status3 != 0xA:
+                #status3 = motor3.Get(motor3.pv_motor_status)
+                #data.append(np.random.randint(1000)) #this would correspond to a 
+                #time.sleep(0.1)  #10Hz measurement frequency
                 
         else:
             for i in range(0,meas_freq): #measure frequency time for exactly one second 
@@ -663,7 +664,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
         #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
         
-        motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
+        #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
         
         #num_points = 6  # Number of measurement points
         x_length = 21000  # Length of the x-axis
@@ -676,7 +677,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     
         measurement = Measurement(server)
         
-        measurement.get_signal(motor3, goinsteps, meas_freq, current_position)
+        measurement.get_signal(1, goinsteps, meas_freq, current_position)
         
     
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
