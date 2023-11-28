@@ -25,6 +25,8 @@ class MotorServer:
        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
        self.issending = False
        
+       #necessary status variables to ensure proper running. For example a boolean which checks if the voltage is applied.
+       
     
     def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
@@ -121,13 +123,11 @@ class MotorClient(): #i don't know if Thread is necessary
         self.direction = "pos" #default direction forward
         self.start_position_thread()
         
-        #start the thread to time ismoving variable...
-        
-        
+    
+
         self.locked = False
-        #depending on MOTOR_NUMBER this will be different
-        
-        
+    
+    
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
@@ -435,7 +435,7 @@ class MotorClient(): #i don't know if Thread is necessary
             
             if velocity !=0 and velocity!= None:
                 #time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
-                res = self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
+                self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
@@ -557,7 +557,7 @@ class MotorClient(): #i don't know if Thread is necessary
         while True:
             status = self.Get(self.pv_motor_status)
             if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
-                start = time.time()
+                #start = time.time()
                 print("start counting")
                 if self.direction == "pos":
                     while self.position <= self.stepcount:#time.time() - start < self.time_needed :
@@ -602,6 +602,16 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
 
+
+class Measurement():
+    
+    def __init__(self, server, command_queue): 
+    
+        """setup all the process variables that will be needed"""
+        
+        """if there is a stream of data i could have a function which is triggered when at a position and then i would read the numbers of the stream for a desired amount of time"""
+        
+        
     
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     #try:

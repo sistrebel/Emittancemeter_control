@@ -333,8 +333,7 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                  break 
              
                 
-            
-         
+        
             status1 = motor1.Get(motor1.pv_motor_status)
             status2 = motor2.Get(motor2.pv_motor_status)
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -421,12 +420,11 @@ def start_readout(goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_
                 status3 = motor3.Get(motor3.pv_motor_status)
             
             while moving == True: #wait until motors are done moving
-                command3stat = motor3.Get(motor3.pv_command_status)
-                #status3 = motor3.Get(motor3.pv_motor_status)
-                #if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
-                if command3stat == 0x100 or command3stat == 0x0:
+                #command3stat = motor3.Get(motor3.pv_command_status)
+                status3 = motor3.Get(motor3.pv_motor_status)                                                 #maybe this one is good enough to make it go faster?
+                if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 or status3 == 0xC and motor3.Get(server.pv_status) != 1  :  #check that motors are actually free to move
+                #if command3stat == 0x100 or command3stat == 0x0:
                     moving = False 
-                    time.sleep(0.3)
                     #print("arrived at point")
                     get_signal(motor3,goinsteps)
                 else: pass
@@ -472,7 +470,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     time_z = total_distance_z / z_speed
  
     # estimate of processing time...
-    proc = max(x_length,y_length)/min(mesh_size_x,mesh_size_y)
+    proc = max(x_length,y_length,z_length)/min(mesh_size_x,mesh_size_y,mesh_size_z)
     proc_time = proc*1
     
     total_time = time_x + time_y + time_z + proc_time #in seconds
@@ -486,8 +484,9 @@ def get_signal(motor3,goinsteps):
     """returns a dummy signal for a certain amount of time
     
     -if signal drops below a certain value the scan must be paused
-    -all 32 channels can be readout at the same time so continuous movement is OK
+    -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
     -at every point the values are stored in a frequency below 5kHz"""
+    allchannels_onepoint = np.zeros((32,10)) #10 points for all 32 channels
     data = []
     status3 = motor3.Get(motor3.pv_motor_status)
     if goinsteps == False:
@@ -497,10 +496,11 @@ def get_signal(motor3,goinsteps):
             time.sleep(0.1)  #10Hz measurement frequency
             
     else:
-        for i in range(0,1):
-            data.append(np.random.randint(1000))
-            time.sleep(0.001)
-    full_data.append(data)
+        for j in range(0,32): #fill the array
+            for i in range(0,10):
+                allchannels_onepoint[j][i] = np.random.randint(1000) #10 point in a
+                #time.sleep(0.001)
+    full_data.append(allchannels_onepoint)
     #print(full_data)
     
 
