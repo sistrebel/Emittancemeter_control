@@ -647,6 +647,7 @@ class Measurement():
                     time.sleep(1/meas_freq)
         
         self.full_data.append(allchannels_onepoint)
+        print(np.array(self.full_data).shape())
         print(self.full_data)
     
     
