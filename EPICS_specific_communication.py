@@ -626,21 +626,23 @@ class Measurement():
         -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
         -at every point the values are stored in a frequency below 5kHz"""
         
-        allchannels_onepoint = np.zeros((32,meas_freq)) 
-        data = []
-        #status3 = motor3.Get(motor3.pv_motor_status)
+        allchannels_onepoint = [] #will have the shape [[[32 values], position],
+                                                    #  [[32 values], position],    
+                                                      # [[32 values], position] ] AND SO ON
+        status3 = motor3.Get(motor3.pv_motor_status)
         if goinsteps == False:
-            pass
-            #while status3 != 0xA:
-                #status3 = motor3.Get(motor3.pv_motor_status)
-                #data.append(np.random.randint(1000)) #this would correspond to a 
-                #time.sleep(0.1)  #10Hz measurement frequency
+            data = []
+            while status3 != 0xA:
+                status3 = motor3.Get(motor3.pv_motor_status)
+                data.append(np.random.randint(1000)) #this would correspond to a 
+                time.sleep(0.1)  #10Hz measurement frequency
                 
         else:
             for i in range(0,meas_freq): #measure frequency time for exactly one second 
-                    waveform = self.pv_IA_wave.get()
-                    print(waveform[0],waveform[-1])
-                    #llchannels_onepoint[1][i] = np.random.randint(1000) #only put data in one channel for now...
+                    waveform = self.pv_IA_wave.get() #is a list of 32 values
+                    
+                    allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
+               
                     time.sleep(1/meas_freq)
         #self.full_data.append([allchannels_onepoint,current_position])
         #print(full_data)
@@ -658,7 +660,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         command_queue3 = queue.Queue()
         
         goinsteps = True
-        meas_freq = 1
+        meas_freq = 10
         current_position = 3333
         #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
         
