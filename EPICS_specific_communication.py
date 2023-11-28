@@ -542,7 +542,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.ismoving = False
                 self.time_needed = 0 
                 
-        self.stop_timer_thread()
+      
             #self.stop_timer_thread()
         
     def start_position_thread(self):
