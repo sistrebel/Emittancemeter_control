@@ -629,8 +629,9 @@ class Measurement():
         allchannels_onepoint = [] #will have the shape [[[32 values], position],
                                                     #  [[32 values], position],    
                                                       # [[32 values], position] ] AND SO ON
-        status3 = motor3.Get(motor3.pv_motor_status)
         if goinsteps == False:
+            status3 = motor3.Get(motor3.pv_motor_status)
+        
             data = []
             while status3 != 0xA:
                 status3 = motor3.Get(motor3.pv_motor_status)
