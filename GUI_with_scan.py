@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
          pv_IA_wave = PV('T-MWE2IA:PROF:1')
          newcurrent_array = pv_IA_wave.get() #32 values long
           
-         self.current = newcurrent_array
+         self.current = int(newcurrent_array)
          
          
          self.data_line_meas.setData(self.channels,self.current) 
