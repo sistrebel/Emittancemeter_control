@@ -173,10 +173,10 @@ class MainWindow(QMainWindow):
         
         #plotstyle
         self.graphWidget_3.showGrid(x=True, y=True)
-        self.graphWidget_3.setTitle("measurement-plot")
+        self.graphWidget_3.setTitle("Current-Profile")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget_3.setLabel('left', 'Positoiin 2Y [mm]', **styles)
-        self.graphWidget_3.setLabel('bottom', 'MWE2I [mA]', **styles)
+        self.graphWidget_3.setLabel('left', 'Current 2IA [nA]', **styles)
+        self.graphWidget_3.setLabel('bottom', 'Channel', **styles)
         pen = pg.mkPen("r") #red line pen
         self.graphWidget_3.setBackground("w") #make white background
         
