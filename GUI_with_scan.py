@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.setBackground("w") #make white background
         
         #create the plot
-        self.channels = [1 for _ in range(33)]
+        self.channels = [i for i in range(1, 32 + 1)]
         self.current = []
         
         self.data_line_meas =  self.graphWidget_3.plot(self.channels, self.current, pen=pen) 
