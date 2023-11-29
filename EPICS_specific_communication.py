@@ -13,6 +13,7 @@ from multiprocessing import Manager
 
 import numpy as np
 import time
+import datetime
 import scan_script as scan
 
 
@@ -631,14 +632,14 @@ class Measurement():
         """
         larger_nested_array = self.full_data
         # Save the larger nested array to a .npy file
-        file_path = 'larger_nested_array.npy'
+        file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
         np.save(file_path, larger_nested_array)
 
-        # Load the array back
-        loaded_nested_array = np.load(file_path)
+        # # Load the array back
+        # loaded_nested_array = np.load(file_path)
 
-        # Print the shape of the loaded array
-        print("Shape of the loaded array:", loaded_nested_array.shape)
+        # # Print the shape of the loaded array
+        # print("Shape of the loaded array:", loaded_nested_array.shape)
 
         
         
