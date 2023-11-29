@@ -680,7 +680,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         
        
         for i in range(0,10):
-            print(measurement.pv_IA_wave.get())
+            print(type(measurement.pv_IA_wave.get()[3]))
             time.sleep(1)
     
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
