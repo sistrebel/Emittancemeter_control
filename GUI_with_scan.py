@@ -108,11 +108,11 @@ class MainWindow(QMainWindow):
         self.meas_plot()
         self.createStatusBar()
         
-        
+        """comment this out because i keep getting the User Timeout warning from reading the waveform too often..."""
         #initialize the update timer for meas plot
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_plot_meas)
-        self.timer.start(2000) #updates every 1000ms
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_plot_meas)
+        # self.timer.start(2000) #updates every 1000ms
         
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
@@ -465,7 +465,6 @@ class MainWindow(QMainWindow):
         
         if self.checkBox.isChecked():
             saveit = True
-            print("istre")
         else:
             saveit = False
         
