@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
         #initialize the update timer for meas plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_meas)
-        self.timer.start(2000) #updates every 1000ms
+        self.timer.start(1000) #updates every 1000ms
         
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
@@ -191,25 +191,12 @@ class MainWindow(QMainWindow):
         self.data_line_meas =  self.graphWidget_3.plot(self.channels, self.current, pen=pen) 
         
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
-         """periodically () updates"""
-         
-         
-         #sorry this is hardhcoded BS....
-         
-         # if self.end_scan != 0 and datetime.datetime.now() > self.end_scan:
-         #     self.end_scan = 0 
-         
-         # if self.end_scan == 0:
-         #pv_IA_wave = PV('T-MWE2IA:PROF:1')
-         newcurrent_array = caget('T-MWE2IA:PROF:1')#pv_IA_wave.get() #32 values long
-              
+         """periodically updates the currents of the 32 channels"""
+        
+         newcurrent_array = caget('T-MWE2IA:PROF:1') #pv_IA_wave.get() #32 values long
          self.current = np.array(newcurrent_array)
-             
-             
          self.data_line_meas.setData(self.channels,self.current) 
-         
-         # else:
-         #     pass
+    
     
     def xy_plot(self):
         """make a 2D plot of the collimator position

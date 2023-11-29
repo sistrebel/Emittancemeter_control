@@ -601,7 +601,7 @@ class Measurement():
             
             while point_z != endpoint_z and status3 != 0xA and scan.scanstop == False:
                 point_z = motor3.Get(motor3.pv_SOLRB)
-                print("stuck here")
+                #print("stuck here")
                 status3 = motor3.Get(motor3.pv_motor_status)
                 waveform = self.pv_IA_wave.get() #is a list of 32 values
                 
@@ -616,7 +616,7 @@ class Measurement():
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
-                    waveform = self.pv_IA_wave.get() #is a list of 32 values
+                    waveform = self.pv_IA_wave.get() #is a list of 32 values, takes one second
                                 
                     allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
                
@@ -647,9 +647,6 @@ class Measurement():
 
         
         
-    
-    
-    
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     #try:
         # Initialize the server
