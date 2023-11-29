@@ -630,10 +630,11 @@ class Measurement():
         self.full_data.shape == (#positions,#measurements,[[32 values],[px,py,pz]])
         
         """
-        larger_nested_array = self.full_data
-        # Save the larger nested array to a .npy file
-        file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
-        np.save(file_path, larger_nested_array)
+        if self.full_data != []:
+            larger_nested_array = self.full_data
+            # Save the larger nested array to a .npy file
+            file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
+            np.save(file_path, larger_nested_array)
 
         # # Load the array back
         # loaded_nested_array = np.load(file_path)

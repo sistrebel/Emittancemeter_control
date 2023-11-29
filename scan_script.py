@@ -161,7 +161,9 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
         print(">> INVALID mesh or dimensions")
         show_message(">> INVALID mesh or dimensions")
         
+        scanstop = True
         #return
+    
     
     
     if x_speed == None or y_speed == None or z_speed == None:
