@@ -196,20 +196,20 @@ class MainWindow(QMainWindow):
          
          #sorry this is hardhcoded BS....
          
-         if self.end_scan != 0 and datetime.datetime.now() > self.end_scan:
-             self.end_scan = 0 
+         # if self.end_scan != 0 and datetime.datetime.now() > self.end_scan:
+         #     self.end_scan = 0 
          
-         if self.end_scan == 0:
-             pv_IA_wave = PV('T-MWE2IA:PROF:1')
-             newcurrent_array = pv_IA_wave.get() #32 values long
+         # if self.end_scan == 0:
+         pv_IA_wave = PV('T-MWE2IA:PROF:1')
+         newcurrent_array = pv_IA_wave.get() #32 values long
               
-             self.current = np.array(newcurrent_array)
+         self.current = np.array(newcurrent_array)
              
              
-             self.data_line_meas.setData(self.channels,self.current) 
+         self.data_line_meas.setData(self.channels,self.current) 
          
-         else:
-             pass
+         # else:
+         #     pass
     
     def xy_plot(self):
         """make a 2D plot of the collimator position
