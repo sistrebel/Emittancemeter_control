@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
          
          #sorry this is hardhcoded BS....
          
-         if datetime.datetime.now() > self.end_scan:
+         if self.end_scan != 0 and datetime.datetime.now() > self.end_scan:
              self.end_scan = 0 
          
          if self.end_scan == 0:
