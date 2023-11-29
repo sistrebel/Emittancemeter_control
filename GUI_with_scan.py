@@ -339,9 +339,8 @@ class MainWindow(QMainWindow):
         self.thread.start()
     
     def run_message_thread(self):  
-        """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
-        The commands in the command queue are issued from the """
-        print(f"Motor is running on thread {threading.current_thread().name}")
+     
+        #print(f"Motor is running on thread {threading.current_thread().name}")
         while True:
              #make sure that this critical section can only be accessed when the motor lock is free
                 if not self.server.running:

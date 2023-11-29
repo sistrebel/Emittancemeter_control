@@ -291,7 +291,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
                 #     print("waiting to set position")
      
                 
-                start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x,point_y)
+                start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x,point_y)
             
               
                 print("go again")
@@ -317,7 +317,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
     
     return 
 
-def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x, point_y):
+def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x, point_y):
     """does readout stuff"""
     print("start readout")
     
@@ -343,9 +343,9 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
             while pause_flag:
                print("Pausing...")
                time.sleep(0.5)  # Adjust the sleep time based on your requirements
-               show_message("Pauseing...")
+               message_queue.put(">>Pauseing...")
             if scanstop:
-                 show_message(">> scan stopped")
+                 message_queue.put(">> scan stopped")
                  break 
              
                 
@@ -380,7 +380,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
      # Check the pause flag
         while pause_flag:
             print("Pausing...")
-            show_message("Pauseing...")
+            message_queue.put(">>Pauseing...")
             time.sleep(1)  # Adjust the sleep time based on your requirements
         
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
@@ -416,9 +416,9 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
                 while pause_flag:
                    print("Pausing...")
                    time.sleep(0.5)  # Adjust the sleep time based on your requirements
-                   show_message("Pauseing...")
+                   message_queue.put(">>Pauseing...")
                 if scanstop:
-                     show_message(">> scan stopped")
+                     message_queue(">> scan stopped")
                      break 
                 
             
@@ -449,7 +449,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
          # Check the pause flag
         while pause_flag:
             print("Pausing...")
-            show_message("Pauseing...")
+            message_queue.put(">>Pauseing...")
             time.sleep(1)  # Adjust the sleep time based on your requirements
         
         #server.issue_motor_command(motor3,("go_to_position",end_point))
