@@ -462,7 +462,12 @@ class MainWindow(QMainWindow):
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
         goinsteps = False
-        saveit = True
+        
+        if self.checkbox.isChecked():
+            saveit = True
+        else:
+            saveit = False
+        
         
         meas_freq = float(self.textEdit_MeasFreq.toPlainText()) #get measurement frequency
         
