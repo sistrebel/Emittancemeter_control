@@ -147,6 +147,8 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
     measurement = control.Measurement(server) #start meas device for one card (or several later)
     
     
+   
+    
     x_speed = x1_setup_val[2]
     y_speed = y1_setup_val[2]
     z_speed = y2_setup_val[2]
@@ -154,6 +156,11 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
     x_length = x1_setup_val[1] - x1_setup_val[0]
     y_length = y1_setup_val[1] - y1_setup_val[0]
     z_length = y2_setup_val[1] - y2_setup_val[0]
+    
+    if meshsize_x > x_length or meshsize_y > y_length or meshsize_z > z_length:
+        show_message(">> INVALID mesh or dimensions")
+        return
+    
     
     if x_speed == None or y_speed == None or z_speed == None:
         show_message(">> speed inputs not valid, use defaults")
