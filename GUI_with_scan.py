@@ -414,7 +414,7 @@ class MainWindow(QMainWindow):
         MWE1U = float(self.textEdit_MWE1U.toPlainText()) #set with ISEG power supply
         MWE2U = float(self.textEdit_MWE2U.toPlainText()) #set to SEU-blende
         
-        return x_setup_val, y_setup_val, y2_setup_val
+        return x_setup_val, y_setup_val, y2_setup_val, MWE1U, MWE2U
     
     def start_scan_thread(self):
         """Starts the scan procedure with the parameters specified in the GUI, the scan script will run on a separate thread"""
@@ -423,17 +423,22 @@ class MainWindow(QMainWindow):
         resolution_y = float(self.textEdit_Resolution_y.toPlainText())
         resolution_z = float(self.textEdit_Resolution_z.toPlainText())
         
-        x_length = 21700
-        y_length = 104000
-        z_length = 9000
+        # x_length = 21700
+        # y_length = 104000
+        # z_length = 9000
         
-        x1_setup_val, y1_setup_val, y2_setup_val = self.get_setup_val()
+        x1_setup_val, y1_setup_val, y2_setup_val, MWE1U, MWE2U = self.get_setup_val()
         
         meshsize_x = self.mm_to_steps(resolution_x,"1X")
         meshsize_y = self.mm_to_steps(resolution_y,"1Y")
         meshsize_z = self.mm_to_steps(resolution_z,"2Y")
         
-        goinsteps = False
+        
+        
+        if self.checkBox_2.isChecked():
+            goinsteps = True
+        else:
+            goinsteps = False
         
         if self.checkBox.isChecked():
             saveit = True
