@@ -635,7 +635,7 @@ class Measurement():
         np.save(file_path, larger_nested_array)
 
         # Load the array back
-        loaded_nested_array = np.load(file_path,allow_pickle=True)
+        loaded_nested_array = np.load(file_path)
 
         # Print the shape of the loaded array
         print("Shape of the loaded array:", loaded_nested_array.shape)
