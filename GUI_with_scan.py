@@ -463,7 +463,7 @@ class MainWindow(QMainWindow):
         
         goinsteps = False
         
-        if self.checkbox.isChecked():
+        if self.checkBox.isChecked():
             saveit = True
             print("istre")
         else:
