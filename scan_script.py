@@ -291,11 +291,11 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
                 return 
                 
         
-        while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
-            pass
+        # while motor1.Get(motor1.pv_SOLRB) != endposition_x and motor2.Get(motor2.pv_SOLRB) != endposition_y:
+        #     pass
         print("scan is done")
         
-        return 
+        #return 
     else:
         print("abort scan script")
         return 
@@ -303,6 +303,7 @@ def start_scan(saveit,meas_freq,goinsteps, show_message,show_scan_time,motor1,mo
     
     
     if saveit == True:
+        print("wanna handle data")
         measurement.handle_and_save_data()
     
     return 
