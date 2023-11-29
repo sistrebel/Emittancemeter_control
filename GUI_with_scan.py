@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         #initialize the update timer for meas plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_meas)
-        self.timer.start(1000) #updates every 1000ms
+        self.timer.start(2000) #updates every 1000ms
         
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
