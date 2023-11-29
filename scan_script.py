@@ -418,7 +418,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
                    time.sleep(0.5)  # Adjust the sleep time based on your requirements
                    message_queue.put(">>Pauseing...")
                 if scanstop:
-                     message_queue(">> scan stopped")
+                     message_queue.put(">> scan stopped")
                      break 
                 
             

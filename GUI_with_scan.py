@@ -465,6 +465,7 @@ class MainWindow(QMainWindow):
         
         if self.checkbox.isChecked():
             saveit = True
+            print("istre")
         else:
             saveit = False
         
