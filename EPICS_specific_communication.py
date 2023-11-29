@@ -401,9 +401,9 @@ class MotorClient(): #i don't know if Thread is necessary
             
             print("velocity", velocity)
             
-            while self.ismoving == True:
-                print("waiting")
-                time.sleep(0.1)
+            # while self.ismoving == True:
+            #     print("waiting")
+            #     time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
                 #time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
