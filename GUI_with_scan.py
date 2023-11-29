@@ -328,6 +328,32 @@ class MainWindow(QMainWindow):
         else:
             self.MessageBox.append(">>"+ "calibrate first")
     
+    
+    def start_message_thread(self):
+        print("timer thread")
+        self.message_queue = queue.Queue()
+        self.thread = threading.Thread(target=self.run_message_thread)
+        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
+        self.thread.start()
+    
+    def run_message_thread(self):  
+        """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
+        The commands in the command queue are issued from the """
+        print(f"Motor is running on thread {threading.current_thread().name}")
+        while True:
+             #make sure that this critical section can only be accessed when the motor lock is free
+                if not self.server.running:
+                    break
+                try:
+                        message = self.message_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+                        self.show_message(message)
+                except:
+                        if self.message_queue.empty():
+                            pass
+                        else: 
+                            print("something worse happened")
+    
+    
     def show_message(self, message):
         """displays the message in the messagebox one can see in the interface"""
         self.MessageBox.append(">>"+ message)
@@ -441,7 +467,7 @@ class MainWindow(QMainWindow):
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             scan_thread.daemon = True
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
