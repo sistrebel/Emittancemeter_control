@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
         self.sent = False
         self.allcalibrated = False
         
-        self.run_message_thread()
+        self.start_message_thread()
         
         #do a reference search as soon as the applications starts
         #self.get_reference() 
