@@ -18,6 +18,7 @@ import numpy as np
 import sys
 import os
 import time
+import datetime
 
 
 import queue
@@ -143,6 +144,7 @@ class MainWindow(QMainWindow):
         self.all_positions3 = []
         self.all_times = []
         
+        self.end_scan = 0
         
     
     def LoadGuis(self):        
@@ -191,14 +193,21 @@ class MainWindow(QMainWindow):
          
          
          #sorry this is hardhcoded BS....
-         pv_IA_wave = PV('T-MWE2IA:PROF:1')
-         newcurrent_array = pv_IA_wave.get() #32 values long
-          
-         self.current = np.array(newcurrent_array)
          
+         if datetime.datetime.now() > self.end_scan:
+             self.end_scan = 0 
          
-         self.data_line_meas.setData(self.channels,self.current) 
-    
+         if self.end_scan == 0:
+             pv_IA_wave = PV('T-MWE2IA:PROF:1')
+             newcurrent_array = pv_IA_wave.get() #32 values long
+              
+             self.current = np.array(newcurrent_array)
+             
+             
+             self.data_line_meas.setData(self.channels,self.current) 
+         
+         else:
+             pass
     
     def xy_plot(self):
         """make a 2D plot of the collimator position
@@ -327,7 +336,7 @@ class MainWindow(QMainWindow):
     def show_scan_time(self,start_time,end_time):
         #self.MessageBox_StartTime.clear()
         #self.MessageBox_EndTime.clear()
-        
+        self.end_scan = end_time
         self.MessageBox_StartTime.append(str(start_time))
         self.MessageBox_EndTime.append(str(end_time))
         
@@ -431,7 +440,9 @@ class MainWindow(QMainWindow):
         meas_freq = float(self.textEdit_MeasFreq.toPlainText()) #get measurement frequency
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
+            
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.show_message,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            scan_thread.daemon = True
             #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:
