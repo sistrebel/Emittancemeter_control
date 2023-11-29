@@ -317,7 +317,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
     readout_speed = z_speed
     server.issue_motor_command(motor3,("set_speed",readout_speed))
 
-    end_point = z_length
+    endpoint_z = z_length
     start_point = 0
     
     moving = False
@@ -348,7 +348,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
               if status2 == 0x9 or status2 == 0x8 or status2 == 0xA or status2 == 0x1 or status2 == 0x0 and motor2.Get(server.pv_status) != 1 : #not moving
                   if status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0 and motor3.Get(server.pv_status) != 1  and motor3.Get(motor3.pv_SOLRB) == start_point:
             
-                    server.issue_motor_command(motor3,("go_to_position",end_point))
+                    server.issue_motor_command(motor3,("go_to_position",endpoint_z))
                     moving = True
                     
                   else: pass 
@@ -360,7 +360,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
             status3 = motor3.Get(motor3.pv_motor_status)
         
         current_position = 0 #whaterver
-        measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y) #start collecting data
+        measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y,endpoint_z) #start collecting data
         
         while moving == True: #wait until motors are done moving
             status3 = motor3.Get(motor3.pv_motor_status)
@@ -435,7 +435,7 @@ def start_readout(meas_freq,goinsteps,show_message,motor1,motor2,motor3,z_length
                 #if command3stat == 0x100 or command3stat == 0x0:
                     moving = False 
      
-                    measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y)
+                    measurement.get_signal(motor3,goinsteps,meas_freq,current_position,point_x,point_y,endpoint_z)
                 else: pass
          # Check the pause flag
         while pause_flag:

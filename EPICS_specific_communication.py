@@ -581,7 +581,7 @@ class Measurement():
         #self.pv_IE_wave = PV('MWE2IE:PROF:1')
         
         
-    def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y):
+    def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y,endpoint_z):
         """returns a dummy signal for a certain amount of time
     
         -if signal drops below a certain value the scan must be paused
@@ -593,14 +593,15 @@ class Measurement():
                                                       # [[32 values], position] ] AND SO ON
         if goinsteps == False:
             status3 = motor3.Get(motor3.pv_motor_status)
-        
+            point_z = motor3.Get(motor3.pv_SOLRB)
             
-            while status3 != 0xA and scan.scanstop == False:
+            while point_z != endpoint_z and status3 != 0xA and scan.scanstop == False:
+                point_z = motor3.Get(motor3.pv_SOLRB)
                 print("stuck here")
                 status3 = motor3.Get(motor3.pv_motor_status)
                 waveform = self.pv_IA_wave.get() #is a list of 32 values
-                            
-                current_position = [point_x,point_y,motor3.Get(motor3.pv_SOLRB)]
+                
+                current_position = [point_x,point_y,point_z] #is certainly precise enough, while it moves continuously no steps are lost. 
                 
                 allchannels_onepoint.append([waveform,current_position])
                 
@@ -634,10 +635,10 @@ class Measurement():
         np.save(file_path, larger_nested_array)
 
         # Load the array back
-        loaded_nested_array = np.load(file_path)
+        loaded_nested_array = np.load(file_path,allow_pickle=True)
 
         # Print the shape of the loaded array
-        print("Shape of the loaded array:", loaded_nested_array)
+        print("Shape of the loaded array:", loaded_nested_array.shape)
 
         
         
