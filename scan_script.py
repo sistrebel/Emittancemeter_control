@@ -506,7 +506,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
  
     # estimate of processing time...
     proc = max(x_length,y_length,z_length)/min(mesh_size_x,mesh_size_y,mesh_size_z)
-    proc_time = proc*1
+    proc_time = proc*2
     
     total_time = time_x + time_y + time_z + proc_time #in seconds
     minutes = total_time/60

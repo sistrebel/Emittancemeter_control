@@ -110,9 +110,9 @@ class MainWindow(QMainWindow):
         
         
         #initialize the update timer for meas plot
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_plot_meas)
-        self.timer.start(2000) #updates every 1000ms
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_plot_meas)
+        # self.timer.start(2000) #updates every 1000ms
         
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         self.data_line_meas =  self.graphWidget_3.plot(self.channels, self.current, pen=pen) 
         
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
-         """periodically (100ms) updates"""
+         """periodically () updates"""
          
          
          #sorry this is hardhcoded BS....
