@@ -92,7 +92,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.command_functions = { 
             "start": self.start_motor,
             "stop": self.stop_motor,
-            "stop_move": self.stop_move,
+            # "stop_move": self.stop_move,
             "move_forwards": self.move_forwards,
             "move_backwards": self.move_backwards,
             "set_brake": self.set_brake,
@@ -376,20 +376,21 @@ class MotorClient(): #i don't know if Thread is necessary
     def set_brake(self):
         self.Set(self.pv_brake,0)
        
-    def move_backwards(self, steps_to_incr):#this is backwards !!!
-        self.Set(self.pv_rawincr_set,-steps_to_incr) #negative to go left/backwards
+    # def move_backwards(self, steps_to_incr):#this is backwards !!!
+    #     self.Set(self.pv_rawincr_set,-steps_to_incr) #negative to go left/backwards
      
    
-    def move_forwards(self, steps_to_incr): #this is forwards !!!
-        self.Set(self.pv_rawincr_set,steps_to_incr)
+    # def move_forwards(self, steps_to_incr): #this is forwards !!!
+    #     self.Set(self.pv_rawincr_set,steps_to_incr)
        
  
-    def stop_move(self):
-        self.Set(self.pv_speed_set,0)
+    # def stop_move(self):
+    #     self.Set(self.pv_speed_set,0)
 
 
     def goto_position(self,position_steps):
-   
+            """moves the motor to the desired position specified by position_steps
+            determines the direction of movement and checks if the velocity is 0"""
             if position_steps > self.stepcount:
                 self.direction = "pos"
             if position_steps < self.stepcount: 
@@ -407,7 +408,6 @@ class MotorClient(): #i don't know if Thread is necessary
             #     time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                #time.sleep(0.5) #safety wait because otherwise the processing has not yet been done...
                 self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
@@ -417,22 +417,18 @@ class MotorClient(): #i don't know if Thread is necessary
                 print("stepcount is:", self.stepcount)  
                 print("time needed", self.time_needed)
             else:
-                
                 print("WARNING: velocity is 0 or None")
-                
             return
        
       
     def get_position(self):
-
         return self.position  #this value is adjusted by the other functions
    
     def set_speed(self,speed):
         self.Set(self.pv_speed_set, speed)
     
-    
+
     def get_speed(self):
-        
         speed = self.Get(self.pv_speed_get)
         return speed
    
@@ -455,10 +451,7 @@ class MotorClient(): #i don't know if Thread is necessary
         if self.Get(self.pv_speed_get) == None:
              print("vel none")
              return
-        
-        #self.pv_command.put(1) #enumerated calCCW to 1 i think , 6 is calCCW2
-        #print("aii")
-        
+
         self.pv_COM_status.put(0)
         
         self.iscalibrating = True
@@ -497,13 +490,12 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
     
-    def move_device_position(self):  #fix this.... not good...
+    def move_device_position(self):  
+        """for positon plot to track the movement"""
         while True:
-            #print(self.ismoving)
-    
+
             if self.ismoving:
                 velocity = self.Get(self.pv_speed_get)
-                #print(velocity)
                 if velocity != None:
                     looptime = 0.02 #small to make sure it does not overshoot...
                     if self.direction == "pos":
@@ -520,6 +512,7 @@ class MotorClient(): #i don't know if Thread is necessary
         self.ismoving = False
         
     def lock_for_time(self):
+        """for position plot to track the movement time"""
         while True:
             status = self.Get(self.pv_motor_status)
             if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
@@ -568,7 +561,7 @@ class MotorClient(): #i don't know if Thread is necessary
 
 
 class Measurement():
-    """is the measurement device for all LogIV cards. """
+    """is the measurement device for all LogIV cards."""
     
     def __init__(self, server): 
         """setup all the process variables that will be needed"""

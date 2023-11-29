@@ -15,12 +15,7 @@ Created on Thu Nov  2 17:35:58 2023
 
 
 import numpy as np
-import sys
-import os
 import time
-import datetime
-
-
 import queue
 
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QMessageBox, \
@@ -32,18 +27,15 @@ from PyQt5.QtWidgets import QApplication, QMainWindow,  QMessageBox, \
     QLayoutItem, QFormLayout, QToolButton,QTextEdit, QTabWidget, QTabBar, QStackedLayout,\
     QVBoxLayout, QWidget,QTextEdit
 
-from PyQt5.QtCore import QCoreApplication, QThread, Qt, pyqtSignal, pyqtSlot, QFile, QTimer
+from PyQt5.QtCore import QTimer
     
 
 from PyQt5.uic import loadUi
-from PyQt5 import QtCore
+
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
 
-import threading as Thread
-import asyncio
+
 
 import EPICS_specific_communication as control
 
@@ -52,15 +44,12 @@ import pyqtgraph as pg
 import matplotlib
 matplotlib.use('Qt5Agg')
 
-from PyQt5 import QtCore, QtWidgets, uic, QtGui
-
-from threading import Lock
 
 import threading
 
 import scan_script
 
-from epics import PV,caget
+from epics import caget
 
 class MainWindow(QMainWindow): 
     
@@ -96,8 +85,7 @@ class MainWindow(QMainWindow):
         self.movingmotor = self.motor1
         self.Axis = "1X"
         
-        
-        
+
         #load and connect the GUI
         self.LoadGuis()
         self.connectwidgets()   
@@ -150,24 +138,38 @@ class MainWindow(QMainWindow):
         
     
     def LoadGuis(self):        
-        #load main window with uic.loadUI
-        #note that the r"" is important or \\Users....
         loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place
-        return
+        
     
-    def get_axis(self):
-        """get the Axis which the user wants to move in;
-        assuming 3 Motorclients between which the user selects in the comboBox"""
-        self.Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
-        self.show_message("selected " + self.Axis)
+    def connectwidgets(self):
+        """Connecting the buttons"""
+        # self.GoleftButton.clicked.connect(self.leftbuttonclick)
+        # self.GorightButton.clicked.connect(self.rightbuttonclick)
+        # self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
+        # self.GorightButton.pressed.connect(self.move_forwards)
+        # self.GoleftButton.released.connect(self.stop)
+        # self.GorightButton.released.connect(self.stop)
         
-        if self.Axis == "1X":
-            self.movingmotor = self.motor1
-        if self.Axis == "1Y":
-            self.movingmotor = self.motor2
-        if self.Axis == "2Y":
-            self.movingmotor = self.motor3
+        self.StopButton.clicked.connect(self.stopmotor)
+        self.RunButton.clicked.connect(self.runmotor)
         
+        self.EndConnectionButton.clicked.connect(self.stop_connection)
+        
+        self.SavePlotButton.clicked.connect(self.save_plot)
+        
+        self.SubmitSpeed.clicked.connect(self.retrieve_speed)
+        self.SubmitTargetposition.clicked.connect(self.retrieve_position)
+        self.SubmitAxis.clicked.connect(self.get_axis)
+    
+        """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
+        self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
+        self.PauseScanButton.clicked.connect(scan_script.pause_scan)
+        self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
+        self.StopScanButton.clicked.connect(scan_script.stop_scan)
+        
+        self.CalibrateButton.clicked.connect(self.calibration)
+        
+
     
     def meas_plot(self):
         """make a 2D plot of the collimator position
@@ -229,7 +231,6 @@ class MainWindow(QMainWindow):
         self.vertical.append(newvertical)
         
         if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-            #print("updating")
             self.data_line_xy.setData(self.horizontal,self.vertical) 
         else:
             self.horizontal = []
@@ -319,17 +320,15 @@ class MainWindow(QMainWindow):
     
     
     def start_message_thread(self):
-        print("timer thread")
+        """starts a thread that checks the content of the message_queue"""
         self.message_queue = queue.Queue()
         self.thread = threading.Thread(target=self.run_message_thread)
         self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
         self.thread.start()
     
     def run_message_thread(self):  
-     
-        #print(f"Motor is running on thread {threading.current_thread().name}")
+        """constantly checks the message_queue and passes the messages to the messagebox"""
         while True:
-             #make sure that this critical section can only be accessed when the motor lock is free
                 if not self.server.running:
                     break
                 try:
@@ -347,43 +346,8 @@ class MainWindow(QMainWindow):
         self.MessageBox.append(">>"+ message)
         
         
-    def show_scan_time(self,start_time,end_time):
-        #self.MessageBox_StartTime.clear()
-        #self.MessageBox_EndTime.clear()
-        self.end_scan = end_time
-        self.MessageBox_StartTime.append(str(start_time))
-        self.MessageBox_EndTime.append(str(end_time))
+
         
-    def connectwidgets(self):
-        """Connecting the buttons"""
-        # self.GoleftButton.clicked.connect(self.leftbuttonclick)
-        # self.GorightButton.clicked.connect(self.rightbuttonclick)
-        # self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
-        # self.GorightButton.pressed.connect(self.move_forwards)
-        # self.GoleftButton.released.connect(self.stop)
-        # self.GorightButton.released.connect(self.stop)
-        
-        self.StopButton.clicked.connect(self.stopmotor)
-        self.RunButton.clicked.connect(self.runmotor)
-        
-        self.EndConnectionButton.clicked.connect(self.stop_connection)
-        
-        self.SavePlotButton.clicked.connect(self.save_plot)
-        
-        self.SubmitSpeed.clicked.connect(self.retrieve_speed)
-        self.SubmitTargetposition.clicked.connect(self.retrieve_position)
-        self.SubmitAxis.clicked.connect(self.get_axis)
-    
-        """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
-        self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
-        self.PauseScanButton.clicked.connect(scan_script.pause_scan)
-        self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
-        self.StopScanButton.clicked.connect(scan_script.stop_scan)
-        
-        self.CalibrateButton.clicked.connect(self.calibration)
-    
-    
-    
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
         
@@ -397,15 +361,36 @@ class MainWindow(QMainWindow):
         plt.plot(self.all_times, self.all_positions2)
         plt.plot(self.all_times, self.all_positions3)
         try:
-        #if directory != None:
             fig.savefig(directory + '/graph.png')
             self.show_message(">> Plot saved to "+ directory+ "as 'graph.png' ")
         except:
             self.show_message("No valid directory ")
-    """might put the retrieve data methods into its own file/class"""
-            
+    
+        
+    def get_axis(self):
+        """get the Axis which the user wants to move in;
+        assuming 3 Motorclients between which the user selects in the comboBox"""
+        self.Axis = self.AxisBox.currentText() #use this value now to ajdust the rest
+        self.show_message("selected " + self.Axis)
+        
+        if self.Axis == "1X":
+            self.movingmotor = self.motor1
+        if self.Axis == "1Y":
+            self.movingmotor = self.motor2
+        if self.Axis == "2Y":
+            self.movingmotor = self.motor3
+    
+    
+    def show_scan_time(self,start_time,end_time):
+        """displays the start and end time of the scan which was just started"""
+        #self.MessageBox_StartTime.clear()
+        #self.MessageBox_EndTime.clear()
+        self.end_scan = end_time
+        self.MessageBox_StartTime.append(str(start_time))
+        self.MessageBox_EndTime.append(str(end_time))    
     
     def get_setup_val(self):
+        """retrieves all the setup values for the next scan form the GUI"""
         x_min = self.mm_to_steps(float(self.textEdit_MWE1X_MIN.toPlainText()),"1X")
         x_max = self.mm_to_steps(float(self.textEdit_MWE1X_MAX.toPlainText()),"1X")
         x_speed = self.mm_to_steps(float(self.textEdit_MWE1X_SPEED.toPlainText()),"1X")
@@ -432,7 +417,7 @@ class MainWindow(QMainWindow):
         return x_setup_val, y_setup_val, y2_setup_val
     
     def start_scan_thread(self):
-        """get number of points for scan"""
+        """Starts the scan procedure with the parameters specified in the GUI, the scan script will run on a separate thread"""
         
         resolution_x = float(self.textEdit_Resolution_x.toPlainText()) #retrieve resolution in mm
         resolution_y = float(self.textEdit_Resolution_y.toPlainText())
@@ -462,10 +447,10 @@ class MainWindow(QMainWindow):
             
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             scan_thread.daemon = True
-            #scan_script.start_scan(self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length, self.server) #starts the scan with #points measurementpoints in the grid 
             scan_thread.start()
         else:
             self.show_message("INVALID VALUE")
+    
     def retrieve_directory(self):
         directory = self.textEdit_Directory.toPlainText()
         return directory
@@ -494,7 +479,6 @@ class MainWindow(QMainWindow):
          self.show_message("right button clicked")
          #print("right button clicked")
          time.sleep(0.05)
-    
     
     def steps_to_mm(self,steps,axis): 
         """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
@@ -532,21 +516,21 @@ class MainWindow(QMainWindow):
         
         self.allcalibrated = True
     
-    def move_backwards(self): #backwards
-        """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor, ("move_backwards",self.speed))
+    # def move_backwards(self): #backwards
+    #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
+    #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
+    #     self.server.issue_motor_command(self.movingmotor, ("move_backwards",self.speed))
         
     
-    def move_forwards(self): #forwards
-        """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-        self.server.issue_motor_command(self.movingmotor, ("release_brake",))
-        self.server.issue_motor_command(self.movingmotor, ("move_forwards",self.speed))
+    # def move_forwards(self): #forwards
+    #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
+    #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
+    #     self.server.issue_motor_command(self.movingmotor, ("move_forwards",self.speed))
         
-    def stop(self):
-        self.server.issue_motor_command(self.movingmotor, ("stop_move",))
-        self.show_message("motor stopped")
-        return
+    # def stop(self):
+    #     self.server.issue_motor_command(self.movingmotor, ("stop_move",))
+    #     self.show_message("motor stopped")
+    #     return
     
     def stopmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,1)
@@ -555,32 +539,28 @@ class MainWindow(QMainWindow):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,0)
    
     def goto_position(self,Target):
-        """motor moves to specified Target-position given in cm"""
+        """motor moves to specified Target-position given in mm by passing the command"""
     
-        #self.server.issue_motor_command(self.movingmotor,("release_brake",))
-      
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
-        #self.server.issue_motor_command(self.movingmotor, ("set_brake",))
+       
       
     
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
-        #self.go_home(stop = True) #go home and stop the conection 
         self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
             self.server.stop_server()
             QApplication.quit()
             QApplication.closeAllWindows()
-        return
 
     def right_endstop_display(self):
         self.RightstopDisplay.display(1)
-        return
+   
     def left_endstop_display(self):
         self.LeftstopDisplay.display(1)
-        return
+       
     def reset_endstop_display(self):
         self.LeftstopDisplay.display(0)
         self.RightstopDisplay.display(0)
