@@ -405,7 +405,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
             current_position += meshsize_z
             moving = False
             if scanstop:
-                 #show_message(">> scan stopped")
+                 message_queue.put(">> scan stopped")
                  break
             while moving == False: #wait till motors are free and stopped
                 
