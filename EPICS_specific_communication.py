@@ -675,10 +675,12 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
     
         measurement = Measurement(server)
         
-        measurement.get_signal(1, goinsteps, meas_freq, point_z,point_x,point_y)
-        measurement.get_signal(1, goinsteps, meas_freq, point_z+10,point_x+177,point_y+133)
+        #measurement.get_signal(1, goinsteps, meas_freq, point_z,point_x,point_y)
+       # measurement.get_signal(1, goinsteps, meas_freq, point_z+10,point_x+177,point_y+133)
         
-        print(len(measurement.full_data))
+       
+        for i in range(0,10):
+            print(measurement.pv_IA_wave.get())
     
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        

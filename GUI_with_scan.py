@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
         
         #create the plot
         self.channels = [i for i in range(1, 32 + 1)]
-        self.current = [0 for _ in range(32)]
+        self.current = [0.00 for _ in range(32)]
         
         self.data_line_meas =  self.graphWidget_3.plot(self.channels, self.current, pen=pen) 
         
