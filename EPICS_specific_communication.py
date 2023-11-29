@@ -566,8 +566,6 @@ class MotorClient(): #i don't know if Thread is necessary
         self.thread.join()
 
 
-
-
 class Measurement():
     """is the measurement device for all LogIV cards. """
     
@@ -606,10 +604,9 @@ class Measurement():
                 
                 allchannels_onepoint.append([waveform,current_position])
                 
-                time.sleep(1/meas_freq)  #10Hz measurement frequency
+                time.sleep(1/meas_freq)  # measurement frequency
                 
         if goinsteps:
-            
             current_position = [point_x,point_y,point_z]
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
