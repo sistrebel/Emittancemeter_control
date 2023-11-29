@@ -6,7 +6,7 @@ Created on Wed Oct 25 11:45:18 2023
 """
 
 import epics 
-from epics import PV, camonitor
+from epics import PV, camonitor,caget
 import threading
 import queue 
 from multiprocessing import Manager
@@ -595,6 +595,9 @@ class Measurement():
         if goinsteps == False:
             status3 = motor3.Get(motor3.pv_motor_status)
             point_z = motor3.Get(motor3.pv_SOLRB)
+            
+            # while point_z < motor3.Get(motor3.pv_ramp_set): #wait till the motor moves at constant speed i.e. no ramp
+            #     pass
             
             while point_z != endpoint_z and status3 != 0xA and scan.scanstop == False:
                 point_z = motor3.Get(motor3.pv_SOLRB)

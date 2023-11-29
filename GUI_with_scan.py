@@ -60,7 +60,7 @@ import threading
 
 import scan_script
 
-from epics import PV
+from epics import PV,caget
 
 class MainWindow(QMainWindow): 
     
@@ -200,8 +200,8 @@ class MainWindow(QMainWindow):
          #     self.end_scan = 0 
          
          # if self.end_scan == 0:
-         pv_IA_wave = PV('T-MWE2IA:PROF:1')
-         newcurrent_array = pv_IA_wave.get() #32 values long
+         #pv_IA_wave = PV('T-MWE2IA:PROF:1')
+         newcurrent_array = caget('T-MWE2IA:PROF:1')#pv_IA_wave.get() #32 values long
               
          self.current = np.array(newcurrent_array)
              
