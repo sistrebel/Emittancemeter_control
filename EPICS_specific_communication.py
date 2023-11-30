@@ -564,7 +564,7 @@ class Measurement():
     
     
     
-    def handle_and_save_data(self):
+    def handle_and_save_data(self,directory):
         """saves the full_data array into a file and handles the format
         
         self.full_data.shape == (#positions,#measurements,[[32 values],[px,py,pz]])
@@ -573,7 +573,10 @@ class Measurement():
         if self.full_data != []:
             larger_nested_array = self.full_data
             # Save the larger nested array to a .npy file
-            file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
+            if directory != "":
+                file_path = directory
+            else:
+                file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
             np.save(file_path, larger_nested_array)
 
         # # Load the array back
