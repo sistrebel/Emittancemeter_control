@@ -511,7 +511,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     total_distance_x = x_length + (mesh_size_x - x_length % mesh_size_x)  # Ensure it covers the last row
     total_distance_y = y_length + (mesh_size_y - y_length % mesh_size_y)  # Ensure it covers the last column
    
-    total_distance_z = number_of_points*(z_length + (mesh_size_z - z_length % mesh_size_z))  # Ensure it covers the last depth
+    total_distance_z = number_of_points*(2*z_length + (mesh_size_z - z_length % mesh_size_z))  # Ensure it covers the last depth
 
     # Calculate the time for the scan in each dimension
     time_x = total_distance_x / x_speed
