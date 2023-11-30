@@ -151,15 +151,16 @@ class MainWindow(QMainWindow):
         
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
-        self.show_message(">> recalibrate and close")
-        self.calibration()
-        if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
-            self.motor1.stop_motor()
-            self.motor2.stop_motor()
-            self.motor3.stop_motor()
-            self.server.stop_server()
-            QApplication.quit()
-            QApplication.closeAllWindows()
+        # self.show_message(">> recalibrate and close")
+        # self.calibration()
+        # if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
+        #     self.motor1.stop_motor()
+        #     self.motor2.stop_motor()
+        #     self.motor3.stop_motor()
+        #     self.server.stop_server()
+        #this quits the application and closes all windows but the AboutToQuit method triggers the cleanup_on_exit(self) method which takes care of closing all threads and so on
+        QApplication.quit() 
+        QApplication.closeAllWindows()
 
     def LoadGuis(self):        
         loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place
