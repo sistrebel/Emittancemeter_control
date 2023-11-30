@@ -143,7 +143,6 @@ class MainWindow(QMainWindow):
         self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
-            
             self.motor1.stop_motor()
             self.motor2.stop_motor()
             self.motor3.stop_motor()
@@ -155,6 +154,9 @@ class MainWindow(QMainWindow):
         self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
+            self.motor1.stop_motor()
+            self.motor2.stop_motor()
+            self.motor3.stop_motor()
             self.server.stop_server()
             QApplication.quit()
             QApplication.closeAllWindows()
