@@ -144,8 +144,8 @@ class MainWindow(QMainWindow):
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
             self.server.stop_server()
-            QApplication.quit()
-            QApplication.closeAllWindows()
+            # QApplication.quit()
+            # QApplication.closeAllWindows()
         
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
