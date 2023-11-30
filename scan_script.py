@@ -180,7 +180,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
     
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed, number_of_points)
     
-    message_queue.put(">> the scan will take approx. " + str(round(estimated_time,2) + " min"))
+    message_queue.put(">> the scan will take approx. " + str(estimated_time) + " min")
     start_time = datetime.datetime.now()
     end_time = start_time + datetime.timedelta(minutes = estimated_time)
     #show_scan_time(start_time,end_time)
@@ -523,7 +523,7 @@ def time_estimation(mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_leng
     proc_time = proc*2
     
     total_time = time_x + time_y + time_z + proc_time #in seconds
-    minutes = total_time/60
+    minutes = round(total_time/60,2)
     # Return the maximum time as it determines the overall scan time
     return minutes
 
