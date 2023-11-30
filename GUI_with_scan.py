@@ -143,9 +143,12 @@ class MainWindow(QMainWindow):
         self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
+            
+            self.motor1.stop_motor()
+            self.motor2.stop_motor()
+            self.motor3.stop_motor()
             self.server.stop_server()
-            # QApplication.quit()
-            # QApplication.closeAllWindows()
+      
         
     def stop_connection(self):
         """this function should stop the movement of all instances and then stops the connection and program"""
@@ -570,12 +573,9 @@ class MainWindow(QMainWindow):
    
     def goto_position(self,Target):
         """motor moves to specified Target-position given in mm by passing the command"""
-    
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
        
-      
-
     def right_endstop_display(self):
         self.RightstopDisplay.display(1)
    
