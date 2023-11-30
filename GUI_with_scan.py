@@ -494,12 +494,13 @@ class MainWindow(QMainWindow):
         else: self.textBrowser_Fidelity.clear()
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
+            self.start_show_time_thread()
             
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time_queue,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             scan_thread.daemon = True
             scan_thread.start()
         
-            self.start_show_time_thread()
+            
         else:
             self.show_message("INVALID VALUE")
     
