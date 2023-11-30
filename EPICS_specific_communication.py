@@ -552,7 +552,7 @@ class Measurement():
                 
                 #they are all in the same side by side so i can actually merge them together as there are actually 160 channels!!!! the picture is misleading!!
                 full_waveform_temp = np.concatenate((waveform_IA ,waveform_IB ,waveform_IC ))
-                full_waveform = np.concatenate(full_waveform_temp , waveform_ID , waveform_IE)
+                full_waveform = np.concatenate((full_waveform_temp , waveform_ID , waveform_IE))
                 current_position = [point_x,point_y,point_z] #is certainly precise enough, while it moves continuously no steps are lost. 
                 
                 allchannels_onepoint.append([full_waveform,current_position])
