@@ -220,7 +220,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
     
         for i in range(len(point_distribution)):
             if scanstop:
-                 #show_message(">> scan stopped")
+                 message_queue.put(">> scan stopped")
                  break
             if server.running == True:  #check that QtApplication has not been closed
                 point_x = point_distribution[i][0]
@@ -334,7 +334,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
     if goinsteps == False:
         while moving == False: #wait till motors are free and stopped
             if scanstop:
-              #show_message(">> scan stopped")
+              message_queue.put(">> scan stopped")
               break
             if server.running == False:
                 return
