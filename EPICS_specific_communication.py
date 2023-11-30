@@ -16,7 +16,7 @@ import time
 import datetime
 import scan_script as scan
 
-
+import Calculate_emittance 
 
 #Define a global lock for the port such that only one thread at a time can use it
 #port_lock = threading.Lock() 
@@ -564,7 +564,7 @@ class Measurement():
     
     
     
-    def handle_and_save_data(self,directory):
+    def handle_and_save_data(self,path):
         """saves the full_data array into a file and handles the format
         
         self.full_data.shape == (#positions,#measurements,[[32 values],[px,py,pz]])
@@ -573,12 +573,14 @@ class Measurement():
         if self.full_data != []:
             larger_nested_array = self.full_data
             # Save the larger nested array to a .npy file
-            if directory != "":
-                file_path = directory + 'scan_array'+ str(datetime.datetime.now())+'.npy'
+            if path != "":
+                file_path = path #+ 'scan_array'+ str(datetime.datetime.now())+'.npy'
             else:
-                file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
+                file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy' #saves it to the same place where the program is saved
             np.save(file_path, larger_nested_array)
 
+        Calculate_emittance.load_array_start_calculation(file_path)
+        
         # # Load the array back
         # loaded_nested_array = np.load(file_path)
 
