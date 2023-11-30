@@ -182,7 +182,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
     message_queue.put(">> the scan will take approx." + str(estimated_time) + "min")
     start_time = datetime.datetime.now()
     end_time = start_time + datetime.timedelta(minutes = estimated_time)
-    show_scan_time((start_time,end_time))
+    show_scan_time(start_time,end_time)
     
     #print("the scan will take approx.", estimated_time, "min")
     answer = "y" #input("do you want to proceed? (y/n")
