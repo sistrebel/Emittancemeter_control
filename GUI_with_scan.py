@@ -481,9 +481,10 @@ class MainWindow(QMainWindow):
             goinsteps = True
         else:
             goinsteps = False
-        
+        directory = ""
         if self.checkBox.isChecked():
             saveit = True
+            directory = self.textEdit_DataDirectory.toPlainText()
         else:
             saveit = False
         
@@ -501,7 +502,8 @@ class MainWindow(QMainWindow):
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             #self.start_show_time_thread()
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            
+            scan_thread = threading.Thread(target=scan_script.start_scan, args=(directory,saveit,meas_freq,goinsteps,self.message_queue,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             #check_scan_status_thread = threading.Thread(target=check_scan_status_thread)
             scan_thread.daemon = True
             scan_thread.start()
