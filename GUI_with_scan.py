@@ -593,5 +593,5 @@ if __name__ == '__main__':
     window = MainWindow()
     window.show()
     print ("GUI started")
-    app.aboutToQuit.connect(MainWindow.cleanup_on_exit)
+    app.aboutToQuit.connect(window.cleanup_on_exit)
     app.exec()
