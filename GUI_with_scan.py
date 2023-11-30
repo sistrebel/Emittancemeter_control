@@ -352,9 +352,9 @@ class MainWindow(QMainWindow):
     
     def run_message_thread(self):  
         """constantly checks the message_queue and passes the messages to the messagebox"""
-        while True:
-                if not self.server.running:
-                    break
+        while True and self.server.running:
+                # if not self.server.running:
+                #     break
                 try:
                         message = self.message_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         self.show_message(message)
@@ -369,9 +369,7 @@ class MainWindow(QMainWindow):
         """displays the message in the messagebox one can see in the interface"""
         self.MessageBox.append(">>"+ message)
         
-        
-
-        
+    
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
         
