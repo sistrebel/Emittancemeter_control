@@ -150,20 +150,13 @@ class MainWindow(QMainWindow):
       
         
     def stop_connection(self):
-        """this function should stop the movement of all instances and then stops the connection and program"""
-        # self.show_message(">> recalibrate and close")
-        # self.calibration()
-        # if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
-        #     self.motor1.stop_motor()
-        #     self.motor2.stop_motor()
-        #     self.motor3.stop_motor()
-        #     self.server.stop_server()
-        #this quits the application and closes all windows but the AboutToQuit method triggers the cleanup_on_exit(self) method which takes care of closing all threads and so on
+        """Closes the application and the window, by doing this the Qt AboutToQuit method triggers "cleanup_on_exit" 
+        so it doesn't matter if the application is closed via "x" or "close" the same thing happens"""
         QApplication.quit() 
         QApplication.closeAllWindows()
 
     def LoadGuis(self):        
-        loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place
+        loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place, now it must be saved at in the same folder as the GUI script
         
     
     def connectwidgets(self):
@@ -197,10 +190,10 @@ class MainWindow(QMainWindow):
 
     
     def meas_plot(self):
-        """make a 2D plot of the collimator position
-        x horizontal and y vertival
+        """make a plot of the current for each channel
+        x channel [1,32] and y current
         
-        Should be displayed when a scan is started and forms a snake after a scan. """
+      """
         
         #plotstyle
         self.graphWidget_3.showGrid(x=True, y=True)
@@ -226,10 +219,8 @@ class MainWindow(QMainWindow):
     
     
     def xy_plot(self):
-        """make a 2D plot of the collimator position
-        x horizontal and y vertival
-        
-        Should be displayed when a scan is started and forms a snake after a scan. """
+        """make a 2D plot of the collimator position - x horizontal and y vertival.
+        Should be displayed when a scan is started and forms a snake after a scan."""
         
         #plotstyle
         self.graphWidget_2.showGrid(x=True, y=True)
@@ -475,7 +466,9 @@ class MainWindow(QMainWindow):
         
         fidelity = meas_freq/y2_speed #how many meas points per mm
         
-        self.textBrowser_Fidelity.append(fidelity)#maybe change this... to another format instead of using append()
+        if goinsteps == False:
+            self.textBrowser_Fidelity.append(str(fidelity))#maybe change this... to another format instead of using append()
+        else: self.textBrowser_Fidelity.clear()
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             
