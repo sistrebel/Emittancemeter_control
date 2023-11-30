@@ -251,9 +251,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
                           z_pos = motor3.Get(motor3.pv_SOLRB) #only one read necessary
                           goingup = z_pos <= 9600 and z_pos >= 1000 #enable parallel movement to reduce time cost!
                           if status3 == 0x9 or z_pos == endposition_z or goingup  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
-                            # if z_pos in linspace:
-                            #     time.sleep(0.1) #give it time
-                            
+                        
                             server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
                            
                             server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two

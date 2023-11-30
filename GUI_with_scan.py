@@ -326,7 +326,7 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusbar)
         
-        self.statusbar.addPermanentWidget(QLabel(f"Emittance Scan GUI")) #example to see if it works...
+        self.statusbar.addPermanentWidget(QLabel("Emittance Scan GUI")) #example to see if it works...
     
     def ready_message(self):
         if self.allcalibrated:
@@ -334,30 +334,30 @@ class MainWindow(QMainWindow):
         else:
             self.MessageBox.append(">>"+ "calibrate first")
     
-    def start_show_time_thread(self):
-        """starts a thread that checks the content of the message_queue"""
-        self.show_scan_time_queue = queue.Queue()
-        self.thread = threading.Thread(target=self.run_show_time_thread)
-        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
-        self.thread.start()
+    # def start_show_time_thread(self):
+    #     """starts a thread that checks the content of the message_queue"""
+    #     self.show_scan_time_queue = queue.Queue()
+    #     self.thread = threading.Thread(target=self.run_show_time_thread)
+    #     self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
+    #     self.thread.start()
         
     
-    def run_show_time_thread(self):  
-        """constantly checks the message_queue and passes the messages to the messagebox"""
-        self.done_showing = False
-        while True and self.server.running and self.done_showing == False:
-                # if not self.server.running:
-                #     break
-                try:
-                        message = self.show_scan_time_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+    # def run_show_time_thread(self):  
+    #     """constantly checks the message_queue and passes the messages to the messagebox"""
+    #     self.done_showing = False
+    #     while True and self.server.running and self.done_showing == False:
+    #             # if not self.server.running:
+    #             #     break
+    #             try:
+    #                     message = self.show_scan_time_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
     
-                        self.show_scan_time(str(message[0]),str(message[1]))
-                        self.done_showing = True #only do it once and then stop this thread
-                except:
-                        if self.show_scan_time_queue.empty():
-                            pass
-                        else: 
-                            print("something worse happened")
+    #                     self.show_scan_time(str(message[0]),str(message[1]))
+    #                     self.done_showing = True #only do it once and then stop this thread
+    #             except:
+    #                     if self.show_scan_time_queue.empty():
+    #                         pass
+    #                     else: 
+    #                         print("something worse happened")
                             
     def start_message_thread(self):
         """starts a thread that checks the content of the message_queue"""
@@ -379,6 +379,7 @@ class MainWindow(QMainWindow):
                             pass
                         else: 
                             print("something worse happened")
+    
     
     
     def show_message(self, message):
@@ -498,12 +499,22 @@ class MainWindow(QMainWindow):
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             #self.start_show_time_thread()
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            #check_scan_status_thread = threading.Thread(target=check_scan_status_thread)
             scan_thread.daemon = True
             scan_thread.start()
         
             
         else:
             self.show_message("INVALID VALUE")
+    
+    # def check_scan_status_thread():
+    #     while scan_thread.is_alive():
+    #         if self.pause_scan:
+            
+    #         if self.stop_scan:
+    #             scan_thread.join
+    #         if self.continue_scan:
+                
     
     def retrieve_directory(self):
         directory = self.textEdit_Directory.toPlainText()
