@@ -513,10 +513,10 @@ class Measurement():
         
         #waveform of the data
         self.pv_IA_wave = PV('T-MWE2IA:PROF:1')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
-        self.pv_IB_wave = PV('MWE2IA:PROF:1') #!!!!!!!!!!!!!!!!!!! MUST CHANGE THOSE TO THE RIGHT PV'S ONCE THE FULL SETUP IS THERE!!!!!!!!!!!!!!!!!
-        self.pv_IC_wave = PV('MWE2IA:PROF:1')
-        self.pv_ID_wave = PV('MWE2IA:PROF:1')
-        self.pv_IE_wave = PV('MWE2IA:PROF:1')
+        self.pv_IB_wave = PV('T-MWE2IA:PROF:1') #!!!!!!!!!!!!!!!!!!! MUST CHANGE THOSE TO THE RIGHT PV'S ONCE THE FULL SETUP IS THERE!!!!!!!!!!!!!!!!!
+        self.pv_IC_wave = PV('T-MWE2IA:PROF:1')
+        self.pv_ID_wave = PV('T-MWE2IA:PROF:1')
+        self.pv_IE_wave = PV('T-MWE2IA:PROF:1')
         
         
     def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y,endpoint_z):
