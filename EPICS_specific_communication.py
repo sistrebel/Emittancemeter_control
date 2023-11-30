@@ -80,7 +80,7 @@ class MotorClient():
             "set_speed": self.set_speed,
             "get_speed": self.get_speed,
             "release_brake": self.release_brake,
-            "reference_search": self.reference_search,
+            # "reference_search": self.reference_search,
             "go_to_position": self.goto_position,
             "get_position": self.get_position,
             "right_endstop": self.endstop_status,
