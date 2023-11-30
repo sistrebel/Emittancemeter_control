@@ -289,7 +289,10 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
                 #         break
                         
                 #     print("waiting to set position")
-     
+                
+                if scanstop:
+                    message_queue.put(">> scan stopped")
+                    break
                 
                 start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x,point_y)
             
@@ -382,6 +385,8 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
             print("Pausing...")
             message_queue.put(">>Pauseing...")
             time.sleep(1)  # Adjust the sleep time based on your requirements
+        
+      
         
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
 
