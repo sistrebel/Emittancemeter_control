@@ -373,7 +373,10 @@ class MainWindow(QMainWindow):
                 #     break
                 try:
                         message = self.message_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                        self.show_message(message)
+                        if type(message) == tuple: #handle the special case in this thread
+                            self.show_scan_time(message[0], message[1])
+                        else:
+                            self.show_message(message)
                 except:
                         if self.message_queue.empty():
                             pass
