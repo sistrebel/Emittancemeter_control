@@ -574,7 +574,7 @@ class Measurement():
             larger_nested_array = self.full_data
             # Save the larger nested array to a .npy file
             if directory != "":
-                file_path = directory
+                file_path = directory + 'scan_array'+ str(datetime.datetime.now())+'.npy'
             else:
                 file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy'
             np.save(file_path, larger_nested_array)
