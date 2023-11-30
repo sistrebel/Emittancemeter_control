@@ -176,7 +176,7 @@ def start_scan(saveit,meas_freq,goinsteps,message_queue,show_scan_time,motor1,mo
         z_length = 9600
     
     number_of_points = calculate_mesh_points_2d(meshsize_x, meshsize_y, x_length,y_length)
-    message_queue("number of points" + str(number_of_points))
+    message_queue.put("number of points" + str(number_of_points))
     
     estimated_time = time_estimation(meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,x_speed, y_speed, z_speed, number_of_points)
     
