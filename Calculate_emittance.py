@@ -15,4 +15,5 @@ def load_array_start_calculation(file_path):
     data = np.load(file_path, allow_pickle=True)
     
     
-    print("the array has been loaded", data[0][0][1][0], "and this is the first position")
+    print("the array has been loaded", data[0][0][1][0][0], "and this is the first position")
+    print("the array has been loaded", data[1][0][1][0][0], "and this is the first position")

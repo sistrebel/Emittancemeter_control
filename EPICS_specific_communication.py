@@ -513,10 +513,10 @@ class Measurement():
         
         #waveform of the data
         self.pv_IA_wave = PV('T-MWE2IA:PROF:1')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
-        #self.pv_IB_wave = PV('MWE2IB:PROF:1')
-        #self.pv_IC_wave = PV('MWE2IC:PROF:1')
-        #self.pv_ID_wave = PV('MWE2ID:PROF:1')
-        #self.pv_IE_wave = PV('MWE2IE:PROF:1')
+        self.pv_IB_wave = PV('MWE2IA:PROF:1') #!!!!!!!!!!!!!!!!!!! MUST CHANGE THOSE TO THE RIGHT PV'S ONCE THE FULL SETUP IS THERE!!!!!!!!!!!!!!!!!
+        self.pv_IC_wave = PV('MWE2IA:PROF:1')
+        self.pv_ID_wave = PV('MWE2IA:PROF:1')
+        self.pv_IE_wave = PV('MWE2IA:PROF:1')
         
         
     def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y,endpoint_z):
@@ -526,9 +526,13 @@ class Measurement():
         -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
         -at every point the values are stored in a frequency below 5kHz"""
         
-        allchannels_onepoint = [] #will have the shape [[[32 values], position],
-                                                    #  [[32 values], position],    
-                                                      # [[32 values], position] ] AND SO ON
+        allchannels_onepoint_IA = [] #will have the shape [[[32 values], position],
+        allchannels_onepoint_IB = []                                           #  [[32 values], position],    
+        allchannels_onepoint_IC = []                                              # [[32 values], position] ] AND SO ON
+        allchannels_onepoint_ID = []
+        allchannels_onepoint_IE = []
+        
+        
         if goinsteps == False:
             status3 = motor3.Get(motor3.pv_motor_status)
             point_z = motor3.Get(motor3.pv_SOLRB)
@@ -540,11 +544,19 @@ class Measurement():
                 point_z = motor3.Get(motor3.pv_SOLRB)
                 #print("stuck here")
                 status3 = motor3.Get(motor3.pv_motor_status)
-                waveform = self.pv_IA_wave.get() #is a list of 32 values
+                waveform_IA = np.array(self.pv_IA_wave.get()) #is a list of 32 values
+                waveform_IB = np.array(self.pv_IB_wave.get())*10
+                waveform_IC = np.array(self.pv_IC_wave.get())*4
+                waveform_ID = np.array(self.pv_ID_wave.get())*3
+                waveform_IE = np.array(self.pv_IE_wave.get())*2 #just multiply it by some random value to get different values...
                 
                 current_position = [point_x,point_y,point_z] #is certainly precise enough, while it moves continuously no steps are lost. 
                 
-                allchannels_onepoint.append([waveform,current_position])
+                allchannels_onepoint_IA.append([waveform_IA,current_position])
+                allchannels_onepoint_IB.append([waveform_IB,current_position])
+                allchannels_onepoint_IC.append([waveform_IC,current_position])
+                allchannels_onepoint_ID.append([waveform_ID,current_position])
+                allchannels_onepoint_IE.append([waveform_IE,current_position])
                 
                 time.sleep(1/meas_freq)  # measurement frequency
                 
@@ -553,13 +565,21 @@ class Measurement():
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
-                    waveform = self.pv_IA_wave.get() #is a list of 32 values, takes one second
-                                
-                    allchannels_onepoint.append([waveform,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
-               
+                    waveform_IA = self.pv_IA_wave.get() #is a list of 32 values, takes one second
+                    waveform_IB = self.pv_IB_wave.get()
+                    waveform_IC = self.pv_IC_wave.get()
+                    waveform_ID = self.pv_ID_wave.get()
+                    waveform_IE = self.pv_IE_wave.get()
+                    
+                    allchannels_onepoint_IA.append([waveform_IA,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
+                    allchannels_onepoint_IB.append([waveform_IB,current_position])
+                    allchannels_onepoint_IC.append([waveform_IC,current_position])
+                    allchannels_onepoint_ID.append([waveform_ID,current_position])
+                    allchannels_onepoint_IE.append([waveform_IE,current_position])
+                    
                     time.sleep(1/meas_freq)
     
-        self.full_data.append(allchannels_onepoint)
+        self.full_data.append(allchannels_onepoint_IA,allchannels_onepoint_IB,allchannels_onepoint_IC,allchannels_onepoint_ID,allchannels_onepoint_IE)
     
     
     
