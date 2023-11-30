@@ -17,7 +17,7 @@ def load_array_start_calculation(file_path):
     print("the shape iss" ,data.shape)
     
     print("the array has been loaded", data[0][0][1][0][0], "and this is the first position")
-    #print("the array has been loaded", data[1][0][1][0][0], "and this is the first position")
+    print("the array has been loaded", data[0][1][1][0][0], "and this is the first position")
     
     
     """the goal would be to calculate the emittance for each section (collimator position of the beam"""
