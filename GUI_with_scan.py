@@ -136,7 +136,26 @@ class MainWindow(QMainWindow):
         
         self.end_scan = 0
         
-    
+        
+    def cleanup_on_exit(self):
+        # Trigger cleanup actions here
+        print("Cleaning up before exit")
+        self.show_message(">> recalibrate and close")
+        self.calibration()
+        if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
+            self.server.stop_server()
+            QApplication.quit()
+            QApplication.closeAllWindows()
+        
+    def stop_connection(self):
+        """this function should stop the movement of all instances and then stops the connection and program"""
+        self.show_message(">> recalibrate and close")
+        self.calibration()
+        if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
+            self.server.stop_server()
+            QApplication.quit()
+            QApplication.closeAllWindows()
+
     def LoadGuis(self):        
         loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place
         
@@ -556,15 +575,6 @@ class MainWindow(QMainWindow):
         
        
       
-    
-    def stop_connection(self):
-        """this function should stop the movement of all instances and then stops the connection and program"""
-        self.show_message(">> recalibrate and close")
-        self.calibration()
-        if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
-            self.server.stop_server()
-            QApplication.quit()
-            QApplication.closeAllWindows()
 
     def right_endstop_display(self):
         self.RightstopDisplay.display(1)
@@ -583,4 +593,5 @@ if __name__ == '__main__':
     window = MainWindow()
     window.show()
     print ("GUI started")
+    app.aboutToQuit.connect(MainWindow.cleanup_on_exit)
     app.exec()

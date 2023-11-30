@@ -34,23 +34,6 @@ class MotorServer:
         self.running = False
         print(" closed")
         
-    """not necessary part here i think...   
-    # def start(self): #sends everything that is put into the queue
-    #     try:
-    #         while self.running:
-    #             print("is reading:", self.isreading)
-    #             if not self.command_queue.empty():# and self.isreading:
-    #                 print("is reading:", self.isreading)
-    #                 command = self.command_queue.get() #command_item = self.command_queue.get()#
-                  
-    #                 self.send_command(command)
-                   
-
-                    
-    #     except KeyboardInterrupt:
-    #         self.serial_port.close()
-    #         print("Exiting...")
-    """
     def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue):
         motor = MotorClient(server, MOTOR_NUMBER, command_queue) #pass the general port lock to each motor thread
         motor.start_motor()
@@ -60,9 +43,7 @@ class MotorServer:
         return motor
 
     def issue_motor_command(self,motor,command_data, isreturn = 0):
-        # while self.issending == True:
-        #     print("is waiting to send")
-        #     time.sleep(0.1)
+        """puts a command which comes from anywhere with access to this "server" into the command queue of the particular motor"""
         self.issending = True
         result_queue = queue.Queue()
         
@@ -74,15 +55,15 @@ class MotorServer:
     
         return result 
 
-# Client class to control a TMCL stepper motor (the commands are specific to this device...)
-class MotorClient(): #i don't know if Thread is necessary
-   
+
+class MotorClient(): 
+    """Client class to control a stepper motor contorlled by a series of EPICS process variables
+    class MotorClient(): """
     def __init__(self, server, MOTOR_NUMBER, command_queue):  
         
         self.MOTOR_NUMBER = MOTOR_NUMBER
         
         self.initializing = True 
-        #self.port_lock = threading.Lock() #create a lock for each motor such that i can't do someting with the motor while it is locked
         
         self.is_running = False  
         
@@ -124,7 +105,6 @@ class MotorClient(): #i don't know if Thread is necessary
         self.ismoving = False
         self.direction = "pos" #default direction forward
         self.start_position_thread()
-        
     
 
         self.locked = False
@@ -168,7 +148,6 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(25)
-                #print(self.pv_speed_set.get())
                 self.pv_MAXCW.put(21766)
                 #self.pv_SPAD.put(752) #don't part. about this value...
                 
@@ -210,7 +189,6 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.pv_min_speed_set.put(500)
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(25)
-                #print(self.pv_speed_get.get())
                 self.pv_MAXCW.put(104172)  
                 #self.pv_SPAD.put(752) #don't part. about this value...
             
@@ -288,46 +266,35 @@ class MotorClient(): #i don't know if Thread is necessary
        
     def start_motor(self):
         self.is_running = True
-        #not necessary anymore as long as python script run in same place as EPICS does --> PV's are visible then
-        #self.motorconn = ...#self.server.bus.get_motor(self.MODULE_ADDRESS,self.MOTOR_NUMBER) 
-        #self.axisparameter = ... #AxisParameterInterface(self.motorconn)   #from allmyTMCLclasse; AxisParameterInterface
-       
+        
        
     def stop_motor(self):
         self.stop_flag.set()
         self.is_running = False
         self.stop_position_thread()
-        
         print("stop")
        
     def ex_command(self,command):
-        """excecutes the commands which are sent by addressing the commands from the command list"""
-        
+        """excecutes the commands which are sent by addressing the commands from the command list which then calls the functions to execute the commands"""
         command_name, *args = command
-       
         if command_name in self.command_functions:
-            #with port_lock: #make sure that commands are only sent through the port if no other thread is using it already
                 func = self.command_functions[command_name]
                 func(*args)
-                
         return "done"
     def run(self):  
         """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
         The commands in the command queue are issued from the """
+        
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
-             #make sure that this critical section can only be accessed when the motor lock is free
                 if not self.server.running:
                     break
-                    
                 try:
                     status = self.pv_motor_status.get()
-          
                     if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1  : 
                     
-                    #if isfree == True:
                         command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                       
+                     
                         #if command[0] == "go_to_position":
                            # self.ex_command(command) #excecute the command
                            # while self.ismoving == True:
@@ -341,8 +308,7 @@ class MotorClient(): #i don't know if Thread is necessary
                             print("else")
                             res = self.ex_command(command)
                             res = "done"
-                          
-                        
+            
                         if res == "done":
                             self.server.issending = False
                             print("free again")
@@ -399,7 +365,7 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.direction = "none"
             
             
-            velocity = self.pv_speed_get.get()#self.Get(self.pv_speed_get)
+            velocity = self.pv_speed_get.get() #self.Get(self.pv_speed_get)
             
             print("velocity", velocity)
             
@@ -433,13 +399,13 @@ class MotorClient(): #i don't know if Thread is necessary
         return speed
    
     def endstop_status(self):
-        #to do
+        
         endstopvalue = self.Get(self.pv_endstopstatus)
         
         if endstopvalue == 0xD:
             print("upper end reached")
             return "upper"
-        if endstopvalue == 0xF: #not sure!!!
+        if endstopvalue == 0xA: #not sure!!!
             print("lower end reached")
             return "lower"
         else:
@@ -469,27 +435,8 @@ class MotorClient(): #i don't know if Thread is necessary
         self.position = 0
         self.stepcount = 0
         self.ismoving = False
-        
-    def reference_search(self): #should of course be handled with interrupts but does not work for some reason...who can i ask...
-        """move motor to the very left until endstop is triggered.
-        Immediately stop and identify this position as '0'"""
-        self.release_brake()  #prolly won't do much
-        self.start_move_left(50000) #start to move a big value until the endstop is reached, stops automatically
-    
-        endstop = None
-        print("starting reference search")
-        while endstop == None: #check the endstop value and terminate as soon as it is 1
-            endstop = self.endstop_status() 
-        self.stop_move()
-       
-        self.set_brake()
-        
-        print("endstop position initialized as '0'")
-        self.stepcount = 0
-        return
+  
 
-
-    
     def move_device_position(self):  
         """for positon plot to track the movement"""
         while True:
@@ -536,8 +483,6 @@ class MotorClient(): #i don't know if Thread is necessary
                 self.ismoving = False
                 self.time_needed = 0 
                 
-      
-            #self.stop_timer_thread()
         
     def start_position_thread(self):
         print("position thread")
