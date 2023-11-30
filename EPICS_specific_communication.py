@@ -439,8 +439,7 @@ class MotorClient():
 
     def move_device_position(self):  
         """for positon plot to track the movement"""
-        while True:
-
+        while True and self.is_running:
             if self.ismoving:
                 velocity = self.Get(self.pv_speed_get)
                 if velocity != None:
