@@ -350,7 +350,8 @@ class MainWindow(QMainWindow):
                 #     break
                 try:
                         message = self.show_scan_time_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-                        self.show_scan_time(message[0],message[1])
+                        print(message,message[0], message[1])
+                        #self.show_scan_time()
                         self.done_showing = True #only do it once and then stop this thread
                 except:
                         if self.show_scan_time_queue.empty():
