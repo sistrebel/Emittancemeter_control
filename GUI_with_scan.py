@@ -491,6 +491,7 @@ class MainWindow(QMainWindow):
         fidelity = meas_freq/y2_speed #how many meas points per mm
         
         if goinsteps == False:
+            self.textBrowser_Fidelity.clear()
             self.textBrowser_Fidelity.append(str(fidelity))#maybe change this... to another format instead of using append()
         else: self.textBrowser_Fidelity.clear()
         
