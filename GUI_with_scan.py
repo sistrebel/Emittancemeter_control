@@ -492,12 +492,11 @@ class MainWindow(QMainWindow):
         
         if goinsteps == False:
             self.textBrowser_Fidelity.clear()
-            self.textBrowser_Fidelity.append(str(fidelity))#maybe change this... to another format instead of using append()
+            self.textBrowser_Fidelity.setText(str(fidelity))#maybe change this... to another format instead of using append()
         else: self.textBrowser_Fidelity.clear()
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             #self.start_show_time_thread()
-            
             scan_thread = threading.Thread(target=scan_script.start_scan, args=(saveit,meas_freq,goinsteps,self.message_queue,self.show_scan_time,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             scan_thread.daemon = True
             scan_thread.start()
