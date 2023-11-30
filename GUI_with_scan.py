@@ -425,11 +425,11 @@ class MainWindow(QMainWindow):
     
     def show_scan_time(self,start_time,end_time):
         """displays the start and end time of the scan which was just started"""
-        self.MessageBox_StartTime.clear()
-        self.MessageBox_EndTime.clear()
+        # self.MessageBox_StartTime.setText("")
+        # self.MessageBox_EndTime.setText("")
         
-        self.MessageBox_StartTime.append(str(start_time))
-        self.MessageBox_EndTime.append(str(end_time))    
+        self.MessageBox_StartTime.setText(str(start_time))
+        self.MessageBox_EndTime.setText(str(end_time))    
     
     def get_setup_val(self):
         """retrieves all the setup values for the next scan form the GUI"""
