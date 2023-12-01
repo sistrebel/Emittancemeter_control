@@ -29,17 +29,18 @@ def load_array_start_calculation(file_path):
     #calculate the rms of the measurement point by point
     for i in range(0, len(data)): #each collimator point separately
         position_triplet = data[i][0][1]
-        coll_x = position_triplet[0] #in mm from 0
-        coll_y = position_triplet[1] #in mm from 0
+        coll_x = position_triplet[0] #in mm, 0 means on axis 
+        coll_y = position_triplet[1] 
         
         for j in range(0,len(data[i])):
-            meas_position = data[i][j][1][2] #position of the readout stack in y, in mm from ccw
+            meas_position = data[i][j][1][2] #position of the readout stack in y, in mm 0 means on axis. 
             
             delta_y = abs(coll_y - meas_position)
             
-            
-    distribution = data
-    rms = np.sqrt(np.mean(np.square(distribution)))
+            if delta_y == 0: #then we want to read out the 
+             ...
+        distribution = []
+        rms = np.sqrt(np.mean(np.square(distribution)))
 
 
 
