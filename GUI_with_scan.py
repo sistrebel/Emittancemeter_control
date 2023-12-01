@@ -9,9 +9,12 @@ Created on Thu Nov  2 17:35:58 2023
 
 
 
-"""scan processing application"""
-
-"""two motors one for x and one for y, add a 'scan' button with which i can start a scan"""
+"""MWE1X == motor1, parked at CCW, 0 steps, center at +20.5mm (10967 steps)
+   MWE1Y == motor2  parked at CCW, 0 steps, center at ??? 
+   MWE2Y == motor3  parked at CCW, 0 steps, center at ??? 
+   
+   
+   """
 
 
 import numpy as np
@@ -553,37 +556,43 @@ class MainWindow(QMainWindow):
     def steps_to_mm(self,steps,axis): 
         """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
         
-        if axis == "1X": #1X
-            mm = steps/535
-        elif axis == "1Y": #1Y
+        if axis == "1X":
+            mm = steps/535 #mm away from CCW
+            mapped_mm = (1/535)*steps - 20.5
+        elif axis == "1Y":
             mm = steps/800
-        elif axis == "2Y": #2Y
+            mapped_mm = (1/800)*steps - 125
+        elif axis == "2Y":
             mm = steps/50
+            mapped_mm = (1/50)*steps - 150
         else: print("ERROR, NO VALID AXIS")
-        
-        return mm
+
+        return mapped_mm
             
     def mm_to_steps(self,mm,axis):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
         
+        """adjust this function s.t. 0mm means on axis"""
+    
         if axis == "1X":
             steps = mm*535
+            remapped_steps = 20.5*535 + mm*535
         elif axis == "1Y":
             steps = mm*800
+            remapped_steps = 125*800 + mm*800
         elif axis == "2Y":
             steps = mm*50
+            remapped_steps = 150*50 + mm*50
         else: print("ERROR, NO VALID AXIS")
-        
-        return steps
+    
+        return remapped_steps
     
     def calibration(self):
         """starts calibration for all three motors"""
         self.server.issue_motor_command(self.motor1,("calibrate",))
         self.server.issue_motor_command(self.motor2,("calibrate",))
         self.server.issue_motor_command(self.motor3,("calibrate",))
-        # self.motor2.calibration()
-        # self.motor3.calibration()
-        
+   
         self.allcalibrated = True
     
     # def move_backwards(self): #backwards

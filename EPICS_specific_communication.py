@@ -553,9 +553,14 @@ class Measurement():
                 #they are all in the same side by side so i can actually merge them together as there are actually 160 channels!!!! the picture is misleading!!
                 full_waveform_temp = np.concatenate((waveform_IA ,waveform_IB ,waveform_IC ))
                 full_waveform = np.concatenate((full_waveform_temp , waveform_ID , waveform_IE))
-                current_position = [point_x,point_y,point_z] #is certainly precise enough, while it moves continuously no steps are lost. 
                 
-                allchannels_onepoint.append([full_waveform,current_position])
+            
+                current_position = [point_x,point_y,point_z] ##positons of the motors in steps... 
+                
+                #convert those to positions in mm
+                current_position_mm = [scan.steps_to_mm(point_x,"1X"),scan.steps_to_mm(point_y,"1Y"),scan.steps_to_mm(point_z,"2Y")]
+                
+                allchannels_onepoint.append([full_waveform,current_position_mm])
                 # allchannels_onepoint_IA.append([waveform_IA,current_position])
                 # allchannels_onepoint_IB.append([waveform_IB,current_position])
                 # allchannels_onepoint_IC.append([waveform_IC,current_position])
@@ -565,7 +570,9 @@ class Measurement():
                 time.sleep(1/meas_freq)  # measurement frequency
                 
         if goinsteps:
-            current_position = [point_x,point_y,point_z]
+            current_position = [point_x,point_y,point_z] #positons of the motors in steps...
+            current_position_mm = [scan.steps_to_mm(point_x,"1X"),scan.steps_to_mm(point_y,"1Y"),scan.steps_to_mm(point_z,"2Y")]
+            
             for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
@@ -582,7 +589,7 @@ class Measurement():
                     # allchannels_onepoint_IC.append([waveform_IC,current_position])
                     # allchannels_onepoint_ID.append([waveform_ID,current_position])
                     # allchannels_onepoint_IE.append([waveform_IE,current_position])
-                    allchannels_onepoint.append([full_waveform,current_position])
+                    allchannels_onepoint.append([full_waveform,current_position_mm])
                     
                     time.sleep(1/meas_freq)
         

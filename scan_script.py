@@ -544,30 +544,41 @@ def stop_scan():
     scanstop = True
     
     
+    
 def steps_to_mm(steps,axis): 
     """converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
+    """adjust this function s.t. 0mm means on axis"""
     
     if axis == "1X":
-        mm = steps/535
+        mm = steps/535 #mm away from CCW
+        mapped_mm = (1/535)*steps - 20.5
     elif axis == "1Y":
         mm = steps/800
+        mapped_mm = (1/800)*steps - 125
     elif axis == "2Y":
         mm = steps/50
+        mapped_mm = (1/50)*steps - 150
     else: print("ERROR, NO VALID AXIS")
     
-    return mm
+    return mapped_mm
         
 def mm_to_steps(mm,axis):
     """converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
+    """adjust this function s.t. 0mm means on axis"""
+    
+    
     if axis == "1X":
         steps = mm*535
+        remapped_steps = 20.5*535 + mm*535
     elif axis == "1Y":
         steps = mm*800
+        remapped_steps = 125*800 + mm*800
     elif axis == "2Y":
         steps = mm*50
+        remapped_steps = 150*50 + mm*50
     else: print("ERROR, NO VALID AXIS")
     
-    return steps
+    return remapped_steps
 
 
 
