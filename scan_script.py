@@ -545,7 +545,7 @@ def stop_scan():
     
     
     
-def steps_to_mm(steps,axis): 
+def steps_to_mm(steps,axis,isspeed=False): 
     """converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
     """adjust this function s.t. 0mm means on axis"""
     
@@ -559,10 +559,12 @@ def steps_to_mm(steps,axis):
         mm = steps/50
         mapped_mm = (1/50)*steps - 150
     else: print("ERROR, NO VALID AXIS")
-    
-    return mapped_mm
+    if isspeed:
+        return mm
+    else:
+        return mapped_mm
         
-def mm_to_steps(mm,axis):
+def mm_to_steps(mm,axis, isspeed = False):
     """converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
     """adjust this function s.t. 0mm means on axis"""
     
@@ -578,7 +580,10 @@ def mm_to_steps(mm,axis):
         remapped_steps = 150*50 + mm*50
     else: print("ERROR, NO VALID AXIS")
     
-    return remapped_steps
+    if isspeed:
+        return steps
+    else:    
+        return remapped_steps
 
 
 

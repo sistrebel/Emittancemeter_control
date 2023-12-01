@@ -531,14 +531,14 @@ class MainWindow(QMainWindow):
     def retrieve_speed(self):
         """get the speed from the MainWindow and set the global variable speed to its value"""
         speed = float(self.textEdit_speed.toPlainText()) #in mm/s
-        self.speed = self.mm_to_steps(speed,self.Axis) #in steps/s
+        self.speed = self.mm_to_steps(speed,self.Axis,isspeed = True) #in steps/s
         
         self.server.issue_motor_command(self.movingmotor,("set_speed",self.speed))
         self.show_message("new speed: " + str(self.speed) + " [steps/s] " + str(speed) + " [mm/s]")
     
     def retrieve_position(self):
         """get position from MainWindow and start the go to position function"""
-        self.Targetposition = int(self.textEdit_position.toPlainText()) #input in mm
+        self.Targetposition = float(self.textEdit_position.toPlainText()) #input in mm
         axis = self.Axis
         self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
         self.goto_position(self.Targetposition)
@@ -553,7 +553,7 @@ class MainWindow(QMainWindow):
          #print("right button clicked")
          time.sleep(0.05)
     
-    def steps_to_mm(self,steps,axis): 
+    def steps_to_mm(self,steps,axis,isspeed = False): 
         """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
         
         if axis == "1X":
@@ -566,10 +566,13 @@ class MainWindow(QMainWindow):
             mm = steps/50
             mapped_mm = (1/50)*steps - 150
         else: print("ERROR, NO VALID AXIS")
-
-        return mapped_mm
+        
+        if isspeed:
+            return mm
+        else:
+            return mapped_mm
             
-    def mm_to_steps(self,mm,axis):
+    def mm_to_steps(self,mm,axis,isspeed = False):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
         
         """adjust this function s.t. 0mm means on axis"""
@@ -584,8 +587,11 @@ class MainWindow(QMainWindow):
             steps = mm*50
             remapped_steps = 150*50 + mm*50
         else: print("ERROR, NO VALID AXIS")
-    
-        return remapped_steps
+        
+        if isspeed:
+            return steps
+        else:
+            return remapped_steps
     
     def calibration(self):
         """starts calibration for all three motors"""
