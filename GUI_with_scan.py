@@ -438,19 +438,19 @@ class MainWindow(QMainWindow):
         """retrieves all the setup values for the next scan form the GUI"""
         x_min = self.mm_to_steps(float(self.textEdit_MWE1X_MIN.toPlainText()),"1X")
         x_max = self.mm_to_steps(float(self.textEdit_MWE1X_MAX.toPlainText()),"1X")
-        x_speed = self.mm_to_steps(float(self.textEdit_MWE1X_SPEED.toPlainText()),"1X")
+        x_speed = self.mm_to_steps(float(self.textEdit_MWE1X_SPEED.toPlainText()),"1X",isspeed=True)
         
         x_setup_val = (x_min,x_max,x_speed)
         
         y_min = self.mm_to_steps(float(self.textEdit_MWE1Y_MIN.toPlainText()),"1Y")
         y_max = self.mm_to_steps(float(self.textEdit_MWE1Y_MAX.toPlainText()),"1Y")
-        y_speed = self.mm_to_steps(float(self.textEdit_MWE1Y_SPEED.toPlainText()),"1Y")
+        y_speed = self.mm_to_steps(float(self.textEdit_MWE1Y_SPEED.toPlainText()),"1Y",isspeed=True)
         
         y_setup_val = (y_min,y_max,y_speed)
         
         y2_min = self.mm_to_steps(float(self.textEdit_MWE2Y_MIN.toPlainText()),"2Y")
         y2_max = self.mm_to_steps(float(self.textEdit_MWE2Y_MAX.toPlainText()),"2Y")
-        y2_speed = self.mm_to_steps(float(self.textEdit_MWE2Y_SPEED.toPlainText()),"2Y")
+        y2_speed = self.mm_to_steps(float(self.textEdit_MWE2Y_SPEED.toPlainText()),"2Y",isspeed=True)
     
         
         y2_setup_val = [y2_min,y2_max,y2_speed]
