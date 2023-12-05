@@ -464,7 +464,7 @@ class MainWindow(QMainWindow):
     def start_scan_thread(self):
         """Starts the scan procedure with the parameters specified in the GUI, the scan script will run on a separate thread"""
         
-        resolution_x = float(self.textEdit_Resolution_x.toPlainText()), #retrieve resolution in mm
+        resolution_x = float(self.textEdit_Resolution_x.toPlainText()) #retrieve resolution in mm
         resolution_y = float(self.textEdit_Resolution_y.toPlainText())
         resolution_z = float(self.textEdit_Resolution_z.toPlainText())
         
@@ -580,13 +580,13 @@ class MainWindow(QMainWindow):
     
         if axis == "1X":
             steps = mm*535
-            remapped_steps = 20.5*535 + mm*535
+            remapped_steps = (20.5*535) + (mm*535)
         elif axis == "1Y":
             steps = mm*800
-            remapped_steps = 125*800 + mm*800
+            remapped_steps = (125*800) + (mm*800)
         elif axis == "2Y":
             steps = mm*50
-            remapped_steps = 150*50 + mm*50
+            remapped_steps = (150*50) + (mm*50)
         else: print("ERROR, NO VALID AXIS")
         
         if isspeed:
