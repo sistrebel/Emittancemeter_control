@@ -319,7 +319,7 @@ class MotorClient():
                         if self.command_queue.empty():
                             pass
                         else: 
-                            print("something worse happened")
+                            print("closed the application")
                     
             
         

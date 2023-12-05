@@ -100,7 +100,7 @@ def make_array():
 
 #array = np.array(make_array())
 
-load_array_start_calculation("hi")
+#load_array_start_calculation("hi")
 
 
 def distribution_plot(data):
