@@ -554,7 +554,8 @@ class MainWindow(QMainWindow):
          time.sleep(0.05)
     
     def steps_to_mm(self,steps,axis,isspeed = False): 
-        """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
+        """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" 
+        The mapped_mm depends on the allignement..."""
         
         if axis == "1X":
             mm = steps/535 #mm away from CCW
@@ -575,7 +576,7 @@ class MainWindow(QMainWindow):
     def mm_to_steps(self,mm,axis,isspeed = False):
         """ converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
         
-        """adjust this function s.t. 0mm means on axis"""
+        """The mapped_mm depends on the allignement..."""
     
         if axis == "1X":
             steps = mm*535

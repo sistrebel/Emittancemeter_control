@@ -153,9 +153,9 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
     y_speed = y1_setup_val[2]
     z_speed = y2_setup_val[2]
     
-    x_length = x1_setup_val[1] - x1_setup_val[0]
-    y_length = y1_setup_val[1] - y1_setup_val[0]
-    z_length = y2_setup_val[1] - y2_setup_val[0]
+    x_length = abs(x1_setup_val[1] - x1_setup_val[0])
+    y_length = abs(y1_setup_val[1] - y1_setup_val[0])
+    z_length = abs(y2_setup_val[1] - y2_setup_val[0])
     
     if meshsize_x > x_length or meshsize_y > y_length or meshsize_z > z_length:
         print(">> INVALID mesh or dimensions")
@@ -547,7 +547,7 @@ def stop_scan():
     
 def steps_to_mm(steps,axis,isspeed=False): 
     """converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" """
-    """adjust this function s.t. 0mm means on axis"""
+    """The mapped_mm depends on the allignement..."""
     
     if axis == "1X":
         mm = steps/535 #mm away from CCW
@@ -566,7 +566,7 @@ def steps_to_mm(steps,axis,isspeed=False):
         
 def mm_to_steps(mm,axis, isspeed = False):
     """converts mm to steps for the particular axis i.e. string "1X","1Y" and "2Y" """
-    """adjust this function s.t. 0mm means on axis"""
+    """The mapped_steps depends on the allignement..."""
     
     
     if axis == "1X":
