@@ -157,8 +157,8 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
     y_length = abs(y1_setup_val[1] - y1_setup_val[0])
     z_length = abs(y2_setup_val[1] - y2_setup_val[0])
     
-    z_max = y2_setup_val[1]
-
+    
+    
     if meshsize_x > x_length or meshsize_y > y_length or meshsize_z > z_length:
         print(">> INVALID mesh or dimensions")
         message_queue.put(">> INVALID mesh or dimensions")
@@ -255,6 +255,8 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
                           goingup = z_pos <= 9600 and z_pos >= 1000 #enable parallel movement to reduce time cost!
                           if status3 == 0x9 or z_pos == endposition_z or goingup  and motor3.Get(server.pv_status) != 1 :  #not moving and at upper endpoint
                         
+                        
+                            print("arrived here")
                             server.issue_motor_command(motor1,("go_to_position",point_x))  #moves motor on thread one
                            
                             server.issue_motor_command(motor2,("go_to_position",point_y)) #moves motor on thread two
@@ -295,7 +297,7 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
                     message_queue.put(">> scan stopped")
                     break
                 
-                start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_max,meshsize_z,z_speed,server,measurement,point_x,point_y)
+                start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x,point_y)
             
               
                 print("go again")
@@ -321,7 +323,7 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
     
     return 
 
-def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_max,meshsize_z,z_speed,server,measurement,point_x, point_y):
+def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_length,meshsize_z,z_speed,server,measurement,point_x, point_y):
     """does readout stuff"""
     print("start readout")
     
@@ -330,7 +332,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_max,m
     readout_speed = z_speed
     server.issue_motor_command(motor3,("set_speed",readout_speed))
 
-    endpoint_z = z_max
+    endpoint_z = z_length
     start_point = 0
     
     moving = False
