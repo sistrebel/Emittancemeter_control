@@ -49,6 +49,7 @@ def load_array_start_calculation(file_path):
         position_triplet = data[i][0][1]
         coll_x = position_triplet[0] #in mm, 0 means on axis
         coll_y = position_triplet[1] #fix this position for now, we iterate over all points who lay in one line i.e. who simulate the slit...
+        #this should be taken care of though as the grid is setup like that in the first place
         
         rms_array = [] #will be a list of all rms for each y meas position
         for j in range(0,len(data[i])):

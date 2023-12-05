@@ -474,7 +474,7 @@ class MainWindow(QMainWindow):
         
         x1_setup_val, y1_setup_val, y2_setup_val, MWE1U, MWE2U = self.get_setup_val()
         
-        meshsize_x = self.mm_to_steps(resolution_x,"1X",isspeed = True)
+        meshsize_x = self.mm_to_steps(resolution_x,"1X",isspeed = True) #grid is in absoulute values and not relative...
         meshsize_y = self.mm_to_steps(resolution_y,"1Y",isspeed = True)
         meshsize_z = self.mm_to_steps(resolution_z,"2Y",isspeed = True)
         

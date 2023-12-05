@@ -614,7 +614,7 @@ class Measurement():
                 file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy' #saves it to the same place where the program is saved
             np.save(file_path, larger_nested_array)
 
-        Calculate_emittance.load_array_start_calculation(file_path)
+        #Calculate_emittance.load_array_start_calculation(file_path)
         
         # # Load the array back
         # loaded_nested_array = np.load(file_path)
