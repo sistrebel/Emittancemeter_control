@@ -157,6 +157,8 @@ def start_scan(directory,saveit,meas_freq,goinsteps,message_queue,motor1,motor2,
     y_length = abs(y1_setup_val[1] - y1_setup_val[0])
     z_length = abs(y2_setup_val[1] - y2_setup_val[0])
     
+    print(x_length, meshsize_x)
+    
     if meshsize_x > x_length or meshsize_y > y_length or meshsize_z > z_length:
         print(">> INVALID mesh or dimensions")
         message_queue.put(">> INVALID mesh or dimensions")

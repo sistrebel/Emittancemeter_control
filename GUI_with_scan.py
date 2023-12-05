@@ -464,9 +464,9 @@ class MainWindow(QMainWindow):
     def start_scan_thread(self):
         """Starts the scan procedure with the parameters specified in the GUI, the scan script will run on a separate thread"""
         
-        resolution_x = self.mm_to_steps(float(self.textEdit_Resolution_x.toPlainText()),"1X") #retrieve resolution in mm
-        resolution_y = self.mm_to_steps(float(self.textEdit_Resolution_y.toPlainText()), "1Y")
-        resolution_z = self.mm_to_steps(float(self.textEdit_Resolution_z.toPlainText()), "2Y")
+        resolution_x = float(self.textEdit_Resolution_x.toPlainText()), #retrieve resolution in mm
+        resolution_y = float(self.textEdit_Resolution_y.toPlainText())
+        resolution_z = float(self.textEdit_Resolution_z.toPlainText())
         
         # x_length = 21700
         # y_length = 104000
