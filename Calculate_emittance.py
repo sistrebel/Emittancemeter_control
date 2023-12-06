@@ -267,18 +267,18 @@ def fit_ellipse_to_points(points):
 
     return ellipse_model
 
-# Example usage:
-# Replace this with your actual set of points
-sample_points = np.array([[1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
+# # Example usage:
+# # Replace this with your actual set of points
+# sample_points = np.array([[1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
 
-# Fit ellipse to the sample points
-fitted_ellipse = fit_ellipse_to_points(sample_points)
+# # Fit ellipse to the sample points
+# fitted_ellipse = fit_ellipse_to_points(sample_points)
 
-# Display the fitted ellipse parameters
-print("Fitted Ellipse Parameters:")
-print("Center:", fitted_ellipse.params[0:2])
-print("Axes Lengths:", fitted_ellipse.params[2:4])
-print("Rotation Angle (radians):", fitted_ellipse.params[4])
+# # Display the fitted ellipse parameters
+# print("Fitted Ellipse Parameters:")
+# print("Center:", fitted_ellipse.params[0:2])
+# print("Axes Lengths:", fitted_ellipse.params[2:4])
+# print("Rotation Angle (radians):", fitted_ellipse.params[4])
 
     
 
