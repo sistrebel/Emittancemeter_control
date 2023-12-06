@@ -249,11 +249,11 @@ class MainWindow(QMainWindow):
         self.horizontal.append(newhorizontal) 
         self.vertical.append(newvertical)
         
-        if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
-            self.data_line_xy.setData(self.horizontal,self.vertical) 
-        else:
-            self.horizontal = []
-            self.vertical = []
+        #if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
+        self.data_line_xy.setData(self.horizontal,self.vertical) 
+        # else:
+        #     self.horizontal = []
+        #     self.vertical = []
             
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
@@ -601,7 +601,10 @@ class MainWindow(QMainWindow):
         self.server.issue_motor_command(self.motor3,("calibrate",))
    
         self.allcalibrated = True
-    
+        
+        #reset the plot stuff
+        self.horizontal = []
+        self.vertival = []
     # def move_backwards(self): #backwards
     #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
     #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))

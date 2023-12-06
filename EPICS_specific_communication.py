@@ -602,7 +602,7 @@ class Measurement():
     def handle_and_save_data(self,path):
         """saves the full_data array into a file and handles the format
         
-        self.full_data.shape == (#positions,#measurements,[[32 values],[px,py,pz]])
+        self.full_data.shape == (#positions,#measurements,[[32 values],[posx,posy,posz]])
         
         """
         if self.full_data != []:
