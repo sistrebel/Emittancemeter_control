@@ -353,5 +353,5 @@ example_array2 = np.array([x2,x2,x2,x2,x,x2,x2,x2,x2,x,x,x,x2,x2,x2,x,x,x], dtyp
 example_array3 = np.array([x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3], dtype=object)
 example_array_full = np.array([example_array,example_array2,example_array2,example_array3, example_array3], dtype=object) #at several collimator points...
 
-load_array_start_calculation("hi", example_array_full)
+#load_array_start_calculation("hi", example_array_full)
 #load_array_start_calculation("ho", make_array())
