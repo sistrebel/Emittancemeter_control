@@ -105,7 +105,7 @@ class MotorClient():
         self.ismoving = False
         self.direction = "pos" #default direction forward
         self.start_position_thread()
-    
+        self.start_timer_thread()
 
         self.locked = False
     
@@ -262,7 +262,7 @@ class MotorClient():
         if self.iscalibrating == False:
             self.initializing = False
             
-        self.start_timer_thread()
+        
        
     def start_motor(self):
         self.is_running = True
@@ -440,6 +440,7 @@ class MotorClient():
     def move_device_position(self):  
         """for positon plot to track the movement"""
         while True and self.is_running:
+            print("just before ismoving")
             if self.ismoving:
                 print("just aftef ismoving")
                 velocity = self.Get(self.pv_speed_get)
