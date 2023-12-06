@@ -193,7 +193,7 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.showGrid(x=True, y=True)
         self.graphWidget_3.setTitle("Current-Profile")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget_3.setLabel('right', 'Current 2IA [nA]', **styles)
+        self.graphWidget_3.setLabel('left', 'Current 2IA [nA]')
         self.graphWidget_3.setLabel('bottom', 'Channel', **styles)
         pen = pg.mkPen("r") #red line pen
         self.graphWidget_3.setBackground("w") #make white background
