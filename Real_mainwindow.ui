@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1452</width>
+    <width>1515</width>
     <height>879</height>
    </rect>
   </property>
@@ -853,9 +853,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="PlotWidget" name="graphWidget_3" native="true">
     <property name="geometry">
      <rect>
-      <x>1080</x>
+      <x>1060</x>
       <y>410</y>
-      <width>371</width>
+      <width>441</width>
       <height>311</height>
      </rect>
     </property>
@@ -1132,7 +1132,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1452</width>
+     <width>1515</width>
      <height>21</height>
     </rect>
    </property>
