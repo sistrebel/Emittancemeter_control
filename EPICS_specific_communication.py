@@ -375,7 +375,6 @@ class MotorClient():
             
             if velocity !=0 and velocity!= None:
                 self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
-                print(" i am here")
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
@@ -442,6 +441,7 @@ class MotorClient():
         """for positon plot to track the movement"""
         while True and self.is_running:
             if self.ismoving:
+                print("just aftef ismoving")
                 velocity = self.Get(self.pv_speed_get)
                 if velocity != None:
                     looptime = 0.02 #small to make sure it does not overshoot...
