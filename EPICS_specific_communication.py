@@ -375,6 +375,7 @@ class MotorClient():
             
             if velocity !=0 and velocity!= None:
                 self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
+                print(" i am here")
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
