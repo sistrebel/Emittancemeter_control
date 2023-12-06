@@ -604,7 +604,7 @@ class MainWindow(QMainWindow):
         
         #reset the plot stuff
         self.horizontal = []
-        self.vertival = []
+        self.vertical = []
     # def move_backwards(self): #backwards
     #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
     #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
