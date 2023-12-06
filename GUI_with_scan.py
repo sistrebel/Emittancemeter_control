@@ -127,10 +127,7 @@ class MainWindow(QMainWindow):
         self.allcalibrated = False
         
         self.start_message_thread()
-        
-        #do a reference search as soon as the applications starts
-        #self.get_reference() 
-        
+
         #empty lists for saving position plot
         self.all_positions1 = []
         self.all_positions2 = []
@@ -164,13 +161,7 @@ class MainWindow(QMainWindow):
     
     def connectwidgets(self):
         """Connecting the buttons"""
-        # self.GoleftButton.clicked.connect(self.leftbuttonclick)
-        # self.GorightButton.clicked.connect(self.rightbuttonclick)
-        # self.GoleftButton.pressed.connect(self.move_backwards) #use press and release to have responsive buttons
-        # self.GorightButton.pressed.connect(self.move_forwards)
-        # self.GoleftButton.released.connect(self.stop)
-        # self.GorightButton.released.connect(self.stop)
-        
+
         self.StopButton.clicked.connect(self.stopmotor)
         self.RunButton.clicked.connect(self.runmotor)
         
@@ -182,7 +173,7 @@ class MainWindow(QMainWindow):
         self.SubmitTargetposition.clicked.connect(self.retrieve_position)
         self.SubmitAxis.clicked.connect(self.get_axis)
     
-        """add scan button and connect it to the 'scan' function which i want to run in a separate script for readability"""
+        """add scan button and connect it to the 'scan' function"""
         self.ScanButton.clicked.connect(self.start_scan_thread) #gets data and starts scan script
         self.PauseScanButton.clicked.connect(scan_script.pause_scan)
         self.ContinueScanButton.clicked.connect(scan_script.continue_scan)
@@ -194,7 +185,7 @@ class MainWindow(QMainWindow):
     
     def meas_plot(self):
         """make a plot of the current for each channel
-        x channel [1,32] and y current
+        x channel [1,32] ([1,160] in real verison) and y current
         
       """
         
@@ -202,7 +193,7 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.showGrid(x=True, y=True)
         self.graphWidget_3.setTitle("Current-Profile")
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget_3.setLabel('left', 'Current 2IA [nA]', **styles)
+        #self.graphWidget_3.setLabel('left', 'Current 2IA [nA]', **styles)
         self.graphWidget_3.setLabel('bottom', 'Channel', **styles)
         pen = pg.mkPen("r") #red line pen
         self.graphWidget_3.setBackground("w") #make white background
@@ -235,8 +226,8 @@ class MainWindow(QMainWindow):
         self.graphWidget_2.setBackground("w") #make white background
         
         #create the plot
-        self.horizontal = [] #list(range(100))  # 100 time points
-        self.vertical = []  # 100 data points
+        self.horizontal = [] 
+        self.vertical = []  
         
         self.data_line_xy =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
         
@@ -250,11 +241,8 @@ class MainWindow(QMainWindow):
         self.horizontal.append(newhorizontal) 
         self.vertical.append(newvertical)
         
-        #if self.motor1.iscalibrating == False and self.motor2.iscalibrating == False and  self.motor3.iscalibrating == False:
         self.data_line_xy.setData(self.horizontal,self.vertical) 
-        # else:
-        #     self.horizontal = []
-        #     self.vertical = []
+    
             
     def plot(self): #this is the important bit where you can modify the plot window
         """make a 2D plot of position vs time embedded into the QWidget Window (named 'graphWidget') provided in the loaded mainwindow"""
