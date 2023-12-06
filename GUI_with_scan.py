@@ -235,8 +235,8 @@ class MainWindow(QMainWindow):
         self.graphWidget_2.setBackground("w") #make white background
         
         #create the plot
-        self.horizontal = [] #list(range(100))  # 100 time points
-        self.vertical = []  # 100 data points
+        self.horizontal = [12,1,2,2,2,2] #list(range(100))  # 100 time points
+        self.vertical = [12,2,2,2,2,2]  # 100 data points
         
         self.data_line_xy =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
         
@@ -246,6 +246,7 @@ class MainWindow(QMainWindow):
         
         newhorizontal =  self.steps_to_mm(self.motor1.get_position(),"1X")
         newvertical = self.steps_to_mm(self.motor2.get_position(),"1Y")
+        
         self.horizontal.append(newhorizontal) 
         self.vertical.append(newvertical)
         
