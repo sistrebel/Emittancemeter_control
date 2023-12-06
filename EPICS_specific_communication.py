@@ -439,9 +439,7 @@ class MotorClient():
     def move_device_position(self):  
         """for positon plot to track the movement"""
         while self.is_running:
-            #print("just before ismoving")
             if self.ismoving:
-                print("just aftef ismoving")
                 velocity = self.Get(self.pv_speed_get)
                 if velocity != None:
                     looptime = 0.02 #small to make sure it does not overshoot...

@@ -235,8 +235,8 @@ class MainWindow(QMainWindow):
         self.graphWidget_2.setBackground("w") #make white background
         
         #create the plot
-        self.horizontal = [12,1,2,2,2,2] #list(range(100))  # 100 time points
-        self.vertical = [12,2,2,2,2,2]  # 100 data points
+        self.horizontal = [] #list(range(100))  # 100 time points
+        self.vertical = []  # 100 data points
         
         self.data_line_xy =  self.graphWidget_2.plot(self.horizontal, self.vertical, pen=pen) 
         
@@ -606,19 +606,17 @@ class MainWindow(QMainWindow):
         self.allcalibrated = True
         
         #reset the plot stuff
+        status1 = self.motor1.Get(self.motor1.pv_motor_status)
+        status2 = self.motor2.Get(self.motor2.pv_motor_status)
+        status3 = self.motor3.Get(self.motor3.pv_motor_status)
+        while  status1 != 0x9 and status1 != 0xD and status2 != 0x9 and status2 != 0xD and status3 != 0x9 and status3 != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
+             time.sleep(0.01)
+             status1 = self.motor1.Get(self.motor1.pv_motor_status)
+             status2 = self.motor2.Get(self.motor2.pv_motor_status)
+             status3 = self.motor3.Get(self.motor3.pv_motor_status)
         self.horizontal = []
         self.vertical = []
-    # def move_backwards(self): #backwards
-    #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-    #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
-    #     self.server.issue_motor_command(self.movingmotor, ("move_backwards",self.speed))
-        
-    
-    # def move_forwards(self): #forwards
-    #     """starts the movement of "motor" (i.e. self.motor1,2 or 3) """
-    #     self.server.issue_motor_command(self.movingmotor, ("release_brake",))
-    #     self.server.issue_motor_command(self.movingmotor, ("move_forwards",self.speed))
-        
+
     # def stop(self):
     #     self.server.issue_motor_command(self.movingmotor, ("stop_move",))
     #     self.show_message("motor stopped")
