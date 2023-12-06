@@ -65,7 +65,7 @@ class MotorClient():
         
         self.initializing = True 
         
-        self.is_running = False
+        self.is_running = True
         
         self.command_queue = command_queue
         
