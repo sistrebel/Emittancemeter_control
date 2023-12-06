@@ -142,7 +142,8 @@ class MotorClient():
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(25)
                 self.pv_MAXCW.put(21766)
-                #self.pv_SPAD.put(752) #don't part. about this value...
+                self.pv_targetposition_steps.put(0)
+             
                 
                 self.pv_targetposition_DRVL.put(0) #check what happens
                 self.pv_targetposition_DRVH.put(21766)
@@ -183,7 +184,7 @@ class MotorClient():
                 self.pv_speed_dist.put(200)
                 self.pv_ramp_set.put(25)
                 self.pv_MAXCW.put(104172)  
-                #self.pv_SPAD.put(752) #don't part. about this value...
+                self.pv_targetposition_steps.put(0)
             
 
                 self.pv_targetposition_DRVL.put(0)
@@ -242,7 +243,7 @@ class MotorClient():
                 self.pv_brake_on.put(300) #time after busy
                 
                 self.pv_MAXCW.put(9600)  
-                #self.pv_SPAD.put(752) #don't part. about this value...
+                self.pv_targetposition_steps.put(0)
                 
                 self.pv_targetposition_DRVL.put(0)
                 self.pv_targetposition_DRVH.put(9600)
@@ -340,14 +341,7 @@ class MotorClient():
    
     def set_brake(self):
         self.Set(self.pv_brake,0)
-       
-    # def move_backwards(self, steps_to_incr):#this is backwards !!!
-    #     self.Set(self.pv_rawincr_set,-steps_to_incr) #negative to go left/backwards
-     
-   
-    # def move_forwards(self, steps_to_incr): #this is forwards !!!
-    #     self.Set(self.pv_rawincr_set,steps_to_incr)
-       
+
  
     # def stop_move(self):
     #     self.Set(self.pv_speed_set,0)
