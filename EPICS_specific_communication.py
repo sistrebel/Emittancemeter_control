@@ -451,6 +451,7 @@ class MotorClient():
                     if self.direction == "none":
                         pass
                 #print(self.position)
+                    print("i was avctive")
             if not self.ismoving:   
                 self.position = self.stepcount
             time.sleep(0.02)  # Adjust the sleep time as needed
