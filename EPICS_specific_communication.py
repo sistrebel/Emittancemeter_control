@@ -99,9 +99,8 @@ class MotorClient():
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
         self.stepcount = 0
         self.time_needed = 0
-        
+        self.iscalibrating = False
   
-        self.locked = False
     
     
         
@@ -256,8 +255,8 @@ class MotorClient():
         if self.iscalibrating == False:
             self.initializing = False
             
-              #keep track of movement for position
-        self.iscalibrating = False
+        #keep track of movement for position
+        
         self.ismoving = False
         self.direction = "pos" #default direction forward
         self.start_position_thread()
