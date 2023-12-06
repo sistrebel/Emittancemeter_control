@@ -439,7 +439,7 @@ class MotorClient():
 
     def move_device_position(self):  
         """for positon plot to track the movement"""
-        while True and self.is_running:
+        while True:# and self.is_running:
             print("just before ismoving")
             if self.ismoving:
                 print("just aftef ismoving")
@@ -462,7 +462,7 @@ class MotorClient():
         
     def lock_for_time(self):
         """for position plot to track the movement time"""
-        while True and self.is_running:
+        while True:# and self.is_running:
             status = self.Get(self.pv_motor_status)
             if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
                 #start = time.time()
