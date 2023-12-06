@@ -731,12 +731,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <rect>
       <x>1040</x>
       <y>50</y>
-      <width>71</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>mm ; mm/s</string>
+     <string>mm ; mm ; mm/s</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_12">
@@ -744,12 +744,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <rect>
       <x>1040</x>
       <y>80</y>
-      <width>71</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>mm ; mm/s</string>
+     <string>mm ; mm ; mm/s</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_13">
@@ -757,12 +757,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <rect>
       <x>1040</x>
       <y>110</y>
-      <width>71</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>mm ; mm/s</string>
+     <string>mm ; mm ; mm/s</string>
     </property>
    </widget>
    <widget class="QTextBrowser" name="MessageBox_StartTime">
@@ -957,12 +957,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <rect>
       <x>850</x>
       <y>220</y>
-      <width>71</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mesh-size&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mesh-size [mm]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit_position_3">
