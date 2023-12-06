@@ -247,6 +247,8 @@ class MainWindow(QMainWindow):
         newhorizontal =  self.steps_to_mm(self.motor1.get_position(),"1X")
         newvertical = self.steps_to_mm(self.motor2.get_position(),"1Y")
         
+        print(newhorizontal)
+        
         self.horizontal.append(newhorizontal) 
         self.vertical.append(newvertical)
         
