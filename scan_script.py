@@ -472,30 +472,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
     
 
         
-"""   
-def get_signal(motor3,goinsteps,meas_freq,current_position):
-    #returns a dummy signal for a certain amount of time
-    
-    #-if signal drops below a certain value the scan must be paused
-    #-all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
-    #-at every point the values are stored in a frequency below 5kHz
-    allchannels_onepoint = np.zeros((32,meas_freq)) #10 points for all 32 channels
-    data = []
-    status3 = motor3.Get(motor3.pv_motor_status)
-    if goinsteps == False:
-        while status3 != 0xA:
-            status3 = motor3.Get(motor3.pv_motor_status)
-            data.append(np.random.randint(1000)) #this would correspond to a 
-            time.sleep(0.1)  #10Hz measurement frequency
-            
-    else:
-        #for j in range(0,32): #fill the array
-        for i in range(0,meas_freq): #measure frequency time for exactly one second 
-                allchannels_onepoint[1][i] = np.random.randint(1000) #only put data in one channel for now...
-                time.sleep(1/meas_freq)
-    full_data.append([allchannels_onepoint,current_position])
-    #print(full_data)
-"""  
+
    
 def time_estimation(goinsteps,mesh_size_x,mesh_size_y,mesh_size_z,x_length,y_length,z_length,x_speed, y_speed, z_speed,number_of_points):
    

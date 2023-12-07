@@ -548,7 +548,7 @@ class Measurement():
             current_position = [point_x,point_y,point_z] #positons of the motors in steps...
             current_position_mm = [scan.steps_to_mm(point_x,"1X"),scan.steps_to_mm(point_y,"1Y"),scan.steps_to_mm(point_z,"2Y")]
             
-            for i in range(0,meas_freq): #measure frequency time for exactly one second , repeat this 
+            for i in range(0,int(meas_freq)): #measure frequency time for exactly one second , repeat this 
                     
                     #this needs to be done with all 5 cards!!! 
                     waveform_IA = self.pv_IA_wave.get() #is a list of 32 values, takes one second
