@@ -73,14 +73,10 @@ class MotorClient():
         self.command_functions = { 
             "start": self.start_motor,
             "stop": self.stop_motor,
-            # "stop_move": self.stop_move,
-            # "move_forwards": self.move_forwards,
-            # "move_backwards": self.move_backwards,
             "set_brake": self.set_brake,
             "set_speed": self.set_speed,
             "get_speed": self.get_speed,
             "release_brake": self.release_brake,
-            # "reference_search": self.reference_search,
             "go_to_position": self.goto_position,
             "get_position": self.get_position,
             "right_endstop": self.endstop_status,
@@ -198,9 +194,9 @@ class MotorClient():
                 
                 self.pv_command_status = PV('T-MWE2Y:CMDE:1')
                 self.pv_CHS_SBNT = PV('T-MWE2Y:CHS:1:SBNT')
-                self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status, if 0 then busy...can't be used...
+                self.pv_CMD_status = PV('T-MWE2Y:CMDS:1:SBNT') #command status
                 self.pv_motor_status = PV('T-MWE2Y:CHS:1')
-                self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break... extra cable... not known yet
+                self.pv_brake = PV('T-MWE2Y:CMD2-BRAKE:2') #has a break
                 self.pv_brake_status = PV('T-MWE2Y:CMD2-BRAKERB:2')
                 self.pv_brake_on = PV('T-MWE2Y:CMD2-BRON:2')
                 self.pv_brake_off = PV('T-MWE2Y:CMD2-BROFF:2')
@@ -257,7 +253,6 @@ class MotorClient():
             self.initializing = False
             
         #keep track of movement for position
-        
         self.ismoving = False
         self.direction = "pos" #default direction forward
         self.start_position_thread()
@@ -267,7 +262,7 @@ class MotorClient():
     def start_motor(self):
         self.is_running = True
         
-       
+    
     def stop_motor(self):
         self.stop_flag.set()
         self.is_running = False
@@ -281,9 +276,13 @@ class MotorClient():
                 func = self.command_functions[command_name]
                 func(*args)
         return "done"
+    
     def run(self):  
-        """will keep running as soon as the thread is started and continuously checks for commands in the command queue.
-        The commands in the command queue are issued from the """
+        """
+        This method runs continuously as soon as the thread is started, checking for commands in the command queue.
+        Commands in the command queue are issued from the server.
+        
+        """
         
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
@@ -291,15 +290,10 @@ class MotorClient():
                     break
                 try:
                     status = self.pv_motor_status.get()
-                    if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1  : 
-                    
-                        command, result_queue = self.command_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
+                    #if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1: 
+                    if status in [0x9, 0x8, 0xA, 0x1, 0x0] and self.Get(self.server.pv_status) != 1:#much neater way of doing it!!!
+                        command, result_queue = self.command_queue.get_nowait() 
                      
-                        #if command[0] == "go_to_position":
-                           # self.ex_command(command) #excecute the command
-                           # while self.ismoving == True:
-                              #  time.sleep(0.05)
-                            #Eresult_queue.put(self.ismoving)
                         if command[0] == "get_speed":
                                 speed = self.get_speed()
                                 result_queue.put(speed)
@@ -315,36 +309,32 @@ class MotorClient():
                     
                     else: pass
 
-                except:
+                except queue.Empty:
                         if self.command_queue.empty():
                             pass
-                        else: 
+                        else:
                             print("closed the application")
+                except Exception as e:
+                    print(f"An unexpected error occurred: {e}")
                     
             
         
     def Set(self,pv,value):
         """sets the value of a passed process variable"""
-        print("set")
         pv.put(value)
-        return "has been set"
+    
 
     def Get(self,pv):
         """gets the value of a passed process variable"""
-        #with self.port_lock:
         value = pv.get()
         return value
        
 
     def release_brake(self):
-        self.Set(self.pv_brake,1) #or reversed...
+        self.Set(self.pv_brake,1) #or 0
    
     def set_brake(self):
-        self.Set(self.pv_brake,0)
-
- 
-    # def stop_move(self):
-    #     self.Set(self.pv_speed_set,0)
+        self.Set(self.pv_brake,0) #or 1
 
 
     def goto_position(self,position_steps):
@@ -358,7 +348,7 @@ class MotorClient():
                 self.direction = "none"
             
             
-            velocity = self.pv_speed_get.get() #self.Get(self.pv_speed_get)
+            velocity = self.pv_speed_get.get() 
             
             print("velocity", velocity)
             
@@ -367,7 +357,7 @@ class MotorClient():
             #     time.sleep(0.1)
             
             if velocity !=0 and velocity!= None:
-                self.Set(self.pv_targetposition_steps, position_steps) #making sure it has actually been sent befor the waiting time
+                self.Set(self.pv_targetposition_steps, position_steps) 
                 self.ismoving = True 
                 self.time_needed = abs(self.stepcount - int(position_steps))/velocity  
                 
@@ -392,13 +382,12 @@ class MotorClient():
         return speed
    
     def endstop_status(self):
-        
         endstopvalue = self.Get(self.pv_endstopstatus)
         
         if endstopvalue == 0xD:
             print("upper end reached")
             return "upper"
-        if endstopvalue == 0xA: #not sure!!!
+        if endstopvalue == 0xA: 
             print("lower end reached")
             return "lower"
         else:
@@ -419,7 +408,7 @@ class MotorClient():
       
         status = self.Get(self.pv_motor_status)
        
-        while  status != 0x9 and status != 0xD: #self.Get(self.pv_motor_status) != 0xD and self.Get(self.pv_motor_status) != 0x9 : #didn't reach endstop ye
+        while  status != 0x9 and status != 0xD: 
              time.sleep(0.01)
              status = self.Get(self.pv_motor_status)
              
@@ -445,7 +434,7 @@ class MotorClient():
                         pass
             if not self.ismoving:   
                 self.position = self.stepcount
-            time.sleep(0.02)  # Adjust the sleep time as needed
+            time.sleep(0.02) 
 
         self.ismoving = False
         
@@ -453,23 +442,19 @@ class MotorClient():
         """for position plot to track the movement time"""
         while self.is_running:
             status = self.Get(self.pv_motor_status)
-            if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  #only when it has been set true in another place!!!
-                #start = time.time()
+            if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  
                 print("start counting")
                 if self.direction == "pos":
-                    while self.position <= self.stepcount:#time.time() - start < self.time_needed :
+                    while self.position <= self.stepcount:
                         pass
                 if self.direction == "neg":
-                    while self.position >= self.stepcount:#time.time() - start < self.time_needed :
+                    while self.position >= self.stepcount:
                         pass
                 if self.iscalibrating:
                     self.direction == "neg"
                     while self.position != 0:
                         pass
-                #status = self.Get(self.pv_motor_status)
-                #while status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0: #wait till it actually stopped
-                 #   pass
-               
+            
                 print("ended, reset ismoving and time_needed")
                 self.ismoving = False
                 self.time_needed = 0 
@@ -477,23 +462,23 @@ class MotorClient():
         
     def start_position_thread(self):
         print("position thread")
-        self.thread = threading.Thread(target=self.move_device_position)
-        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
-        self.thread.start()
+        self.position_thread = threading.Thread(target=self.move_device_position)
+        self.position_thread.daemon = True  
+        self.position_thread.start()
 
     def stop_position_thread(self):
         self.ismoving = False
         print("stopped moving")
-        self.thread.join()
+        self.position_thread.join()
 
     def start_timer_thread(self):
         print("timer thread")
-        self.thread = threading.Thread(target=self.lock_for_time)
-        self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
-        self.thread.start()
+        self.timer_thread = threading.Thread(target=self.lock_for_time)
+        self.timer_thread.daemon = True  
+        self.timer_thread.start()
         
     def stop_timer_thread(self):
-        self.thread.join()
+        self.timer_thread.join()
 
 
 class Measurement():
@@ -529,12 +514,10 @@ class Measurement():
             status3 = motor3.Get(motor3.pv_motor_status)
             point_z = motor3.Get(motor3.pv_SOLRB)
             
-            # while point_z < motor3.Get(motor3.pv_ramp_set): #wait till the motor moves at constant speed i.e. no ramp
-            #     pass
             
             while point_z != endpoint_z and status3 != 0xA and scan.scanstop == False:
                 point_z = motor3.Get(motor3.pv_SOLRB)
-                #print("stuck here")
+        
                 status3 = motor3.Get(motor3.pv_motor_status)
                 waveform_IA = np.array(self.pv_IA_wave.get()) #is a list of 32 values
                 waveform_IB = np.array(self.pv_IB_wave.get())*10
@@ -606,7 +589,7 @@ class Measurement():
                 file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy' #saves it to the same place where the program is saved
             np.save(file_path, larger_nested_array)
 
-        #Calculate_emittance.load_array_start_calculation(file_path)
+        Calculate_emittance.load_array_start_calculation(file_path)
         
         # # Load the array back
         # loaded_nested_array = np.load(file_path)

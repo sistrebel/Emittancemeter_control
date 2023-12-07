@@ -11,10 +11,10 @@ import numpy as np
 
 import matplotlib.pyplot as plt
  
-
-from matplotlib import cbook, cm
+from skimage.measure import EllipseModel
+from matplotlib import cm
 from matplotlib.colors import LightSource
-
+from matplotlib.patches import Ellipse
 
 drift_length = 1200 #in mm, cite Rudolf paper (true for HIPA, not ISTS)
 
@@ -37,15 +37,11 @@ def load_array_start_calculation(file_path, example_array):
     
 
     #calculate the rms of the measurement point by point
-    
-    # first_term = 0 #<x^1>
-    # second_term = 0 #<x'^2>
-    # third_term = 0 #<xx'^2>
-    
+
     #x part first
     
     channels = [i for i in range(1,161)] 
-    rms_x_all = []
+    angle_x_all = []
     FWHM_x_all = []
     plt.figure()
     for i in range(0, len(data)): #each collimator point separately
@@ -55,7 +51,7 @@ def load_array_start_calculation(file_path, example_array):
 
    
         position_y2 = []
-        rms_array_x = [] #will be a list of all rms for each y meas position
+        angle_array_x = [] #will be a list of all rms for each y meas position
         FWHM_array_x = []
         for j in range(0,len(data[i])):
             meas_position = data[i][j][1][2] #position of the readout stack in y, in mm 0 means on axis. 
@@ -71,39 +67,56 @@ def load_array_start_calculation(file_path, example_array):
             
             rms_x = np.sqrt(np.mean(np.square(distribution))) #rms divergence of the j-th measurment position in y for the i-th collimator position
             
-            rms_array_x.append(rms_x) 
+            #convert in into the angle:
+            angle_x = np.arctan((rms_x/2)/drift_length)
+            
+            angle_array_x.append(angle_x) 
             FWHM_array_x.append(FWHM_x)
             position_y2.append(meas_position) #corresponding position to the rms value. 
             
-        rms_x_all.append([rms_array_x,position_y2,(coll_x,coll_y)]) #for one collimator position, the rms_values in x at all 
+        angle_x_all.append([angle_array_x,position_y2,(coll_x,coll_y)]) #for one collimator position, the rms_values in x at all 
         FWHM_x_all.append([FWHM_array_x,position_y2,(coll_x,coll_y)])
     
     """now i have the array rms_x_all with which i can make the plot (x,p_x) where i have a p_x value for all of the y2 measurement positions!!!"""
     
+   
+    
+    #make an appropriate shape to be able to model it as an ellipse:
+    ellipse_arrays_x = []
+    for i in range(len(angle_array_x)): #build all the arrays i want and add them to the list
+        ellipse_arrays_x.append(np.zeros((len(angle_x_all),2))) #build an array for all the different points at one collimator location
+    
+    
+    for i in range(len(angle_x_all)):
+        for j in range(len(angle_x_all[i][0])):
+            
+            ellipse_arrays_x[j][i][0] = angle_x_all[i][2][0] #x
+            ellipse_arrays_x[j][i][1] = angle_x_all[i][0][j] #p_x
+   
+    
+   
     #make the (x,px) plots for each measurement position y2 there will be one
     plt.figure()
     plt.grid()
-    
-    ellipse_array_x = np.zeros((len(rms_x_all),2))
-    for point in rms_x_all: #iterate through all the collimator points in 
+    for point in angle_x_all: #iterate through all the collimator points in 
         
         coll_x = point[2][0]
         coll_y = point[2][1]
         
-        rms_array_x_plus = point[0] #sigma+ stuff
-        rms_array_x_minus = -np.array(point[0]) #sigma- stuff (just mirrored)
+        angle_array_x_plus = point[0] #sigma+ stuff
+        angle_array_x_minus = -np.array(point[0]) #sigma- stuff (just mirrored)
         
         #make an array with coll_x position in it of length rms_array_x
-        coll_x_arr = [coll_x for i in range(len(rms_array_x))]
+        coll_x_arr = [coll_x for i in range(len(angle_array_x))]
         
-        plt.scatter(coll_x_arr, rms_array_x_plus)
-        plt.scatter(coll_x_arr, rms_array_x_minus)
+        plt.scatter(coll_x_arr, angle_array_x_plus)
+        plt.scatter(coll_x_arr, angle_array_x_minus)
         
         
 
         
     #(y,p_y) part
-    rms_y_all = []
+    angle_y_all = []
     FWHM_y_all = []
     plt.figure()
     for i in range(0, len(data)): #each collimator point separately
@@ -112,7 +125,7 @@ def load_array_start_calculation(file_path, example_array):
         coll_y = position_triplet[1] #fix this position for now, we iterate over all points who lay in one line i.e. who simulate the slit...
         
         
-        rms_array_y = [] #will be a list of all rms for each y meas position
+        angle_array_y = [] #will be a list of all rms for each y meas position
         FWHM_array_y = []
         for k in range(0,len(channels)):#build up the distribution for a fixed channel first
             channel = channels[k]
@@ -131,47 +144,163 @@ def load_array_start_calculation(file_path, example_array):
             
             FWHM_array_y.append(FWHM_y)
             rms_y = np.sqrt(np.mean(np.square(distribution))) #rms divergence of the j-th measurment position in y for the i-th collimator position
-            rms_array_y.append(rms_y) 
-              #corresponding position to the rms value. 
-        #plt.figure()
-            #print(distribution)
+            
+            #convert this into angles who do not depend on drift length then
+            angle_y = np.arctan((rms_y/2)/drift_length)
+            
+            angle_array_y.append(angle_y) 
+       
             plt.plot(position_y2, distribution)    
         
         FWHM_y_all.append([FWHM_array_y,channels,(coll_x,coll_y)])
-        rms_y_all.append([rms_array_y,channels,(coll_x,coll_y)]) #for one collimator position, the rms_values in x at all 
+        angle_y_all.append([angle_array_y,channels,(coll_x,coll_y)]) #for one collimator position, the rms_values in x at all 
+    
+    
+    
+    #make an appropriate shape to be able to model it as an ellipse:
+    ellipse_arrays_y = []
+    for i in range(len(angle_array_y)): #build all the arrays i want and add them to the list
+        ellipse_arrays_y.append(np.zeros((len(angle_y_all),2))) #build an array for all the different points at one collimator location
+    
+    
+    for i in range(len(angle_y_all)):
+        for j in range(len(angle_y_all[i][0])):
+        
+            ellipse_arrays_y[j][i][0] = angle_y_all[i][2][1] #y
+            ellipse_arrays_y[j][i][1] = angle_y_all[i][0][j] #p_y
     
     #make the (x,px) plots for each measurement position y2 there will be one
     plt.figure()
     plt.grid()
-    
-    ellipse_arrays_y = []
-    for i in range(len(rms_array_y)): #build all the arrays i want and add them to the list
-        ellipse_arrays_y.append(np.zeros((len(rms_y_all),2))) #build an array for all the different points at one collimator location
-    
-    
-    i = 0
-    for point in rms_y_all: #iterate through all the collimator points in 
+    for point in angle_y_all: #iterate through all the collimator points in 
         
     
         coll_x = point[2][0]
         coll_y = point[2][1]
         
         
-        
-        rms_array_y_plus = point[0] #sigma+ stuff
-        rms_array_y_minus = -np.array(point[0]) #sigma- stuff (just mirrored)
+        angle_array_y_plus = point[0] #sigma+ stuff
+        angle_array_y_minus = -np.array(point[0]) #sigma- stuff (just mirrored)
         
         #make an array with coll_x position in it of length rms_array_x
-        coll_y_arr = [coll_y for i in range(len(rms_array_y))]
+        coll_y_arr = [coll_y for i in range(len(angle_array_y))]
         
-        plt.scatter(coll_y_arr, rms_array_y_plus)
-        plt.scatter(coll_y_arr, rms_array_y_minus)
+        plt.scatter(coll_y_arr, angle_array_y_plus)
+        plt.scatter(coll_y_arr, angle_array_y_minus)
     
         
+
     
     """now i want to turn the points into  a "2D numpy array" where each row is a point [x,p_x]. Then i pass this to the fitting function and this will then return the ellipse model i want"""
-        
     
+    
+    # ellipse_array = ellipse_arrays_y[49]
+    # ellipse_model = fit_ellipse_to_points(ellipse_array)
+    # plot_ellipse_and_points(ellipse_model, ellipse_array)
+    # area = estimate_ellipse_area(ellipse_model)
+    
+    """
+   #fit ellipse to it and estimate area... 
+   
+    for ellipse_array in ellipse_arrays_y:
+        ellipse_model = fit_ellipse_to_points(ellipse_array)
+        plot_ellipse_and_points(ellipse_model, ellipse_array)
+        
+        area = estimate_ellipse_area(ellipse_model)
+    
+    for ellipse_array in ellipse_arrays_x:
+        ellipse_model = fit_ellipse_to_points(ellipse_array)
+        plot_ellipse_and_points(ellipse_model, ellipse_array)
+   
+        
+        area = estimate_ellipse_area(ellipse_model)
+    """
+    
+    
+def estimate_ellipse_area(ellipse_model):
+    """
+    Estimate the area of an ellipse using its parameters.
+
+    Parameters:
+    - ellipse_model: EllipseModel object containing the parameters of the ellipse.
+
+    Returns:
+    - area: Estimated area of the ellipse.
+    """
+    if ellipse_model is None:
+        raise ValueError("Ellipse model is None. Cannot estimate area.")
+
+    major_axis_length = ellipse_model.params[2] * 2
+    minor_axis_length = ellipse_model.params[3] * 2
+
+    area = np.pi * major_axis_length * minor_axis_length
+
+    return area
+
+def fit_ellipse_to_points(points):
+    """
+    Fit an ellipse to a set of 2D points.
+
+    Parameters:
+    - points: A 2D NumPy array or list of points, where each row is a point [x, y].
+
+    Returns:
+    - ellipse_model: EllipseModel object containing the parameters of the best-fitted ellipse.
+    """
+    
+    points = np.array(points)
+    
+    # Ensure at least 5 points are provided for the ellipse fitting
+    if len(points) < 5:
+    
+        print ("At least 5 points are required for ellipse fitting.")
+        return None
+    
+    # Fit an ellipse to the points
+    ellipse_model = EllipseModel()
+    try:
+        ellipse_model.estimate(points)
+    except Exception as e:
+        print(f"Error: {e}")
+    return ellipse_model    
+    
+def plot_ellipse_and_points(ellipse_model, points):
+    """
+    Plot the fitted ellipse and the input points.
+
+    Parameters:
+    - ellipse_model: EllipseModel object containing the parameters of the fitted ellipse.
+    - points: A 2D NumPy array or list of points, where each row is a point [x, y].
+    """
+    if ellipse_model is None:
+        print("Ellipse model is None. Cannot plot.")
+        return
+
+    fig, ax = plt.subplots()
+
+    # Plot the points
+    ax.scatter(points[:, 0], points[:, 1], label='Points', color='blue')
+
+    # Plot the fitted ellipse using matplotlib.patches.Ellipse
+    ellipse = Ellipse(
+        xy=ellipse_model.params[:2],  # Center
+        width=ellipse_model.params[2] * 2,  # Major axis length
+        height=ellipse_model.params[3] * 2,  # Minor axis length
+        angle=np.degrees(ellipse_model.params[4]),  # Rotation angle in degrees
+        fill=False,
+        color='red',
+        label='Fitted Ellipse'
+    )
+    ax.add_patch(ellipse)
+
+    ax.set_aspect('equal', adjustable='box')  # Ensure equal aspect ratio
+    ax.legend()
+    plt.xlabel('X-axis')
+    plt.ylabel('Y-axis')
+    plt.title('Fitted Ellipse to Points')
+    
+    plt.show()
+   
 
 def FWHM(X,Y):
     half_max = max(Y) / 2.
@@ -187,7 +316,6 @@ def FWHM(X,Y):
     except:
         return 0
   
-
 def make_array():
     array = []
     coll_points = 10
@@ -204,9 +332,6 @@ def make_array():
 #array = np.array(make_array())
 
 
-
-
-
 def distribution_plot(data):
     """with the full dataset at one collimator point make a 3D-plot of the measured intesities"""
 
@@ -218,15 +343,8 @@ def distribution_plot(data):
         z_meas.append(data[i][0])
     x_meas = np.arange(1,33,1)
         
-    # z = dem['elevation']
-    # nrows, ncols = z.shape
-    # x = np.linspace(dem['xmin'], dem['xmax'], ncols)
-    #y = np.linspace(dem['ymin'], dem['ymax'], nrows)
     x, y = np.meshgrid(x_meas, y_meas)
-
-#region = np.s_[5:50, 5:50]
-#x, y, z = x_meas[region], y_meas[region], zmeas[region]
-
+    
     # Set up plot
     fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
     
@@ -242,45 +360,6 @@ def distribution_plot(data):
 # data =  np.array(make_array())
 # distribution_plot(data[2])
 
-
-from skimage.measure import EllipseModel
-
-def fit_ellipse_to_points(points):
-    """
-    Fit an ellipse to a set of 2D points.
-
-    Parameters:
-    - points: A 2D NumPy array or list of points, where each row is a point [x, y].
-
-    Returns:
-    - ellipse_model: EllipseModel object containing the parameters of the best-fitted ellipse.
-    """
-    points = np.array(points)
-    
-    # Ensure at least 5 points are provided for the ellipse fitting
-    if len(points) < 5:
-        raise ValueError("At least 5 points are required for ellipse fitting.")
-    
-    # Fit an ellipse to the points
-    ellipse_model = EllipseModel()
-    ellipse_model.estimate(points)
-
-    return ellipse_model
-
-# # Example usage:
-# # Replace this with your actual set of points
-# sample_points = np.array([[1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
-
-# # Fit ellipse to the sample points
-# fitted_ellipse = fit_ellipse_to_points(sample_points)
-
-# # Display the fitted ellipse parameters
-# print("Fitted Ellipse Parameters:")
-# print("Center:", fitted_ellipse.params[0:2])
-# print("Axes Lengths:", fitted_ellipse.params[2:4])
-# print("Rotation Angle (radians):", fitted_ellipse.params[4])
-
-    
 
 
 
@@ -303,9 +382,9 @@ x2 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -125.0, 4.78]]
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -120.0, 41.78]]
 
-x = [2*np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+x = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
@@ -324,9 +403,9 @@ x = [2*np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [4.833333333333332, -122.0, 41.78]]
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -130.0, 41.78]]
 
-x3 = [2*np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+x3 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
@@ -345,13 +424,58 @@ x3 = [2*np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
            0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [4.33333333333332, -120.0, 41.78]]
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -140.0, 41.78]]
+
+x4 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
+           39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -150.0, 41.78]]
 
 
-example_array = np.array([x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x], dtype=object)
-example_array2 = np.array([x2,x2,x2,x2,x,x2,x2,x2,x2,x,x,x,x2,x2,x2,x,x,x], dtype=object) #measurement points of MWE2Y
-example_array3 = np.array([x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3], dtype=object)
-example_array_full = np.array([example_array,example_array2,example_array2,example_array3, example_array3], dtype=object) #at several collimator points...
+x5 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
+           39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -160.0, 41.78]]
 
-#load_array_start_calculation("hi", example_array_full)
-#load_array_start_calculation("ho", make_array())
+if __name__ == "__main__":
+    example_array = np.array([x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x], dtype=object)
+    example_array2 = np.array([x2,x2,x2,x2,x,x2,x2,x2,x2,x,x,x,x2,x2,x2,x2,x2,x2], dtype=object) #measurement points of MWE2Y
+    example_array3 = np.array([x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3], dtype=object)
+    example_array4 = np.array([x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4,x4], dtype=object)
+    example_array5 = np.array([x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5,x5], dtype=object)
+    example_array_full = np.array([example_array,example_array2,example_array3,example_array3, example_array4], dtype=object) #at several collimator points...
+    
+    load_array_start_calculation("hi", example_array_full)
+    #load_array_start_calculation("ho", make_array())

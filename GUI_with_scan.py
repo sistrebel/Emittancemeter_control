@@ -59,19 +59,13 @@ class MainWindow(QMainWindow):
     def __init__(self): #initializing the class
         super().__init__() #super means to load it at the very beginning
        
-       
         #connect to the server who does the connection to the device and the communication
         self.server = control.MotorServer() #only one server 
         
-  
         #would in principle have different motor numbers starting at 0 (first axis)
         self.MOTOR_NUMBER_1 = 1 #horizontal collimator
         self.MOTOR_NUMBER_2 = 2 #vertical collimator
         self.MOTOR_NUMBER_3 = 3 #vertical readout
-        
-        # #total grid dimensions in steps
-        # self.x_length = 50000
-        # self.y_length = 4000
         
         #initialize the motor queues
         self.motor1_queue =  queue.Queue()
@@ -87,8 +81,7 @@ class MainWindow(QMainWindow):
         #initialize the moving axis with the first motor
         self.movingmotor = self.motor1
         self.Axis = "1X"
-        
-
+    
         #load and connect the GUI
         self.LoadGuis()
         self.connectwidgets()   
@@ -99,7 +92,6 @@ class MainWindow(QMainWindow):
         self.meas_plot()
         self.createStatusBar()
         
-        """comment this out because i keep getting the User Timeout warning from reading the waveform too often..."""
         #initialize the update timer for meas plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_meas)
@@ -118,7 +110,7 @@ class MainWindow(QMainWindow):
         #initialize the ready-message for status-message-window
         self.messagetimer = QTimer(self)
         self.messagetimer.timeout.connect(self.ready_message)
-        self.messagetimer.start(20000) #updates every 20s
+        self.messagetimer.start(30000) #updates every 30s
         
         
         self.speed = self.movingmotor.Get(self.movingmotor.pv_speed_get)#set initial speed if none is selected
@@ -182,11 +174,9 @@ class MainWindow(QMainWindow):
         self.CalibrateButton.clicked.connect(self.calibration)
         
 
-    
     def meas_plot(self):
         """make a plot of the current for each channel
         x channel [1,32] ([1,160] in real verison) and y current
-        
       """
         
         #plotstyle
@@ -306,8 +296,6 @@ class MainWindow(QMainWindow):
             self.reset_endstop_display()
             self.sent = False
             
-        #save all data in a list for when plot is created later.
-        
         while len(self.all_times) < 100000: #safe space... 
             self.all_positions1.append(newposition_1)
             self.all_positions2.append(newposition_2)
@@ -361,8 +349,6 @@ class MainWindow(QMainWindow):
     def run_message_thread(self):  
         """constantly checks the message_queue and passes the messages to the messagebox"""
         while True and self.server.running:
-                # if not self.server.running:
-                #     break
                 try:
                         message = self.message_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
                         if type(message) == tuple: #handle the special case in this thread
@@ -379,9 +365,8 @@ class MainWindow(QMainWindow):
     
     def show_message(self, message):
         """displays the message in the messagebox one can see in the interface"""
-        self.MessageBox.append(">>"+ message)
+        self.MessageBox.append(message)
         
-    
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
         
@@ -493,25 +478,16 @@ class MainWindow(QMainWindow):
         else: self.textBrowser_Fidelity.clear()
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
-            #self.start_show_time_thread()
             
-            scan_thread = threading.Thread(target=scan_script.start_scan, args=(directory,saveit,meas_freq,goinsteps,self.message_queue,self.motor1,self.motor2,self.motor3,meshsize_x,meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
-            #check_scan_status_thread = threading.Thread(target=check_scan_status_thread)
+            scan_thread = threading.Thread(target=scan_script.start_scan, 
+                                           args=(directory,saveit,meas_freq,goinsteps,
+                                                 self.message_queue,self.motor1,self.motor2,self.motor3,meshsize_x,
+                                                 meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             scan_thread.daemon = True
             scan_thread.start()
         
-            
         else:
-            self.show_message("INVALID VALUE")
-    
-    # def check_scan_status_thread():
-    #     while scan_thread.is_alive():
-    #         if self.pause_scan:
-            
-    #         if self.stop_scan:
-    #             scan_thread.join
-    #         if self.continue_scan:
-                
+            self.show_message(">> INVALID VALUE")
     
     def retrieve_directory(self):
         directory = self.textEdit_Directory.toPlainText()
@@ -532,19 +508,11 @@ class MainWindow(QMainWindow):
         self.Targetposition = self.mm_to_steps(self.Targetposition,axis) #convert to steps
         self.goto_position(self.Targetposition)
 
-    def leftbuttonclick(self):
-        self.show_message("left button clicked")
-        #print("left button clicked")
-        time.sleep(0.05) #artificial delay
-    
-    def rightbuttonclick(self):
-         self.show_message("right button clicked")
-         #print("right button clicked")
-         time.sleep(0.05)
-    
+
     def steps_to_mm(self,steps,axis,isspeed = False): 
         """ converts steps to mm for the particular axis i.e. string "1X","1Y" and "2Y" 
-        The mapped_mm depends on the allignement..."""
+        The mapped_mm depends on the allignement...
+        -if all are at 0 then it should be alligned"""
         
         if axis == "1X":
             mm = steps/535 #mm away from CCW
@@ -603,11 +571,6 @@ class MainWindow(QMainWindow):
         self.horizontal = []
         self.vertical = []
 
-    # def stop(self):
-    #     self.server.issue_motor_command(self.movingmotor, ("stop_move",))
-    #     self.show_message("motor stopped")
-    #     return
-    
     def stopmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,1)
         self.movingmotor.ismoving = False
@@ -618,7 +581,6 @@ class MainWindow(QMainWindow):
         """motor moves to specified Target-position given in mm by passing the command"""
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
         
-       
     def right_endstop_display(self):
         self.RightstopDisplay.display(1)
    
