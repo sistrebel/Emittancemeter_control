@@ -444,9 +444,9 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
                 else: pass 
    
             status3 = motor3.Get(motor3.pv_motor_status)
-            while status3 in [0x9,0x8,0xA,0x1,0x0]:
-            #while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: #wait till it actually started moving
+            while status3 in [0x9,0x8,0xA,0x1,0x0]: #wait till it actually started moving
                 status3 = motor3.Get(motor3.pv_motor_status)
+            #while status3 == 0x9 or status3 == 0x8 or status3 == 0xA or status3 == 0x1 or status3 == 0x0: 
             
             while moving == True: #wait until motors are done moving
                 command3stat = motor3.Get(motor3.pv_command_status)
