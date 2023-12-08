@@ -544,7 +544,7 @@ class MainWindow(QMainWindow):
             steps = mm*50
             remapped_steps = (150*50) + (mm*50)
         else: self.show_message(">> ERROR, NO VALID AXIS")
-        self.me
+        
         
         if isspeed:
             return steps
