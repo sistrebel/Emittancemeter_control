@@ -2,12 +2,31 @@
 ***
 ## Table of Contents
 1. [General Info](#general-info)
-2. [Technologies](#technologies)
-3. [Installation](#installation)
-4. [Collaboration](#collaboration)
-5. [FAQs](#faqs)
+2. [GUI](#gui)
+3. [Communnication](#communication)
+4. [Scan](#scan)
+5. [Calculation](#calculation)
 
 ## General Info
 ***
-Write down the general informations of your project. It is worth to always put a project status in the Readme file. This is where you can add it. 
+This project provides a rudimentary control software for the 4D Emittancemeter.
+
+The software is split into the following python scripts:
+      - GUI
+      - Communication script
+      - Scan script & measurement class
+      - Calculation script
+
+## GUI
+***
+
+## Communication
+***
+
+## Scan
+***
+
+## Calculation
+***
+
 
