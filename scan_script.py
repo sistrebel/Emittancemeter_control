@@ -253,6 +253,7 @@ def start_readout(meas_freq,goinsteps,message_queue,motor1,motor2,motor3,z_lengt
         server.issue_motor_command(motor3,("go_to_position",start_point)) #go back directly   
     
     """---- Measure in steps -----------------------------------------------------------------------------------------------------------------------------"""
+    """this part is rather slow because so far i could not manage to get the steps without the break to go on and off and not loose any commands in between...., this is therefore a safer but slow version"""
     
     if goinsteps == True:
         steps = int((z_length-start_point)/meshsize_z) #rounded down number of steps to take to next int
