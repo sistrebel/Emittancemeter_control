@@ -12,10 +12,10 @@
 This project provides a rudimentary control software for the 4D Emittancemeter.
 
 The software is split into the following python scripts:
-      - GUI
-      - Communication script
-      - Scan script & measurement class
-      - Calculation script
+      *GUI*,
+      *Communication script*,
+      *Scan script & measurement class*,
+      *Calculation script*.
 
 You can run the application by cloning the repository and running the GUI in python3. 
 The other scripts will run in the background.
