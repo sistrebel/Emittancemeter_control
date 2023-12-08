@@ -28,7 +28,7 @@ class MotorServer:
      
     def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
-        self.message_queue.put(">> closed")
+        
         
     def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue,message_queue):
         motor = MotorClient(server, MOTOR_NUMBER, command_queue,message_queue) #pass the general port lock to each motor thread

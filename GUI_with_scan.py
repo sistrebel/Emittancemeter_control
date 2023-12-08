@@ -128,8 +128,7 @@ class MainWindow(QMainWindow):
         self.all_times = []
         
         self.end_scan = 0
-        
-        
+    
     def cleanup_on_exit(self):
         # Trigger cleanup actions here
         self.show_message(">> Cleaning up before exit")
@@ -315,31 +314,7 @@ class MainWindow(QMainWindow):
         else:
             self.MessageBox.append(">>"+ "calibrate first")
     
-    # def start_show_time_thread(self):
-    #     """starts a thread that checks the content of the message_queue"""
-    #     self.show_scan_time_queue = queue.Queue()
-    #     self.thread = threading.Thread(target=self.run_show_time_thread)
-    #     self.thread.daemon = True  # Make the thread a daemon so it exits when the main program exits
-    #     self.thread.start()
-        
-    
-    # def run_show_time_thread(self):  
-    #     """constantly checks the message_queue and passes the messages to the messagebox"""
-    #     self.done_showing = False
-    #     while True and self.server.running and self.done_showing == False:
-    #             # if not self.server.running:
-    #             #     break
-    #             try:
-    #                     message = self.show_scan_time_queue.get_nowait() #waits for 1s unit to get an answer #get_nowait() #command should be of the format command = [command_name, *args]
-    
-    #                     self.show_scan_time(str(message[0]),str(message[1]))
-    #                     self.done_showing = True #only do it once and then stop this thread
-    #             except:
-    #                     if self.show_scan_time_queue.empty():
-    #                         pass
-    #                     else: 
-    #                         print("something worse happened")
-                            
+                     
     def start_message_thread(self):
         """starts a thread that checks the content of the message_queue"""
         self.message_queue = queue.Queue()
@@ -367,6 +342,7 @@ class MainWindow(QMainWindow):
     def show_message(self, message):
         """displays the message in the messagebox one can see in the interface"""
         self.MessageBox.append(message)
+           
         
     def save_plot(self):
         """saves the position vs time plot to the dedicated directory"""
@@ -574,9 +550,10 @@ class MainWindow(QMainWindow):
     def stopmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,1)
         self.movingmotor.ismoving = False
+        self.show_message(">> stopped motor " + str(self.movingmotor.MOTOR_NUMBER))
     def runmotor(self):
         self.movingmotor.Set(self.movingmotor.pv_stopstatus,0)
-   
+        self.show_message(">> running motor " + str(self.movingmotor.MOTOR_NUMBER))
     def goto_position(self,Target):
         """motor moves to specified Target-position given in mm by passing the command"""
         self.server.issue_motor_command(self.movingmotor, ("go_to_position",Target))
