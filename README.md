@@ -16,7 +16,9 @@ The software is split into the following python scripts:
       - Communication script
       - Scan script & measurement class
       - Calculation script
-You can run the application by cloning the repository and running the GUI in python3. The other scripts will run in the background.
+
+You can run the application by cloning the repository and running the GUI in python3. 
+The other scripts will run in the background.
 Make sure epice you have access to the PyQt5, epics and threading libraries.
 
 
