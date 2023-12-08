@@ -344,7 +344,7 @@ class MotorClient():
                 
         
                 self.stepcount = position_steps #new position in steps #SOL position
-                self.message_queue.put(">> stepcount of Motor " +str(self.MOTOR_NUMBER) +" is: ", self.stepcount)
+                self.message_queue.put(">> stepcount of Motor " +str(self.MOTOR_NUMBER) +" is: " + str(self.stepcount))
             else:
                 self.message_queue.put(">> WARNING: velocity is 0 or None")
             return
