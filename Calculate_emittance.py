@@ -8,9 +8,8 @@ Created on Thu Nov 30 13:50:51 2023
 """ in this python script i want to load the array which was saved in the other """
 
 import numpy as np
-
 import matplotlib.pyplot as plt
- 
+
 from skimage.measure import EllipseModel
 from matplotlib import cm
 from matplotlib.colors import LightSource

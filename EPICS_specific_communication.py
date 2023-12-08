@@ -5,18 +5,13 @@ Created on Wed Oct 25 11:45:18 2023
 @author: silas
 """
 
-import epics 
-from epics import PV, camonitor,caget
+
+from epics import PV
 import threading
 import queue 
-from multiprocessing import Manager
-
-import numpy as np
 import time
-import datetime
-import scan_script as scan
 import Measurement_script
-import Calculate_emittance 
+
 
 
 class MotorServer:
@@ -335,7 +330,7 @@ class MotorClient():
             
             velocity = self.pv_speed_get.get() 
             
-            self.message_queue.put(">> velocity"+ str(velocity))
+            self.message_queue.put(">> velocity "+ str(velocity))
             
             if velocity !=0 and velocity!= None:
                 self.Set(self.pv_targetposition_steps, position_steps) 
@@ -344,7 +339,7 @@ class MotorClient():
                 
         
                 self.stepcount = position_steps #new position in steps #SOL position
-                self.message_queue.put(">> stepcount of Motor " +str(self.MOTOR_NUMBER) +" is: " + str(self.stepcount))
+                self.message_queue.put(">> stepcount of Motor " + str(self.MOTOR_NUMBER) +" is: " + str(self.stepcount))
             else:
                 self.message_queue.put(">> WARNING: velocity is 0 or None")
             return

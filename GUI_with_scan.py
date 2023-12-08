@@ -21,38 +21,30 @@ import numpy as np
 import time
 import queue
 
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QMessageBox, \
-    QComboBox, QCheckBox, QRadioButton, QGroupBox, QDoubleSpinBox, QSpinBox, QLabel, \
-    QPushButton, QProgressBar, QLCDNumber, QSlider, QDial, QInputDialog, QLineEdit, \
-    QPlainTextEdit, QTableWidget, QTableWidgetItem, QHeaderView, QMenu,  \
-    QStatusBar, QToolBar, QFrame, QSplitter, QTreeWidget, QTreeWidgetItem, \
-    QAbstractItemView, QScrollArea, QStackedWidget, QSizePolicy, QSpacerItem, QLayout, \
-    QLayoutItem, QFormLayout, QToolButton,QTextEdit, QTabWidget, QTabBar, QStackedLayout,\
-    QVBoxLayout, QWidget,QTextEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow,QStatusBar, QLabel
 
+#     QComboBox, QCheckBox, QRadioButton, QGroupBox, QDoubleSpinBox, QSpinBox, QLabel, \
+#     QPushButton, QProgressBar, QLCDNumber, QSlider, QDial, QInputDialog, QLineEdit, \
+#     QPlainTextEdit, QTableWidget, QTableWidgetItem, QHeaderView, QMenu,  \
+#     QStatusBar, QToolBar, QFrame, QSplitter, QTreeWidget, QTreeWidgetItem, \
+#     QAbstractItemView, QScrollArea, QStackedWidget, QSizePolicy, QSpacerItem, QLayout, \
+#     QLayoutItem, QFormLayout, QToolButton,QTextEdit, QTabWidget, QTabBar, QStackedLayout,\
+#     QVBoxLayout, QWidget,QTextEdit
 from PyQt5.QtCore import QTimer
-    
-
 from PyQt5.uic import loadUi
 
-
 import matplotlib.pyplot as plt
-
-
-
-import EPICS_specific_communication as control
-
 import pyqtgraph as pg
-
 import matplotlib
 matplotlib.use('Qt5Agg')
 
-
 import threading
+from epics import caget
 
 import scan_script
+import EPICS_specific_communication as control
 
-from epics import caget
+
 
 class MainWindow(QMainWindow): 
     
@@ -98,7 +90,7 @@ class MainWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_meas)
         self.timer.start(1000) #updates every 1000ms
-        
+    
         #initialize the update timer for the position plot
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_plot_data)
@@ -133,6 +125,8 @@ class MainWindow(QMainWindow):
         # Trigger cleanup actions here
         self.show_message(">> Cleaning up before exit")
         self.show_message(">> recalibrate and close")
+        if self.scan_thread.is_alive():
+            self.scan_thread.join()
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
             self.motor1.stop_motor()
@@ -189,6 +183,8 @@ class MainWindow(QMainWindow):
         self.graphWidget_3.setBackground("w") #make white background
         
         #create the plot
+        #self.channels = [i for i in range(1, 160 + 1)] #all channels...
+        #self.current = [0.00 for _ in range(160)]
         self.channels = [i for i in range(1, 32 + 1)]
         self.current = [0.00 for _ in range(32)]
         
@@ -197,7 +193,15 @@ class MainWindow(QMainWindow):
     def update_plot_meas(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
          """periodically updates the currents of the 32 channels"""
         
-         newcurrent_array = caget('T-MWE2IA:PROF:1') #pv_IA_wave.get() #32 values long
+         newcurrent_arrayIA = caget('T-MWE2IA:PROF:1') #32 values long
+         # newcurrent_arrayIB = caget('T-MWE2IA:PROF:1')
+         # newcurrent_arrayIC = caget('T-MWE2IA:PROF:1')
+         # newcurrent_arrayID = caget('T-MWE2IA:PROF:1')
+         # newcurrent_arrayIE = caget('T-MWE2IA:PROF:1')
+         #newcurrent_array = newcurrent_arrayIA +newcurrent_arrayIB+newcurrent_arrayIC+newcurrent_arrayID + newcurrent_arrayIE #all 160 channels
+         
+         newcurrent_array = newcurrent_arrayIA
+         
          self.current = np.array(newcurrent_array)
          self.data_line_meas.setData(self.channels,self.current) 
     
@@ -280,7 +284,7 @@ class MainWindow(QMainWindow):
         self.data_line2.setData(np.array(self.time)/1000,self.position_2)
         self.data_line3.setData(np.array(self.time)/1000,self.position_3)
         
-        """use this data to determine when to change the displays"""
+        """use this to determine when to change the endstop displays"""
         status = self.movingmotor.Get(self.movingmotor.pv_motor_status)
         if status == 0x9: #display the endstop status
             self.left_endstop_display()
@@ -309,6 +313,7 @@ class MainWindow(QMainWindow):
         self.statusbar.addPermanentWidget(QLabel("Emittance Scan GUI")) #example to see if it works...
     
     def ready_message(self):
+        """maybe obsolete - just shows a message every 30s"""
         if self.allcalibrated:
             self.MessageBox.append(">>"+ "module is ready")
         else:
@@ -335,7 +340,7 @@ class MainWindow(QMainWindow):
                         if self.message_queue.empty():
                             pass
                         else: 
-                            print("something worse happened")
+                            pass #not sure about handling this case...
     
     
     
@@ -453,13 +458,13 @@ class MainWindow(QMainWindow):
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
             
-            scan_thread = threading.Thread(target=scan_script.start_scan, 
+            self.scan_thread = threading.Thread(target=scan_script.start_scan, 
                                            args=(directory,saveit,meas_freq,goinsteps,
                                                  self.message_queue,self.motor1,self.motor2,self.motor3,meshsize_x,
                                                  meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
             
-            scan_thread.daemon = True
-            scan_thread.start()
+            self.scan_thread.daemon = True
+            self.scan_thread.start()
         
         else:
             self.show_message(">> INVALID VALUE")
