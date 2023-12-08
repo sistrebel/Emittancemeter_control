@@ -10,7 +10,6 @@ Created on Thu Nov  2 17:41:41 2023
 import EPICS_specific_communication as control
 import matplotlib.pyplot as plt
 import time
-from random import random
 import numpy as np
 import datetime
 import Measurement_script 

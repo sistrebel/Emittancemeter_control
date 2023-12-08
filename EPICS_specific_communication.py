@@ -18,8 +18,6 @@ import scan_script as scan
 import Measurement_script
 import Calculate_emittance 
 
-#Define a global lock for the port such that only one thread at a time can use it
-#port_lock = threading.Lock() 
 
 class MotorServer:
     def __init__(self):
@@ -27,15 +25,13 @@ class MotorServer:
        self.pv_status = PV('MTEST-WA81-VME02:ES:SBNT')
        self.issending = False
        
-       #necessary status variables to ensure proper running. For example a boolean which checks if the voltage is applied.
-       
-    
+     
     def stop_server(self): #make sure that when running it again the port is accessible
         self.running = False
-        print(" closed")
+        self.message_queue.put(">> closed")
         
-    def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue):
-        motor = MotorClient(server, MOTOR_NUMBER, command_queue) #pass the general port lock to each motor thread
+    def create_and_start_motor_client(self,server, MOTOR_NUMBER, command_queue,message_queue):
+        motor = MotorClient(server, MOTOR_NUMBER, command_queue,message_queue) #pass the general port lock to each motor thread
         motor.start_motor()
         thread = threading.Thread(target=motor.run)
         thread.daemon = True
@@ -59,15 +55,13 @@ class MotorServer:
 class MotorClient(): 
     """Client class to control a stepper motor contorlled by a series of EPICS process variables
     class MotorClient(): """
-    def __init__(self, server, MOTOR_NUMBER, command_queue):  
+    def __init__(self, server, MOTOR_NUMBER, command_queue, message_queue):  
         
         self.MOTOR_NUMBER = MOTOR_NUMBER
-        
         self.initializing = True 
-        
         self.is_running = True
-        
         self.command_queue = command_queue
+        self.message_queue = message_queue
         
         #list might be adjusted if necessary
         self.command_functions = { 
@@ -85,11 +79,8 @@ class MotorClient():
         
         
         self.stop_flag = threading.Event()
-       
         self.server = server
-       
         self.MOTOR_NUMBER = MOTOR_NUMBER
-        #get the motorconn at address 1 motor 0 (the only one available at the moment) later there might be three axis i.e. motor can be 0,1,2
        
         #set initial position
         self.position = 0  #should be at zero and then i keep track of the position by using a stepcounter!
@@ -97,8 +88,7 @@ class MotorClient():
         self.time_needed = 0
         self.iscalibrating = False
   
-    
-    
+
         
         if MOTOR_NUMBER == 1:
             #initialize the pv's i am using here 
@@ -267,7 +257,7 @@ class MotorClient():
         self.stop_flag.set()
         self.is_running = False
         self.stop_position_thread()
-        print("stop")
+        self.message_queue.put(">> stop")
        
     def ex_command(self,command):
         """excecutes the commands which are sent by addressing the commands from the command list which then calls the functions to execute the commands"""
@@ -283,14 +273,12 @@ class MotorClient():
         Commands in the command queue are issued from the server.
         
         """
-        
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
                 if not self.server.running:
                     break
                 try:
                     status = self.pv_motor_status.get()
-                    #if status == 0x9 or status == 0x8 or status == 0xA or status == 0x1 or status == 0x0 and self.Get(self.server.pv_status) != 1: 
                     if status in [0x9, 0x8, 0xA, 0x1, 0x0] and self.Get(self.server.pv_status) != 1:#much neater way of doing it!!!
                         command, result_queue = self.command_queue.get_nowait() 
                      
@@ -299,23 +287,20 @@ class MotorClient():
                                 result_queue.put(speed)
                                 res = "done"
                         else:
-                            print("else")
                             res = self.ex_command(command)
                             res = "done"
             
                         if res == "done":
                             self.server.issending = False
-                            print("free again")
-                    
                     else: pass
 
                 except queue.Empty:
                         if self.command_queue.empty():
                             pass
                         else:
-                            print("closed the application")
+                            self.message_queue.put(">> closed the application")
                 except Exception as e:
-                    print(f"An unexpected error occurred: {e}")
+                    self.message_queue.put(">> An unexpected error occurred: {e}")
                     
             
         
@@ -350,11 +335,7 @@ class MotorClient():
             
             velocity = self.pv_speed_get.get() 
             
-            print("velocity", velocity)
-            
-            # while self.ismoving == True:
-            #     print("waiting")
-            #     time.sleep(0.1)
+            self.message_queue.put(">> velocity"+ str(velocity))
             
             if velocity !=0 and velocity!= None:
                 self.Set(self.pv_targetposition_steps, position_steps) 
@@ -363,10 +344,9 @@ class MotorClient():
                 
         
                 self.stepcount = position_steps #new position in steps #SOL position
-                print("stepcount is:", self.stepcount)  
-                print("time needed", self.time_needed)
+                self.message_queue.put(">> stepcount of Motor " +str(self.MOTOR_NUMBER) +" is: ", self.stepcount)
             else:
-                print("WARNING: velocity is 0 or None")
+                self.message_queue.put(">> WARNING: velocity is 0 or None")
             return
        
       
@@ -385,19 +365,19 @@ class MotorClient():
         endstopvalue = self.Get(self.pv_endstopstatus)
         
         if endstopvalue == 0xD:
-            print("upper end reached")
+            self.message_queue.put(">> upper endstop reached")
             return "upper"
         if endstopvalue == 0xA: 
-            print("lower end reached")
+            self.message_queue.put(">> lower endstop reached")
             return "lower"
         else:
-            print("no endstop reached")
+            self.message_queue.put(">> no endstop reached")
             return None
         
         
     def calibration(self):
         if self.Get(self.pv_speed_get) == None:
-             print("vel none")
+             self.message_queue.put(">> velocity is None")
              return
 
         self.pv_COM_status.put(0)
@@ -413,7 +393,7 @@ class MotorClient():
              status = self.Get(self.pv_motor_status)
              
         self.iscalibrating = False
-        print("done calibrating")
+        self.message_queue.put(">> done calibrating")
         self.position = 0
         self.stepcount = 0
         self.ismoving = False
@@ -432,6 +412,7 @@ class MotorClient():
                         self.position -= velocity*looptime
                     if self.direction == "none":
                         pass
+            
             if not self.ismoving:   
                 self.position = self.stepcount
             time.sleep(0.02) 
@@ -443,7 +424,6 @@ class MotorClient():
         while self.is_running:
             status = self.Get(self.pv_motor_status)
             if self.time_needed > 0 and status != 0x9 and status != 0x8 and status != 0xA and status != 0x1 and status != 0x0:  
-                print("start counting")
                 if self.direction == "pos":
                     while self.position <= self.stepcount:
                         pass
@@ -454,25 +434,20 @@ class MotorClient():
                     self.direction == "neg"
                     while self.position != 0:
                         pass
-            
-                print("ended, reset ismoving and time_needed")
                 self.ismoving = False
                 self.time_needed = 0 
                 
         
     def start_position_thread(self):
-        print("position thread")
         self.position_thread = threading.Thread(target=self.move_device_position)
         self.position_thread.daemon = True  
         self.position_thread.start()
 
     def stop_position_thread(self):
         self.ismoving = False
-        print("stopped moving")
         self.position_thread.join()
 
     def start_timer_thread(self):
-        print("timer thread")
         self.timer_thread = threading.Thread(target=self.lock_for_time)
         self.timer_thread.daemon = True  
         self.timer_thread.start()
@@ -481,123 +456,6 @@ class MotorClient():
         self.timer_thread.join()
 
 
-# class Measurement():
-#     """is the measurement device for all LogIV cards."""
-    
-#     def __init__(self, server): 
-#         """setup all the process variables that will be needed"""
-#         self.full_data = [] #this grows during a measurement
-        
-#         #waveform of the data
-#         self.pv_IA_wave = PV('T-MWE2IA:PROF:1')#PV('MWE2IA:PROF:1') #similar to this at least, each one possible to read 32 channels 
-#         self.pv_IB_wave = PV('T-MWE2IA:PROF:1') #!!!!!!!!!!!!!!!!!!! MUST CHANGE THOSE TO THE RIGHT PV'S ONCE THE FULL SETUP IS THERE!!!!!!!!!!!!!!!!!
-#         self.pv_IC_wave = PV('T-MWE2IA:PROF:1')
-#         self.pv_ID_wave = PV('T-MWE2IA:PROF:1')
-#         self.pv_IE_wave = PV('T-MWE2IA:PROF:1')
-        
-        
-#     def get_signal(self,motor3,goinsteps,meas_freq,point_z,point_x,point_y,endpoint_z):
-#         """returns a dummy signal for a certain amount of time
-    
-#         -if signal drops below a certain value the scan must be paused
-#         -all 32 channels can be readout at the same time so continuous movement is OK, actually there are 160 channels, 32 per card.
-#         -at every point the values are stored in a frequency below 5kHz"""
-        
-#         allchannels_onepoint = [] #will have the shape [[[32 values], position],
-#         # allchannels_onepoint_IB = []                                           #  [[32 values], position],    
-#         # allchannels_onepoint_IC = []                                              # [[32 values], position] ] AND SO ON
-#         # allchannels_onepoint_ID = []
-#         # allchannels_onepoint_IE = []
-        
-        
-#         if goinsteps == False:
-#             status3 = motor3.Get(motor3.pv_motor_status)
-#             point_z = motor3.Get(motor3.pv_SOLRB)
-            
-            
-#             while point_z != endpoint_z and status3 != 0xA and scan.scanstop == False:
-#                 point_z = motor3.Get(motor3.pv_SOLRB)
-        
-#                 status3 = motor3.Get(motor3.pv_motor_status)
-#                 waveform_IA = np.array(self.pv_IA_wave.get()) #is a list of 32 values
-#                 waveform_IB = np.array(self.pv_IB_wave.get())*10
-#                 waveform_IC = np.array(self.pv_IC_wave.get())*4
-#                 waveform_ID = np.array(self.pv_ID_wave.get())*3
-#                 waveform_IE = np.array(self.pv_IE_wave.get())*2 #just multiply it by some random value to get different values...
-                
-#                 #they are all in the same side by side so i can actually merge them together as there are actually 160 channels!!!! the picture is misleading!!
-#                 full_waveform_temp = np.concatenate((waveform_IA ,waveform_IB ,waveform_IC ))
-#                 full_waveform = np.concatenate((full_waveform_temp , waveform_ID , waveform_IE))
-                
-            
-#                 current_position = [point_x,point_y,point_z] ##positons of the motors in steps... 
-                
-#                 #convert those to positions in mm
-#                 current_position_mm = [scan.steps_to_mm(point_x,"1X"),scan.steps_to_mm(point_y,"1Y"),scan.steps_to_mm(point_z,"2Y")]
-                
-#                 allchannels_onepoint.append([full_waveform,current_position_mm])
-#                 # allchannels_onepoint_IA.append([waveform_IA,current_position])
-#                 # allchannels_onepoint_IB.append([waveform_IB,current_position])
-#                 # allchannels_onepoint_IC.append([waveform_IC,current_position])
-#                 # allchannels_onepoint_ID.append([waveform_ID,current_position])
-#                 # allchannels_onepoint_IE.append([waveform_IE,current_position])
-                
-#                 time.sleep(1/meas_freq)  # measurement frequency
-                
-#         if goinsteps:
-#             current_position = [point_x,point_y,point_z] #positons of the motors in steps...
-#             current_position_mm = [scan.steps_to_mm(point_x,"1X"),scan.steps_to_mm(point_y,"1Y"),scan.steps_to_mm(point_z,"2Y")]
-            
-#             for i in range(0,int(meas_freq)): #measure frequency time for exactly one second , repeat this 
-                    
-#                     #this needs to be done with all 5 cards!!! 
-#                     waveform_IA = self.pv_IA_wave.get() #is a list of 32 values, takes one second
-#                     waveform_IB = self.pv_IB_wave.get()
-#                     waveform_IC = self.pv_IC_wave.get()
-#                     waveform_ID = self.pv_ID_wave.get()
-#                     waveform_IE = self.pv_IE_wave.get()
-#                     #they are all in the same side by side so i can actually merge them together as there are actually 160 channels!!!! the picture is misleading!!
-#                     full_waveform = waveform_IA + waveform_IB +waveform_IC + waveform_ID + waveform_IE
-                    
-#                     # allchannels_onepoint_IA.append([waveform_IA,current_position])  #appends an array of shape [[32 values], position], meas_freq of times at each position.
-#                     # allchannels_onepoint_IB.append([waveform_IB,current_position])
-#                     # allchannels_onepoint_IC.append([waveform_IC,current_position])
-#                     # allchannels_onepoint_ID.append([waveform_ID,current_position])
-#                     # allchannels_onepoint_IE.append([waveform_IE,current_position])
-#                     allchannels_onepoint.append([full_waveform,current_position_mm])
-                    
-#                     time.sleep(1/meas_freq)
-        
-        
-#         self.full_data.append(allchannels_onepoint)
-    
-        
-    
-    
-#     def handle_and_save_data(self,path):
-#         """saves the full_data array into a file and handles the format
-        
-#         self.full_data.shape == (#positions,#measurements,[[32 values],[posx,posy,posz]])
-        
-#         """
-#         if self.full_data != []:
-#             larger_nested_array = self.full_data
-#             # Save the larger nested array to a .npy file
-#             if path != "":
-#                 file_path = path #+ 'scan_array'+ str(datetime.datetime.now())+'.npy'
-#             else:
-#                 file_path = 'scan_array'+ str(datetime.datetime.now())+'.npy' #saves it to the same place where the program is saved
-#             np.save(file_path, larger_nested_array)
-
-#         Calculate_emittance.load_array_start_calculation(file_path)
-        
-#         # # Load the array back
-#         # loaded_nested_array = np.load(file_path)
-
-#         # # Print the shape of the loaded array
-#         # print("Shape of the loaded array:", loaded_nested_array.shape)
-
-        
         
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     #try:
@@ -628,7 +486,7 @@ if __name__ == "__main__": #is only excecuted if the program is started by itsel
         meshsize_z = 40
     
     
-        measurement = Measurement(server)
+        measurement = Measurement_script.Measurement(server)
         
         #measurement.get_signal(1, goinsteps, meas_freq, point_z,point_x,point_y)
        # measurement.get_signal(1, goinsteps, meas_freq, point_z+10,point_x+177,point_y+133)

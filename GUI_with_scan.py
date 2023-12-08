@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         #connect to the server who does the connection to the device and the communication
         self.server = control.MotorServer() #only one server 
         
-        #would in principle have different motor numbers starting at 0 (first axis)
+
         self.MOTOR_NUMBER_1 = 1 #horizontal collimator
         self.MOTOR_NUMBER_2 = 2 #vertical collimator
         self.MOTOR_NUMBER_3 = 3 #vertical readout
@@ -72,10 +72,12 @@ class MainWindow(QMainWindow):
         self.motor2_queue =  queue.Queue()
         self.motor3_queue =  queue.Queue()
         
+        self.start_message_thread()
+        
         #create the motor instances
-        self.motor1 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_1, self.motor1_queue)
-        self.motor2 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_2, self.motor2_queue)
-        self.motor3 = self.server.create_and_start_motor_client(self.server,  self.MOTOR_NUMBER_3, self.motor3_queue)
+        self.motor1 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_1, self.motor1_queue,self.message_queue)
+        self.motor2 = self.server.create_and_start_motor_client(self.server, self.MOTOR_NUMBER_2, self.motor2_queue,self.message_queue)
+        self.motor3 = self.server.create_and_start_motor_client(self.server,  self.MOTOR_NUMBER_3, self.motor3_queue,self.message_queue)
         
     
         #initialize the moving axis with the first motor
@@ -118,8 +120,7 @@ class MainWindow(QMainWindow):
         self.sent = False
         self.allcalibrated = False
         
-        self.start_message_thread()
-
+   
         #empty lists for saving position plot
         self.all_positions1 = []
         self.all_positions2 = []
@@ -131,7 +132,7 @@ class MainWindow(QMainWindow):
         
     def cleanup_on_exit(self):
         # Trigger cleanup actions here
-        print("Cleaning up before exit")
+        self.show_message(">> Cleaning up before exit")
         self.show_message(">> recalibrate and close")
         self.calibration()
         if self.motor1.iscalibrating == False and self.motor1.iscalibrating == False and self.motor3.iscalibrating == False:
@@ -442,10 +443,7 @@ class MainWindow(QMainWindow):
         resolution_y = float(self.textEdit_Resolution_y.toPlainText())
         resolution_z = float(self.textEdit_Resolution_z.toPlainText())
         
-        # x_length = 21700
-        # y_length = 104000
-        # z_length = 9000
-        
+
         x1_setup_val, y1_setup_val, y2_setup_val, MWE1U, MWE2U = self.get_setup_val()
         
         meshsize_x = self.mm_to_steps(resolution_x,"1X",isspeed = True) #grid is in absoulute values and not relative...
@@ -474,7 +472,7 @@ class MainWindow(QMainWindow):
         
         if goinsteps == False:
             self.textBrowser_Fidelity.clear()
-            self.textBrowser_Fidelity.setText(str(fidelity))#maybe change this... to another format instead of using append()
+            self.textBrowser_Fidelity.setText(str(fidelity))
         else: self.textBrowser_Fidelity.clear()
         
         if resolution_x > 0 and resolution_y > 0 and resolution_z > 0:
@@ -483,6 +481,7 @@ class MainWindow(QMainWindow):
                                            args=(directory,saveit,meas_freq,goinsteps,
                                                  self.message_queue,self.motor1,self.motor2,self.motor3,meshsize_x,
                                                  meshsize_y,meshsize_z,x1_setup_val,y1_setup_val,y2_setup_val, self.server))
+            
             scan_thread.daemon = True
             scan_thread.start()
         
@@ -523,7 +522,7 @@ class MainWindow(QMainWindow):
         elif axis == "2Y":
             mm = steps/50
             mapped_mm = (1/50)*steps - 150
-        else: print("ERROR, NO VALID AXIS")
+        else: self.show_message(">> ERROR, NO VALID AXIS")
         
         if isspeed:
             return mm
@@ -544,7 +543,8 @@ class MainWindow(QMainWindow):
         elif axis == "2Y":
             steps = mm*50
             remapped_steps = (150*50) + (mm*50)
-        else: print("ERROR, NO VALID AXIS")
+        else: self.show_message(">> ERROR, NO VALID AXIS")
+        self.me
         
         if isspeed:
             return steps
