@@ -9,7 +9,7 @@
 
 ## General Info
 ***
-This project provides a rudimentary control software for the 4D Emittancemeter.
+This project provides a rudimentary control software for the 4D Emittancemeter described in R.Doelling's paper you can find here: https://accelconf.web.cern.ch/hb2018/papers/wep2po030.pdf 
 
 The software is split into the following python scripts:
       *GUI*,
@@ -29,7 +29,7 @@ The GUI consists of one class called MainWindow in which the .ui file is loaded 
 
 In the scan section one has to input the desired scan specifications like the speed and the grid dimensions. The with proper inputs the scan be started. An approximate Start- and End-time is displayed.
 
-In the manual control section one can select the axis and move the motor on the selected axis to a target position with a desired speed. Before using it one should calibrate the system.
+In the manual control section one can select the axis and move the motor on the selected axis to a target position with a desired speed. Before using it one should always calibrate the system.
 
 ## Communication
 ***
@@ -41,8 +41,11 @@ The *process variables* are accessibel through *epics.PV* and their states can b
 
 ## Scan
 ***
-A scan is started from the GUI. It opens up a new thread where the program goes through the hole scan procedure. **A scan might take a long time!**
-The measured data (in the form of a numpy array) will be saved to a data.npy file. 
+A scan is started from the GUI. It opens up a new thread where the program goes through the scan procedure. **A scan might take a long time!**
+
+The upstream collimator is following a simple snake-like grid of points through the beam. At each point the a slit with co-moving readout-grid is scanned vertically over the beamlet selected by the collimator. 
+
+The readout is handled in the *Measurement script*. The measured data (in the form of a numpy array) will be saved to a data.npy file with the name 'scan_array'+ str(datetime.datetime.now())+'.npy' unless a specific path was provided in the GUI.
 
 ## Calculation
 ***
