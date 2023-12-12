@@ -246,6 +246,7 @@ class MainWindow(QMainWindow):
         styles = {'color':'r', 'font-size':'20px'}
         self.graphWidget.setLabel('left', 'Position [mm]', **styles)
         self.graphWidget.setLabel('bottom', 'Time [s]', **styles)
+        self.graphWidget.LegendItem()
         pen1 = pg.mkPen("r") #red line pen
         pen2 = pg.mkPen("g")
         pen3 = pg.mkPen("b")
@@ -257,9 +258,9 @@ class MainWindow(QMainWindow):
         self.position_2 = [0 for _ in range(100)]
         self.position_3 = [0 for _ in range(100)]
         
-        self.data_line1 =  self.graphWidget.plot(np.array(self.time), self.position_1, pen=pen1) #divide time by 1000 to get seconds instead of ms
-        self.data_line2 =  self.graphWidget.plot(np.array(self.time), self.position_2, pen=pen2) #divide time by 1000 to get seconds instead of ms
-        self.data_line3 =  self.graphWidget.plot(np.array(self.time), self.position_3, pen=pen3) #divide time by 1000 to get seconds instead of ms
+        self.data_line1 =  self.graphWidget.plot(np.array(self.time), self.position_1, pen=pen1, name="MWE1X") #divide time by 1000 to get seconds instead of ms
+        self.data_line2 =  self.graphWidget.plot(np.array(self.time), self.position_2, pen=pen2,name="MWE1Y") #divide time by 1000 to get seconds instead of ms
+        self.data_line3 =  self.graphWidget.plot(np.array(self.time), self.position_3, pen=pen3, name="MWE2Y") #divide time by 1000 to get seconds instead of ms
         
     def update_plot_data(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
         """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""
