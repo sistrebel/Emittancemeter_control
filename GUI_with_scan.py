@@ -43,7 +43,7 @@ from epics import caget
 
 import scan_script
 import EPICS_specific_communication as control
-from GUI_plotstuff import MainWindow_methods
+from GUI_plotmethods import MainWindow_plotmethods
 
 
 class MainWindow(QMainWindow): 
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.server = control.MotorServer() #only one server 
         
         
-        self.plot_methods = MainWindow_methods() #import methods for plot
+        self.plot_methods = MainWindow_plotmethods() #import methods for plot
 
         self.MOTOR_NUMBER_1 = 1 #horizontal collimator
         self.MOTOR_NUMBER_2 = 2 #vertical collimator

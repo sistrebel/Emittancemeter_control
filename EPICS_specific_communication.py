@@ -453,6 +453,6 @@ class MotorClient():
         
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
     
-    
+    print("i started")
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        
