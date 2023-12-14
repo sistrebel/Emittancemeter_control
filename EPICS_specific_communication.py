@@ -266,7 +266,6 @@ class MotorClient():
         """
         This method runs continuously as soon as the thread is started, checking for commands in the command queue.
         Commands in the command queue are issued from the server.
-        
         """
         print(f"Motor is running on thread {threading.current_thread().name}")
         while self.is_running and not self.stop_flag.is_set():
@@ -453,43 +452,7 @@ class MotorClient():
 
         
 if __name__ == "__main__": #is only excecuted if the program is started by itself and not if called by others, here for testing...
-    #try:
-        # Initialize the server
-        server = MotorServer()
-        
-        #command_queue = queue.Queue() #create the command queue through which i will issue my motor commands, in the end i will have a queue for each motor
-        #command_queue2 = queue.Queue()
-        command_queue3 = queue.Queue()
-        
-        goinsteps = True
-        meas_freq = 10
-        point_z= 3333
-        point_x = 11
-        point_y = 222
-        #motor1 = server.create_and_start_motor_client(server, 1, command_queue)
-        
-        #motor2 = server.create_and_start_motor_client(server, 2, command_queue2)
-        
-        #motor3 = server.create_and_start_motor_client(server, 3, command_queue3)
-        
-        #num_points = 6  # Number of measurement points
-        x_length = 21000  # Length of the x-axis
-        y_length = 104000
-        z_length = 9000
-        meshsize_x = 5000
-        meshsize_y = 20000
-        meshsize_z = 40
     
-    
-        measurement = Measurement_script.Measurement(server)
-        
-        #measurement.get_signal(1, goinsteps, meas_freq, point_z,point_x,point_y)
-       # measurement.get_signal(1, goinsteps, meas_freq, point_z+10,point_x+177,point_y+133)
-        
-       
-        for i in range(0,10000):
-            print(measurement.pv_IA_wave.get()[1])
-            time.sleep(0.001)
     
         #scan.start_scan(motor1,motor2,motor3,meshsize_x,meshsize_y,meshsize_z,x_length,y_length,z_length,server)    
        

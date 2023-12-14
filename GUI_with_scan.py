@@ -261,9 +261,9 @@ class MainWindow(QMainWindow):
         
         
         
-        self.data_line1 =  self.graphWidget.plot(np.array(self.time), self.position_1, pen=pen1, name="MWE1X") #divide time by 1000 to get seconds instead of ms
-        self.data_line2 =  self.graphWidget.plot(np.array(self.time), self.position_2, pen=pen2,name="MWE1Y") #divide time by 1000 to get seconds instead of ms
-        self.data_line3 =  self.graphWidget.plot(np.array(self.time), self.position_3, pen=pen3, name="MWE2Y") #divide time by 1000 to get seconds instead of ms
+        self.data_line1 =  self.graphWidget.plot(np.array(self.time), self.position_1, pen=pen1, name="1X") #divide time by 1000 to get seconds instead of ms
+        self.data_line2 =  self.graphWidget.plot(np.array(self.time), self.position_2, pen=pen2,name="1Y") #divide time by 1000 to get seconds instead of ms
+        self.data_line3 =  self.graphWidget.plot(np.array(self.time), self.position_3, pen=pen3, name="2Y") #divide time by 1000 to get seconds instead of ms
         
     def update_plot_data(self): #only one plot, data is received for the currently moving one...maybe when you change them there is a problem then
         """periodically (100ms) updates the position and time of the moving axis (only one axis for now)"""

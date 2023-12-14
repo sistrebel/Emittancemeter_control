@@ -9,7 +9,6 @@ Created on Thu Nov 30 13:50:51 2023
 
 import numpy as np
 import matplotlib.pyplot as plt
-
 from skimage.measure import EllipseModel
 from matplotlib import cm
 from matplotlib.colors import LightSource
@@ -18,20 +17,15 @@ from matplotlib.patches import Ellipse
 drift_length = 1200 #in mm, cite Rudolf paper (true for HIPA, not ISTS)
 
 def load_array_start_calculation(file_path, example_array):
-    """data has shape (#collimator points, #measurement points per run, 2 {[ waveform values, position triplet]})"""
+    """data has shape (#collimator points, #measurement points per run, 2 {[ waveform values, position triplet]})
+     - this function will load the data array, plot the points such that an emittance ellipse can be fitted to it. The determined parameters are then used to calculate the emittance."""
     #data = np.load(file_path, allow_pickle=True)
     
     #data =  np.array(make_array())
     
     data = example_array
     
-    print("the shape iss" ,data.shape)
-    
-    print("the array has been loaded", data[0][0][1][0], "and this is the first position")
-    print("the array has been loaded", data[0][1][1][0], "and this is the first position")
-    print(data[0][0][0])
-    print(data[0][0][1])
-    
+ 
     """the goal would be to calculate the emittance for each section (collimator position of the beam)"""
     
 
@@ -196,23 +190,29 @@ def load_array_start_calculation(file_path, example_array):
     # ellipse_array = ellipse_arrays_y[49]
     # ellipse_model = fit_ellipse_to_points(ellipse_array)
     # plot_ellipse_and_points(ellipse_model, ellipse_array)
-    # area = estimate_ellipse_area(ellipse_model)
+    # emittance = estimate_ellipse_area(ellipse_model)
     
     """
    #fit ellipse to it and estimate area... 
-   
+    
+    emittances_y = []
     for ellipse_array in ellipse_arrays_y:
         ellipse_model = fit_ellipse_to_points(ellipse_array)
         plot_ellipse_and_points(ellipse_model, ellipse_array)
         
-        area = estimate_ellipse_area(ellipse_model)
+        emittance = estimate_ellipse_area(ellipse_model)
+        emittances_y.append(emittance)
+    
+    emittances_x = []
+    
     
     for ellipse_array in ellipse_arrays_x:
         ellipse_model = fit_ellipse_to_points(ellipse_array)
         plot_ellipse_and_points(ellipse_model, ellipse_array)
    
         
-        area = estimate_ellipse_area(ellipse_model)
+        emittance = estimate_ellipse_area(ellipse_model)
+        emittances_x.append(emittance)
     """
     
     
@@ -229,12 +229,12 @@ def estimate_ellipse_area(ellipse_model):
     if ellipse_model is None:
         raise ValueError("Ellipse model is None. Cannot estimate area.")
 
-    major_axis_length = ellipse_model.params[2] * 2
-    minor_axis_length = ellipse_model.params[3] * 2
+    major_axis_length = ellipse_model.params[2]# * 2
+    minor_axis_length = ellipse_model.params[3]# * 2
 
     area = np.pi * major_axis_length * minor_axis_length
-
-    return area
+    emittance = area/np.pi
+    return emittance
 
 def fit_ellipse_to_points(points):
     """
@@ -302,6 +302,8 @@ def plot_ellipse_and_points(ellipse_model, points):
    
 
 def FWHM(X,Y):
+    """Determines the Full width at half maximum of a distribution of points [X,Y] and returns it if possible
+    !!!NOT FINISHED!!!"""
     half_max = max(Y) / 2.
     #find when function crosses line half_max (when sign of diff flips)
     #take the 'derivative' of signum(half_max - Y[])
@@ -316,6 +318,7 @@ def FWHM(X,Y):
         return 0
   
 def make_array():
+    """Creates an example array of the desired shape with random entries"""
     array = []
     coll_points = 10
     meas_points = 16
@@ -331,144 +334,120 @@ def make_array():
 #array = np.array(make_array())
 
 
-def distribution_plot(data):
-    """with the full dataset at one collimator point make a 3D-plot of the measured intesities"""
-
-# Load and format data
-    y_meas = []
-    z_meas = []
-    for i in range(0, len(data)):
-        y_meas.append(data[i][1][2])
-        z_meas.append(data[i][0])
-    x_meas = np.arange(1,33,1)
-        
-    x, y = np.meshgrid(x_meas, y_meas)
-    
-    # Set up plot
-    fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
-    
-    ls = LightSource(270, 45)
-    # To use a custom hillshading mode, override the built-in shading and pass
-    # in the rgb colors of the shaded surface calculated from "shade".
-    rgb = ls.shade(np.array(z_meas), cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
-    surf = ax.plot_surface(x_meas, y_meas, np.array(z_meas), rstride=1, cstride=1, facecolors=rgb,
-                           linewidth=0, antialiased=False, shade=False)
-
-    plt.show()
-
-# data =  np.array(make_array())
-# distribution_plot(data[2])
-
-
-
-
-x2 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 32830.,
-           38730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -120.0, 41.78]]
-
-x = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 31830.,
-           31730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -130.0, 41.78]]
-
-x3 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
-           39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -140.0, 41.78]]
-
-x4 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
-           39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -150.0, 41.78]]
-
-
-x5 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
-           39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
-           0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -160.0, 41.78]]
 
 if __name__ == "__main__":
+
+    
+    x2 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     31130.,     31530., 32830.,
+               38730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -120.0, 41.78]]
+    
+    x = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     31130.,     31530., 31830.,
+               31730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -130.0, 41.78]]
+    
+    x3 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
+               39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -140.0, 41.78]]
+    
+    x4 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
+               39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -150.0, 41.78]]
+    
+    
+    x5 = [np.array([    0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     31130.,     31530., 37830.,
+               39730.,     31530.,     31130.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0., 0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,  0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.,
+               0.,     0.,     0.,     0.,     0.,     0.,     0.,     0.]), [6.833333333333332, -160.0, 41.78]]
+
+
+    
+    
+    
     example_array = np.array([x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x], dtype=object)
     example_array2 = np.array([x2,x2,x2,x2,x,x2,x2,x2,x2,x,x,x,x2,x2,x2,x2,x2,x2], dtype=object) #measurement points of MWE2Y
     example_array3 = np.array([x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3,x3], dtype=object)
