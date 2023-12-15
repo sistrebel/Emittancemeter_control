@@ -22,7 +22,7 @@ The other scripts will run in the background. They run on *separate threads*.
 
 Make sure you have access to the *PyQt5*, *epics* and *threading* libraries.
 
-The logic of my software application is visualized in the following flowchart:
+The logic of my software application is visualized in the flowchart named Program_Diagram.
 
 
 ## GUI
