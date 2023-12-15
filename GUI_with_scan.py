@@ -139,7 +139,7 @@ class MainWindow(QMainWindow):
         QApplication.closeAllWindows()
 
     def LoadGuis(self):        
-        loadUi(r"Real_mainwindow.ui",self) #adjust this one to specific place, now it must be saved at in the same folder as the GUI script
+        loadUi(r"Emittancemeter_mainwindow.ui",self) #adjust this one to specific place, now it must be saved at in the same folder as the GUI script
         
     
     def connectwidgets(self):
