@@ -208,7 +208,7 @@ class MotorClient():
                 self.pv_targetposition_HOPR = PV('T-MWE2Y:SOL:1.HOPR')
                 
                 self.pv_brake.put(1) #make sure it is set right...
-                while self.Get(self.pv_brake_status) != 1:
+                while self.Get(self.pv_brake_status) != 1: #just for safety, may be commented
                     print("setting brake")
                     self.pv_brake.put(1)
                     time.sleep(0.1)
